@@ -1,10 +1,10 @@
 ﻿
-using GCMS.Models.Entities;
-using GCMS.Models;
+using GCMS.Web.Models.Entities;
+using GCMS.WEB.Models;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace GCMS.Data
+namespace GCMS.WEB.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -20,5 +20,11 @@ namespace GCMS.Data
         public DbSet<DepartmentMaster> DepartmentMasters { get; set; }
 
         public DbSet<CourtNameMaster> CourtNameMasters { get; set; }
+
+        public DbSet<StateMaster> StateMasters { get; set; }
+
+        public DbSet<DistrictMaster> DistrictMasters { get; set; }
+
+        public DbSet<DivisionMaster> DivisionMasters { get; set; }
     }
 }

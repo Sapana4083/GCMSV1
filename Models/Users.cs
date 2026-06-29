@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GCMS.Models
+namespace GCMS.WEB.Models
 {
     [Table("AXUSERS")]
     public class Users

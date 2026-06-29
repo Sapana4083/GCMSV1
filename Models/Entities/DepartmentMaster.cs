@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GCMS.Models.Entities
+namespace GCMS.Web.Models.Entities
 {
     [Table("DEPARTMENT_MAST")]
     public class DepartmentMaster

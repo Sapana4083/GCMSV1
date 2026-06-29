@@ -1,14 +1,14 @@
-﻿using GCMS.Models;
-using GCMS.Repository.Interfaces;
-using GCMS.Services.Interfaces;
-using GCMS.ViewModels;
+﻿using GCMS.WEB.Models;
+using GCMS.WEB.Repository.Interfaces;
+using GCMS.WEB.Services.Interfaces;
+using GCMS.WEB.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
 
-namespace GCMS.Controllers
+namespace GCMS.WEB.Controllers
 {
     public class AccountController : Controller
     {
@@ -66,14 +66,11 @@ namespace GCMS.Controllers
 
             if (deptInfo != null)
             {
-                claims.Add(new Claim("DepartmentName",
-                    deptInfo.DepartmentName ?? ""));
-
-                claims.Add(new Claim("CourtName",
-                    deptInfo.CourtName ?? ""));
-
-                claims.Add(new Claim("CourtCode",
-                    deptInfo.CourtCode ?? ""));
+                claims.Add(new Claim("UserSSO", deptInfo.UserSSO ?? ""));
+                claims.Add(new Claim("AxUserID", deptInfo.AxUserID ?? ""));
+                claims.Add(new Claim("DepartmentName", deptInfo.DepartmentName ?? ""));
+                claims.Add(new Claim("CourtName", deptInfo.CourtName ?? ""));
+                claims.Add(new Claim("CourtCode", deptInfo.CourtCode ?? ""));
             }
 
             var identity = new ClaimsIdentity(
@@ -91,21 +88,11 @@ namespace GCMS.Controllers
 
             if (deptInfo != null)
             {
-                HttpContext.Session.SetString(
-                    "DepartmentName",
-                    deptInfo.DepartmentName ?? "");
-
-                HttpContext.Session.SetString(
-                    "CourtName",
-                    deptInfo.CourtName ?? "");
-
-                HttpContext.Session.SetString(
-                    "CourtCode",
-                    deptInfo.CourtCode ?? "");
-
-                HttpContext.Session.SetString(
-                    "DepartmentLogo",
-                    deptInfo.Image ?? "");
+                HttpContext.Session.SetString("UserSSO", deptInfo.UserSSO ?? "");
+                HttpContext.Session.SetString("AxUserID", deptInfo.AxUserID ?? "");
+                HttpContext.Session.SetString("DepartmentName", deptInfo.DepartmentName ?? "");
+                HttpContext.Session.SetString("CourtName", deptInfo.CourtName ?? "");
+                HttpContext.Session.SetString("CourtCode", deptInfo.CourtCode ?? "");
             }
 
             return RedirectToAction("Index", "Home");

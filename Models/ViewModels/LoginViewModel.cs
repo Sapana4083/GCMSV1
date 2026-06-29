@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GCMS.ViewModels
+namespace GCMS.WEB.ViewModels
 {
 	public class LoginViewModel
 	{

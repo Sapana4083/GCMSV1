@@ -1,4 +1,4 @@
-﻿namespace GCMS.Services.Interfaces
+﻿namespace GCMS.WEB.Services.Interfaces
 {
     public interface IAuthService
     {

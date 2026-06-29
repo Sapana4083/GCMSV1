@@ -1,0 +1,248 @@
+﻿using GCMS.Web.Models;
+using GCMS.Web.Services;
+using GCMS.Web.Services.Interfaces;
+using GCMS.WEB.Data;
+using GCMS.WEB.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace GCMS.Web.Controllers
+{
+    public class MasterController : Controller
+    {
+        private readonly IStateService _service;
+        private readonly IDistrictService _districtService;
+        private readonly IDivisionService _divisionService;
+        private readonly ApplicationDbContext _context;
+
+        public MasterController(
+            IStateService service, ApplicationDbContext context, IDistrictService districtService, IDivisionService divisionService)
+        {
+            _service = service;
+            _context = context;
+            _districtService = districtService;
+            _divisionService = divisionService;
+        }
+
+        //State Master
+        public async Task<IActionResult> StateList( int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data =
+                await _service.GetAllAsync(
+                    pageNo,
+                    rowCnt);
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SaveState(StateMaster model)
+        {
+            try
+            {
+                if (model.StateMastId == 0)
+                {
+                    //var maxId = await _context.StateMasters
+                    // .MaxAsync(x => (long?)x.StateMastId) ?? 0;
+
+                    //model.StateMastId = maxId + 1;
+                    //model.CreatedOn = DateTime.Now;
+
+                    //model.InActive = "F";
+                    var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+                    var userSSO = HttpContext.Session.GetString("UserSSO");
+                    var axUserID = HttpContext.Session.GetString("AxUserID");
+                    model.CreatedBy = username;
+
+
+                    await _service.AddAsync(model);
+                }
+                else
+
+                {
+                  
+                    await _service.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetState(long id)
+        {
+            var state =
+                await _service.GetByIdAsync(id);
+
+            return Json(state);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteState(long id)
+        {
+            var state = await _service.GetByIdAsync(id);
+
+            if (state == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Record not found"
+                });
+            }
+
+            await _service.DeleteAsync(id);
+
+            return Json(new
+            {
+                success = true
+            });
+        }
+
+        //District Master
+        public async Task<IActionResult> DistrictList(int pageNo = 1,int rowCnt = 999999999)
+        {
+            var model =
+                await _districtService
+                .GetAllAsync(pageNo, rowCnt);
+
+            ViewBag.StateList =
+                await _service
+                .GetAllAsync(1, 1000);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveDistrict(DistrictMaster model)
+        {
+            model.CreatedBy =
+                HttpContext.Session.GetString("Username")
+                ?? "SYSTEM";
+
+            if (model.DistrictMastId == 0)
+            {
+                await _districtService.AddAsync(model);
+            }
+            else
+            {
+                await _districtService.UpdateAsync(model);
+            }
+
+            return Json(new
+            {
+                success = true
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult>GetDistrict(long id)
+        {
+            var data =
+                await _districtService.GetByIdAsync(id);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDistrict(long id)
+        {
+            await _districtService.DeleteAsync(id);
+
+            return Json(new
+            {
+                success = true
+            });
+        }
+
+        //Division Master
+        public async Task<IActionResult> DivisionList(int pageNo = 1,int rowCnt = 999999999)
+        {
+            var data = await _divisionService.GetAllAsync(pageNo, rowCnt);
+
+            ViewBag.StateList =
+                await _service
+                .GetAllAsync(1, 1000);
+
+            return View(data);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetDivision(long id)
+        {
+            return Json(await _divisionService.GetByIdAsync(id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveDivision(DivisionMaster model)
+        {
+            try
+            {
+                var username =
+                       HttpContext.Session.GetString("Username")
+                       ?? "SYSTEM";
+
+                var userSSO =
+                    HttpContext.Session.GetString("UserSSO");
+
+                var axUserID =
+                    HttpContext.Session.GetString("AxUserID");
+                if (model.DivisionMastId == 0)
+                {
+                   
+
+                    model.CreatedBy = username;
+                    model.UserName = username;
+
+                    await _divisionService.AddAsync(model);
+                }
+                else
+                {
+                    model.CreatedBy = username;
+                    model.UserName = username;
+                    await _divisionService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> DeleteDivision(long id)
+        {
+            await _divisionService.DeleteAsync(id);
+
+            return Json(new
+            {
+                success = true
+            });
+        }
+    }
+}

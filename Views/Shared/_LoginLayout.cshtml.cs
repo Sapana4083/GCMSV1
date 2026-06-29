@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace GCMS.Views.Shared
+namespace GCMS.Web.Views.Shared
 {
     public class _LoginLayoutModel : PageModel
     {

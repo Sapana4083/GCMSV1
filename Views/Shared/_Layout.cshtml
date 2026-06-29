@@ -4,18 +4,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GCMS</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link href="~/css/jquery.datatables.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/sidebarstylesheet.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/GCMS.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/GCMS.WEB.styles.css" asp-append-version="true" />
     <link href="~/lib/bootstrap-icon/font/bootstrap-icons-new.css" rel="stylesheet" />
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
 </head>
 <body>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    }
 
-    <div class="d-flex" id="wrapper">
+    @* <div class="d-flex" id="wrapper">
         <header>
-            <!-- Sidebar -->
-            <nav class="sidebar" id="sidebar">
+
+<nav class="sidebar" id="sidebar">
                 <div class="sidebar-header">
                     <a class="navbar-brand" href="#">
                         <span class="logo-mark">G</span>
@@ -25,12 +34,9 @@
                         <i class="bi bi-list"></i>
                     </button>
                 </div>
-                @{
-                    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-                    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-                }
 
-                <ul class="nav flex-column sidebar-nav">
+               
+<ul class="nav flex-column sidebar-nav">
                     <li class="nav-item">
                         <a class="nav-link text-dark @(string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
                            asp-area=""
@@ -48,12 +54,26 @@
                             <i class="bi bi-shield-lock"></i><span class="link-text">Privacy</span>
                         </a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle @(string.Equals(currentController, "Master", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "StateList", StringComparison.OrdinalIgnoreCase) ? "active" : "")" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-clipboard2-minus-fill"></i><span class="link-text">Masters</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" asp-area=""
+                                   asp-controller="Master"
+                                   asp-action="StateList"><i class="bi bi-building me-2"></i><span class="link-text">State</span></a>
+                            </li>
+
+                            
+                        </ul>
+                    </li>
                 </ul>
             </nav>
         </header>
         <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-        <!-- Main content -->
+      
         <div class="content-area" id="contentArea">
             <header class="topbar">
                 <button class="sidebar-toggle-mobile" id="sidebarToggleMobile" type="button" aria-label="Open sidebar">
@@ -72,19 +92,117 @@
         <div class="container">
             &copy; 2026 - GCMS.WEB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </footer> *@
 
-    @* <div class="container-fluid">
+   
+    <header>
+        <div class="top-bar d-md-flex justify-content-between align-items-center p-2">
+            <p class="text-center raj-sarkar-name mb-1 mb-md-0 text-light">राजस्थान सरकार | Government Of Rajasthan</p>
+
+            <p class="text-center mb-0 fs-6 fw-bold text-light">@Context.Session.GetString("CourtName") </p>
+
+            <div class="d-block d-md-flex justify-content-between align-items-center">
+                <p class="text-center mb-0 fs-6 fw-bold text-light me-2">@Context.Session.GetString("Username") </p>
+                <div class="mb-1 mb-md-0 text-center me-2 ">
+                    <button class="btn btn-sm btn-custom-color btn-font-size fw-bold"
+                            id="increase-font"
+                            aria-label="Increase font size">
+                        +A
+                    </button>
+                    <button class="btn btn-sm btn-custom-color btn-font-size fw-bold"
+                            id="default-font"
+                            aria-label="Default font size">
+                        A
+                    </button>
+                    <button class="btn btn-sm btn-custom-color btn-font-size fw-bold"
+                            id="decrease-font"
+                            aria-label="Decrease font size">
+                        -A
+                    </button>
+                </div>
+                <a href="https://ssotest.rajasthan.gov.in/signin"
+                  
+                   rel="noopener noreferrer"
+                   class="btn btn-skip-button btn-custom-color btn-font-size fw-bold mb-1 mb-md-0 text-center">
+
+                    Back To SSO
+                </a>
+
+               
+              
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="width:auto;height:60px; ">
+                    <img src="~/images/gcms_logo.png" />
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark @(string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="Index">
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark @(string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Privacy", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="Privacy">
+                                Privacy
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle @(string.Equals(currentController, "Master", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "StateList", StringComparison.OrdinalIgnoreCase) ? "active" : "")" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Masters
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-area=""
+                                       asp-controller="Master"
+                                       asp-action="StateList">State</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area=""
+                                       asp-controller="Master"
+                                       asp-action="DivisionList">Division</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area=""
+                                       asp-controller="Master"
+                                       asp-action="DistrictList">District</a>
+                                </li>
+                               
+
+                            
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+    </header>
+    @* <div class="container-fluid ">
         <div class="row">
-            <div class="col-12 py-3">
-                <p class="text-center">
+            <div class="col-12 py-3 bg-light box-shadow mb-3">
+                <p class="text-center mb-0">
                     <span class="fw-bold">
                         Court :
                     </span>
                     <span class="fw-bold fs-3">@Context.Session.GetString("CourtName")</span>
                 </p>
             </div>
-            <div class="col-6">
+            <div class="col-12">
                 <p class="text-end">
                     <span class="fw-bold">
                         Department :
@@ -94,44 +212,35 @@
             </div>
         </div>
     </div> *@
-    @* <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">GCMS</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
-    </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div>
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted bg-light">
         <div class="container">
             &copy; 2026 - GCMS.WEB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer> *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery.datatables.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/sidebarjavascript.js" asp-append-version="true"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

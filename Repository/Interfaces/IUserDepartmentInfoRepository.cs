@@ -1,4 +1,4 @@
-﻿namespace GCMS.Repository.Interfaces
+﻿namespace GCMS.Web.Repository.Interfaces
 {
     public interface IUserDepartmentInfoRepository
     {

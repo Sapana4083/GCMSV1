@@ -1,10 +1,14 @@
+using GCMS.Web.Repository;
+using GCMS.Web.Repository.Interfaces;
+using GCMS.Web.Services;
+using GCMS.Web.Services.Interfaces;
+using GCMS.WEB.Data;
+using GCMS.WEB.Repository;
+using GCMS.WEB.Repository.Interfaces;
+using GCMS.WEB.Services;
+using GCMS.WEB.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using GCMS.Data;
-using GCMS.Repository;
-using GCMS.Repository.Interfaces;
-using GCMS.Services;
-using GCMS.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,8 @@ options =>
         .GetConnectionString("RcsatOracle"));
 });
 
+
+
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -23,11 +29,19 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
 });
 
-builder.Services.AddScoped<IUsersRepository,
-    UserRepository>();
 
-builder.Services.AddScoped<IAuthService,
-    AuthService>();
+
+builder.Services.AddScoped<OracleConnectionFactory>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IStateRepository, StateRepository>();
+builder.Services.AddScoped<IStateService, StateService>();
+builder.Services.AddScoped<IDistrictRepository, DistrictRepository>();
+builder.Services.AddScoped<IDistrictService, DistrictService>();
+builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
+builder.Services.AddScoped<IDivisionService, DivisionService>();
+
+
 
 builder.Services.AddAuthentication(
     CookieAuthenticationDefaults.AuthenticationScheme)

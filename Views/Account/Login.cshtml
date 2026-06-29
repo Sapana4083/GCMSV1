@@ -1,4 +1,4 @@
-﻿@model GCMS.ViewModels.LoginViewModel
+﻿@model GCMS.WEB.ViewModels.LoginViewModel
 @{
     Layout = "~/Views/Shared/_LoginLayout.cshtml";
     ViewData["Title"] = "Login";
@@ -107,7 +107,7 @@
     <script>
         $(document).ready(function () {
 
-            $("#btnLogin").click(function () {debugger
+            $("#btnLogin").click(function () {
                
                 var userName = $("#UserName").val();
                 var password = $("#Password").val();

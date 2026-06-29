@@ -1,0 +1,349 @@
+﻿@model List<GCMS.WEB.Models.StateMaster>
+
+@{
+    ViewData["Title"] = "State Master";
+}
+
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container bg-light rounded-4 shadow px-4 py-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h3>State Master</h3>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnAddState">
+                Add State
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnPrint">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Data Table -->
+    <table id="tblState" class="table table-bordered table-striped">
+
+        <thead>
+            <tr>
+
+                <th>State Name</th>
+                <th>State Name (In Hindi)</th>
+                <th>State Code</th>
+                <th>Capital</th>
+                <th>Disable</th>
+                <th>Created By</th>
+                <th>Modified Date</th>
+
+                <th width="180">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@item.StateName</td>
+                    <td>@item.StateNameHindi</td>
+                    <td>@item.StateCode</td>
+                    <td>@item.Capital</td>
+                    <td>@(item.InActive == "F" ? "No" : "Yes")</td>
+                    <td>@item.CreatedBy</td>
+                    <td>@item.ModifiedOn</td>
+
+                    <td>
+                        <button type="button"
+                                class="btn btn-warning btn-sm edit"
+                                data-id="@item.StateMastId">
+                            Edit
+                        </button>
+                        @* <button type="button"
+                                class="btn btn-danger btn-sm delete"
+                                data-id="@item.StateMastId">
+                            Delete
+                        </button> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- ========== MODAL ========== -->
+<div class="modal fade" id="stateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">State Master</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <input type="hidden" id="StateMastId" />
+
+                <div class="mb-3">
+                    <label class="form-label">State Name<span class="text-danger">*</span></label>
+                    <input type="text" id="StateName" class="form-control" />
+                    <span class="text-danger" id="errStateName"></span>
+
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">State Name (In Hindi)<span class="text-danger">*</span></label>
+                    <input type="text" id="StateNameHindi" class="form-control" />
+                    <span class="text-danger" id="errStateName"></span>
+
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">State Code<span class="text-danger">*</span></label>
+                    <input type="text" id="StateCode" maxlength="2" class="form-control" />
+                    <span class="text-danger" id="errStateCode"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">State Capital<span class="text-danger">*</span></label>
+                    <input type="text" id="Capital" class="form-control" />
+                    <span class="text-danger" id="errCapital"></span>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                        <label class="form-check-label">Disable</label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-success" id="btnSave">
+                    Save
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== SCRIPTS ========== -->
+@section Scripts {
+    <script>
+
+                  // ── Init ─────────────────────────────────────────────
+            $(document).ready(function() {
+
+                $('#tblState').DataTable({
+
+                    dom: 'lBfrtip',
+
+                    responsive: true,
+                    autoWidth: false,
+
+                    pageLength: 10,
+
+                    lengthMenu: [
+                        [10, 25, 50, 100],
+                        [10, 25, 50, 100]
+                    ],
+
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+
+                    columnDefs: [{
+                            responsivePriority: 1,
+                            targets: 7
+                        },
+                        {
+                            responsivePriority: 2,
+                            targets: 0
+                        }
+                    ],
+
+                    buttons: [{
+                            extend: 'print',
+                            title: 'State Master'
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            title: 'State Master'
+                        }
+                    ]
+                });
+
+                $('.dt-buttons').hide();
+            });
+        $("#btnPrint").click(function() {
+
+            window.print();
+
+        });
+
+        $("#btnExcel").click(function() {
+
+            let table = document.getElementById("tblState");
+
+            let html = table.outerHTML;
+
+            let url = 'data:application/vnd.ms-excel,' +
+                encodeURIComponent(html);
+
+            let a = document.createElement('a');
+
+            a.href = url;
+            a.download = 'StateMaster.xls';
+
+            a.click();
+
+        });
+
+        var stateModal = new bootstrap.Modal(
+            document.getElementById('stateModal')
+        );
+
+        // ── Add State ─────────────────────────────────────────
+        $("#btnAddState").click(function() {
+            $("#StateMastId").val('');
+            $("#StateName").val('');
+            $("#StateNameHindi").val('');
+            $("#StateCode").val('');
+            $("#Capital").val('');
+            $("#errStateName").text('');
+            $("#errStateCode").text('');
+            $("#errCapital").text('');
+            $("#InActive").prop("checked", false);
+            stateModal.show();
+        });
+
+        // ── Edit State ────────────────────────────────────────
+        $(document).on("click", ".edit", function() {
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/Master/GetState',
+                type: 'GET',
+                data: {
+                    id: id
+                },
+                success: function(data) {
+
+                    console.log(data);
+
+                    if (!data) {
+                        alert("No data returned from server");
+                        return;
+                    }
+
+                    $("#StateMastId").val(data.stateMastId);
+                    $("#StateName").val(data.stateName);
+                    $("#StateNameHindi").val(data.stateNameHindi);
+                    $("#StateCode").val(data.stateCode);
+                    $("#Capital").val(data.capital);
+                         $("#InActive").prop(
+                          "checked",
+                          data.inActive === "T"
+                     );
+                    $("#errStateName").text('');
+                    $("#errStateCode").text('');
+                    $("#errCapital").text('');
+                    stateModal.show();
+                }
+            });
+        });
+
+        // ── Save State ────────────────────────────────────────
+        $("#btnSave").click(function() {
+                let isValid = true;
+
+        $("#errStateName").text('');
+        $("#errStateCode").text('');
+        $("#errCapital").text('');
+
+        if ($("#StateName").val().trim() === "") {
+            $("#errStateName").text("State Name is required");
+            isValid = false;
+        }
+
+        if ($("#StateCode").val().trim() === "") {
+            $("#errStateCode").text("State Code is required");
+            isValid = false;
+        }
+
+        if ($("#Capital").val().trim() === "") {
+            $("#errCapital").text("Capital is required");
+            isValid = false;
+        }
+
+        if (!isValid)
+            return;
+
+            
+            $.ajax({
+                url: '/Master/SaveState',
+                type: 'POST',
+                data: {
+                    StateMastId: $("#StateMastId").val(),
+                    StateName: $("#StateName").val(),
+                    StateNameHindi: $("#StateNameHindi").val(),
+                    StateCode: $("#StateCode").val(),
+                    Capital: $("#Capital").val(),
+                     InActive: $("#InActive").is(":checked") ? "T" : "F"
+                },
+                success: function(r) {
+                    if (r.success) {
+                        stateModal.hide();
+                        location.reload();
+                    } else {
+                        alert(r.message);
+                    }
+                },
+                error: function() {
+                    alert("Save Failed");
+                }
+            });
+        });
+
+        // ── Delete State ──────────────────────────────────────
+        $(document).on("click", ".delete", function() {
+            if (!confirm("Are you sure want to delete?")) return;
+
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/Master/DeleteState',
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                success: function(r) {
+                    if (r.success) {
+                        location.reload();
+                    }
+                },
+                error: function() {
+                    alert("Delete Failed");
+                }
+            });
+        });
+
+
+    </script>
+}

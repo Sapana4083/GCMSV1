@@ -1,0 +1,236 @@
+﻿/* ============================================================
+   CSS MEDIA QUERIES — ALL SCREEN SIZES (Min to Max)
+   ============================================================ */
+
+
+/* ----------------------------------------------------------
+   1. EXTRA SMALL — Tiny phones (< 320px)
+   ---------------------------------------------------------- */
+@media only screen and (max-width: 319px) {
+    /* Ultra-small devices (old feature phones, very small screens) */
+}
+
+
+/* ----------------------------------------------------------
+   2. SMALL — Mobile phones (320px – 479px)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 320px) and (max-width: 479px) {
+    /* Small smartphones (iPhone SE, Galaxy S series small) */
+}
+
+
+/* ----------------------------------------------------------
+   3. MEDIUM-SMALL — Large phones (480px – 575px)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 480px) and (max-width: 575px) {
+    /* Large smartphones (iPhone Plus, Pixel XL) */
+}
+
+
+/* ----------------------------------------------------------
+   4. SMALL TABLET — Phablets & small tablets (576px – 767px)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 576px) and (max-width: 767px) {
+    /* Phablets, small tablets in portrait (Bootstrap sm breakpoint) */
+}
+
+
+/* ----------------------------------------------------------
+   5. TABLET — Tablets portrait (768px – 991px)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    
+}
+
+
+/* ----------------------------------------------------------
+   6. LARGE TABLET / SMALL LAPTOP — (992px – 1199px)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+    /* iPad Pro landscape, small laptops (Bootstrap lg breakpoint) */
+}
+
+
+/* ----------------------------------------------------------
+   7. LAPTOP / DESKTOP — Standard screens (1200px – 1399px)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {
+    /* Standard laptops and desktops (Bootstrap xl breakpoint) */
+}
+
+
+/* ----------------------------------------------------------
+   8. LARGE DESKTOP — Wide screens (1400px – 1919px)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 1400px) and (max-width: 1919px) {
+    /* Large desktops, wide monitors (Bootstrap xxl breakpoint) */
+}
+
+
+/* ----------------------------------------------------------
+   9. EXTRA LARGE — Full HD & 2K monitors (1920px – 2559px)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 1920px) and (max-width: 2559px) {
+    /* 1080p / Full HD and 2K (2560×1440) monitors */
+}
+
+
+/* ----------------------------------------------------------
+   10. ULTRA WIDE — 4K and beyond (2560px+)
+   ---------------------------------------------------------- */
+@media only screen and (min-width: 2560px) {
+    /* 4K, 5K, ultrawide monitors */
+}
+
+
+/* ============================================================
+   SHORTHAND HELPERS — Mobile-First (min-width only)
+   ============================================================ */
+
+@media (min-width: 320px) { /* xs and up  */
+}
+
+@media (min-width: 480px) { /* sm and up  */
+}
+
+@media (min-width: 576px) { /* sm+ and up */
+}
+
+@media (min-width: 768px) { 
+    /* md and up  */
+
+}
+
+@media (min-width: 992px) { /* lg and up  */
+}
+
+@media (min-width: 1200px) { /* xl and up  */
+}
+
+@media (min-width: 1400px) { /* xxl and up */
+}
+
+@media (min-width: 1920px) { /* fhd and up */
+}
+
+@media (min-width: 2560px) { /* 4k and up  */
+}
+
+
+/* ============================================================
+   SHORTHAND HELPERS — Desktop-First (max-width only)
+   ============================================================ */
+
+@media (max-width: 319px) { /* xs only       */
+}
+
+@media (max-width: 479px) { /* sm and below  */
+}
+
+@media (max-width: 575px) { /* sm- and below */
+}
+
+@media (max-width: 767px) { 
+    /* md and below  */
+    
+}
+
+@media (max-width: 991px) { /* lg and below  */
+}
+
+@media (max-width: 1199px) { /* xl and below  */
+}
+
+@media (max-width: 1399px) { /* xxl and below */
+}
+
+@media (max-width: 1919px) { /* fhd and below */
+}
+
+
+/* ============================================================
+   ORIENTATION QUERIES
+   ============================================================ */
+
+@media (orientation: portrait) { /* Portrait mode  */
+}
+
+@media (orientation: landscape) { /* Landscape mode */
+}
+
+/* Portrait mobile only */
+@media (max-width: 767px) and (orientation: portrait) {
+}
+
+/* Landscape mobile only */
+@media (max-width: 767px) and (orientation: landscape) {
+}
+
+
+/* ============================================================
+   HIGH-RESOLUTION / RETINA DISPLAYS
+   ============================================================ */
+
+/* 1.5x+ density (high-DPI) */
+@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+}
+
+/* 2x density (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+}
+
+/* 3x density (Super Retina / AMOLED) */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
+}
+
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+
+@media print {
+    /* Styles for printing — hide nav, adjust colors, etc. */
+}
+
+
+/* ============================================================
+   ACCESSIBILITY & PREFERENCE QUERIES
+   ============================================================ */
+
+/* User prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+}
+
+/* User prefers dark mode */
+@media (prefers-color-scheme: dark) {
+}
+
+/* User prefers light mode */
+@media (prefers-color-scheme: light) {
+}
+
+/* User prefers high contrast */
+@media (prefers-contrast: high) {
+}
+
+/* User prefers less data (Save-Data) */
+@media (prefers-reduced-data: reduce) {
+}
+
+
+/* ============================================================
+   BREAKPOINT REFERENCE TABLE
+   ============================================================
+   Name          | Min     | Max     | Typical Device
+   --------------|---------|---------|----------------------
+   xs (tiny)     |   0px   | 319px   | Old feature phones
+   xs (small)    | 320px   | 479px   | Small smartphones
+   sm            | 480px   | 575px   | Large smartphones
+   sm+           | 576px   | 767px   | Phablets / Bootstrap sm
+   md            | 768px   | 991px   | Tablets portrait
+   lg            | 992px   | 1199px  | Small laptops
+   xl            | 1200px  | 1399px  | Standard desktops
+   xxl           | 1400px  | 1919px  | Large desktops
+   fhd           | 1920px  | 2559px  | Full HD / 2K monitors
+   4k            | 2560px  |  ∞      | 4K / 5K / Ultrawide
+   ============================================================ */

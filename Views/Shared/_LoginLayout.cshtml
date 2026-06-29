@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GCMS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/GCMS.WEB.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap-icon/font/bootstrap-icons-new.css" rel="stylesheet" />
+</head>
+
+<body>
+    <header></header>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-muted bg-light">
+        <div class="container">
+            &copy; 2026 - GCMS
+        </div>
+    </footer>
+    @if (TempData["Error"] != null)
+    {
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+
+            <div id="loginToast"
+                 class="toast text-bg-danger"
+                 role="alert">
+
+                <div class="toast-header">
+                    <strong class="me-auto">Login Failed</strong>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="toast">
+                    </button>
+                </div>
+
+                <div class="toast-body">
+                    @TempData["Error"]
+                </div>
+
+            </div>
+
+        </div>
+    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

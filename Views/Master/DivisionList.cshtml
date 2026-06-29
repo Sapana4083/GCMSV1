@@ -1,0 +1,356 @@
+﻿@model List<GCMS.WEB.Models.DivisionMaster>
+
+@{
+    ViewData["Title"] = "Division Master";
+    var srNo = 1;
+    var states = ViewBag.StateList as List<GCMS.WEB.Models.StateMaster>;
+}
+
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container bg-light rounded-4 shadow px-4 py-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h3>Division Master</h3>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnAddDivision">
+                Add Division
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnPrint">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Data Table -->
+    <table id="tblDivision" class="table table-bordered table-striped">
+
+        <thead>
+            <tr>
+                <td width="20">S. No.</td>
+                <th>Division Name</th>
+                <th>Division Name (In Hindi)</th>
+                <th>State</th>
+                <th>Disable</th>
+                <th>Created By</th>
+                <th>Modified Date</th>
+                <th width="60">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@srNo</td>
+                    <td>@item.DivisionName</td>
+                    <td>@item.DivisionNameHindi</td>
+                    <td>
+                        @{
+                            var stateName = states?
+                                .FirstOrDefault(x =>
+                                    x.StateMastId.ToString() == item.StateName)
+                                ?.StateName;
+                        }
+
+                        @stateName
+                    </td>
+                    <td>@(item.InActive == "F" ? "No" : "Yes")</td>
+                    <td>@item.CreatedBy</td>
+                    <td>@item.ModifiedOn</td>
+
+                    <td>
+                        <button type="button"
+                                class="btn btn-warning btn-sm edit"
+                                data-id="@item.DivisionMastId">
+                            Edit
+                        </button>
+                        @* <button type="button"
+                                class="btn btn-danger btn-sm delete"
+                                data-id="@item.DivisionMastId">
+                            Delete
+                        </button> *@
+                    </td>
+                </tr>
+
+                srNo++;
+            }
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- ========== MODAL ========== -->
+<div class="modal fade" id="DivisionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Division Master</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <input type="hidden" id="DivisionMastId" />
+
+                <div class="mb-3">
+                    <label class="form-label">Division Name<span class="text-danger">*</span></label>
+                    <input type="text" id="DivisionName" class="form-control" />
+                    <span class="text-danger" id="errDivisionName"></span>
+
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Division Name (In Hindi)<span class="text-danger">*</span></label>
+                    <input type="text" id="DivisionNameHindi" class="form-control" />
+                    <span class="text-danger" id="errDivisionName"></span>
+
+                </div>
+
+                <div class="mb-3">
+                    <label>State</label>
+
+                    <select id="StateName"
+                            class="form-select">
+
+                        <option value="">
+                            Select State
+                        </option>
+
+                        @foreach (var state in ViewBag.StateList)
+                        {
+                            <option value="@state.StateMastId">
+                                @state.StateName
+                            </option>
+                        }
+
+                    </select>
+                    <span id="errState" class="text-danger"></span>
+                </div>
+
+                
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                        <label class="form-check-label">Disable</label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-success" id="btnSave">
+                    Save
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== SCRIPTS ========== -->
+@section Scripts {
+    <script>
+
+                  // ── Init ─────────────────────────────────────────────
+            $(document).ready(function() {
+
+                $('#tblDivision').DataTable({
+
+                    dom: 'lBfrtip',
+
+                responsive: true,
+                autoWidth: false,
+
+                pageLength: 10,
+
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+
+                columnDefs: [{
+                        responsivePriority: 1,
+                        targets: 3
+                    },
+                    {
+                        responsivePriority: 2,
+                        targets: 0
+                    }
+                ],
+
+                    buttons: [{
+                            extend: 'print',
+                            title: 'Division Master'
+                        },
+                        {
+                            extend: 'excelHtml5',
+                            title: 'Division Master'
+                        }
+                    ]
+                });
+
+                $('.dt-buttons').hide();
+            });
+        $("#btnPrint").click(function() {
+
+            window.print();
+
+        });
+
+        $("#btnExcel").click(function() {
+
+            let table = document.getElementById("tblDivision");
+
+            let html = table.outerHTML;
+
+            let url = 'data:application/vnd.ms-excel,' +
+                encodeURIComponent(html);
+
+            let a = document.createElement('a');
+
+            a.href = url;
+            a.download = 'DivisionMaster.xls';
+
+            a.click();
+
+        });
+
+        var DivisionModal = new bootstrap.Modal(
+            document.getElementById('DivisionModal')
+        );
+
+        // ── Add Division ─────────────────────────────────────────
+        $("#btnAddDivision").click(function() {
+            $("#DivisionMastId").val('');
+            $("#DivisionName").val('');
+            $("#DivisionNameHindi").val('');
+            $("#DivisionCode").val('');
+            $("#errDivisionName").text('');
+            $("#errDivisionCode").text('');
+            $("#InActive").prop("checked", false);
+            DivisionModal.show();
+        });
+
+        // ── Edit Division ────────────────────────────────────────
+        $(document).on("click", ".edit", function() {
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/Master/GetDivision',
+                type: 'GET',
+                data: {
+                    id: id
+                },
+                success: function(data) {
+
+                    console.log(data);
+
+                    if (!data) {
+                        alert("No data returned from server");
+                        return;
+                    }
+
+                    $("#DivisionMastId").val(data.divisionMastId);
+                    $("#DivisionName").val(data.divisionName);
+                    $("#DivisionNameHindi").val(data.divisionNameHindi);
+                    $("#DivisionCode").val(data.divisionCode);
+                    $("#StateName").val(data.stateName);
+                    $("#InActive").val(data.inActive);
+                   
+                    $("#errDivisionName").text('');
+                    $("#errDivisionCode").text('');
+                    $("#errCapital").text('');
+                    DivisionModal.show();
+                }
+            });
+        });
+
+        // ── Save Division ────────────────────────────────────────
+        $("#btnSave").click(function() {
+        let isValid = true;
+
+        $("#errDivisionName").text('');
+        $("#errDivisionCode").text('');
+
+        if ($("#DivisionName").val().trim() === "") {
+            $("#errDivisionName").text("Division Name is required");
+            isValid = false;
+        }
+
+        if (!isValid)
+            return;
+
+            
+            $.ajax({
+                url: '/Master/SaveDivision',
+                type: 'POST',
+                data: {
+                    DivisionMastId: $("#DivisionMastId").val(),
+                    DivisionName: $("#DivisionName").val(),
+                    DivisionNameHindi: $("#DivisionNameHindi").val(),
+                    DivisionCode: $("#DivisionCode").val(),
+                    StateName: $("#StateName").val(),
+                    Capital: $("#Capital").val(),
+                    InActive: $("#InActive").is(":checked") ? "T" : "F"
+                },
+                success: function(r) {
+                    if (r.success) {
+                        DivisionModal.hide();
+                        location.reload();
+                    } else {
+                        alert(r.message);
+                    }
+                },
+                error: function() {
+                    alert("Save Failed");
+                }
+            });
+        });
+
+        // ── Delete Division ──────────────────────────────────────
+        $(document).on("click", ".delete", function() {
+            if (!confirm("Are you sure want to delete?")) return;
+
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/Master/DeleteDivision',
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                success: function(r) {
+                    if (r.success) {
+                        location.reload();
+                    }
+                },
+                error: function() {
+                    alert("Delete Failed");
+                }
+            });
+        });
+
+
+    </script>
+}

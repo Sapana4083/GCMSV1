@@ -1,14 +1,14 @@
-﻿using GCMS.WEB.Models;
-using GCMS.WEB.Repository.Interfaces;
-using GCMS.WEB.Services.Interfaces;
-using GCMS.WEB.ViewModels;
+﻿using GCMS.Models;
+using GCMS.Repository.Interfaces;
+using GCMS.Services.Interfaces;
+using GCMS.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
 
-namespace GCMS.WEB.Controllers
+namespace GCMS.Controllers
 {
     public class AccountController : Controller
     {

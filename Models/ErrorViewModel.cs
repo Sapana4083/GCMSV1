@@ -1,4 +1,4 @@
-namespace GCMS.WEB.Models
+namespace GCMS.Models
 {
     public class ErrorViewModel
     {

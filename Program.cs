@@ -1,12 +1,12 @@
-using GCMS.Web.Repository;
-using GCMS.Web.Repository.Interfaces;
-using GCMS.Web.Services;
-using GCMS.Web.Services.Interfaces;
-using GCMS.WEB.Data;
-using GCMS.WEB.Repository;
-using GCMS.WEB.Repository.Interfaces;
-using GCMS.WEB.Services;
-using GCMS.WEB.Services.Interfaces;
+using GCMS.Repository;
+using GCMS.Repository.Interfaces;
+using GCMS.Services;
+using GCMS.Services.Interfaces;
+using GCMS.Data;
+using GCMS.Repository;
+using GCMS.Repository.Interfaces;
+using GCMS.Services;
+using GCMS.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 

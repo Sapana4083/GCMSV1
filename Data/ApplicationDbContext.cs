@@ -1,10 +1,10 @@
 ﻿
-using GCMS.Web.Models.Entities;
-using GCMS.WEB.Models;
+using GCMS.Models.Entities;
+using GCMS.Models;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace GCMS.WEB.Data
+namespace GCMS.Data
 {
     public class ApplicationDbContext : DbContext
     {

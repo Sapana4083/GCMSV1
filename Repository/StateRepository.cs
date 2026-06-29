@@ -1,12 +1,12 @@
-﻿using GCMS.Web.Repository.Interfaces;
-using GCMS.WEB.Data;
-using GCMS.WEB.Models;
+﻿using GCMS.Repository.Interfaces;
+using GCMS.Data;
+using GCMS.Models;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
 using Oracle.ManagedDataAccess.Client;
 using System.Data;
 
-namespace GCMS.Web.Repository
+namespace GCMS.Repository
 {
     public class StateRepository : IStateRepository
     {

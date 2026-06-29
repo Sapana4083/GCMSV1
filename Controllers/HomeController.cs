@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using GCMS.WEB.Models;
+using GCMS.Models;
 using System.Diagnostics;
 
-namespace GCMS.WEB.Controllers
+namespace GCMS.Controllers
 {
     public class HomeController : Controller
     {

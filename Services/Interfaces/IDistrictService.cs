@@ -1,6 +1,6 @@
-﻿using GCMS.WEB.Models;
+﻿using GCMS.Models;
 
-namespace GCMS.Web.Services.Interfaces
+namespace GCMS.Services.Interfaces
 {
     public interface IDistrictService
     {

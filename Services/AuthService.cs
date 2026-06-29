@@ -1,9 +1,9 @@
 ﻿
-using GCMS.Web.Services;
-using GCMS.WEB.Repository.Interfaces;
-using GCMS.WEB.Services.Interfaces;
+using GCMS.Services;
+using GCMS.Repository.Interfaces;
+using GCMS.Services.Interfaces;
 
-namespace GCMS.WEB.Services
+namespace GCMS.Services
 {
     public class AuthService : IAuthService
     {

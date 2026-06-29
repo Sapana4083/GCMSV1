@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GCMS.WEB.Models
+namespace GCMS.Models
 {
     [Table("DIVISION_MAST")]
     public class DivisionMaster

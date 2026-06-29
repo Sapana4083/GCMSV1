@@ -1,7 +1,7 @@
-﻿using GCMS.Web.Models.DTOs;
-using GCMS.WEB.Models;
+﻿using GCMS.Models.DTOs;
+using GCMS.Models;
 
-namespace GCMS.WEB.Repository.Interfaces
+namespace GCMS.Repository.Interfaces
 {
     public interface IUsersRepository
     {

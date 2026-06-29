@@ -1,4 +1,4 @@
-﻿namespace GCMS.Web.Models.DTOs
+﻿namespace GCMS.Models.DTOs
 {
     public class UserDepartmentInfoDTO
     {

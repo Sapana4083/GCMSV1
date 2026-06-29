@@ -1,6 +1,6 @@
-﻿using GCMS.WEB.Models;
+﻿using GCMS.Models;
 
-namespace GCMS.Web.Repository.Interfaces
+namespace GCMS.Repository.Interfaces
 {
     public interface IStateRepository
     {

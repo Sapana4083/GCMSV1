@@ -1,11 +1,11 @@
-﻿using GCMS.Web.Models.DTOs;
-using GCMS.WEB.Data;
-using GCMS.WEB.Models;
-using GCMS.WEB.Repository.Interfaces;
+﻿using GCMS.Models.DTOs;
+using GCMS.Data;
+using GCMS.Models;
+using GCMS.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-namespace GCMS.WEB.Repository
+namespace GCMS.Repository
 {
     public class UsersRepository : IUsersRepository
     {

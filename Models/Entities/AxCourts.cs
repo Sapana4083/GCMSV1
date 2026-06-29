@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GCMS.Web.Models.Entities;
+namespace GCMS.Models.Entities;
 
 [Table("AXCOURTS")]
 public class AxCourts

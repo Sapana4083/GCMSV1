@@ -1,4 +1,4 @@
-﻿using GCMS.WEB.Models;
+﻿using GCMS.Models;
 
 public interface IDistrictRepository
 {

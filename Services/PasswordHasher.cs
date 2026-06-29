@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace GCMS.Web.Services
+namespace GCMS.Services
 {
     public static class PasswordHasher
     {

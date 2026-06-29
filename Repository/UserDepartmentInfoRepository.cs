@@ -1,6 +1,6 @@
-﻿using GCMS.Web.Repository.Interfaces;
+﻿using GCMS.Repository.Interfaces;
 
-namespace GCMS.Web.Repository
+namespace GCMS.Repository
 {
     public class UserDepartmentInfoRepository : IUserDepartmentInfoRepository
     {

@@ -1,12 +1,12 @@
-﻿using GCMS.Web.Models;
-using GCMS.Web.Services;
-using GCMS.Web.Services.Interfaces;
-using GCMS.WEB.Data;
-using GCMS.WEB.Models;
+﻿using GCMS.Models;
+using GCMS.Services;
+using GCMS.Services.Interfaces;
+using GCMS.Data;
+using GCMS.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace GCMS.Web.Controllers
+namespace GCMS.Controllers
 {
     public class MasterController : Controller
     {

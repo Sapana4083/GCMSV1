@@ -1,8 +1,8 @@
-﻿using GCMS.Web.Repository.Interfaces;
-using GCMS.Web.Services.Interfaces;
-using GCMS.WEB.Models;
+﻿using GCMS.Repository.Interfaces;
+using GCMS.Services.Interfaces;
+using GCMS.Models;
 
-namespace GCMS.Web.Services
+namespace GCMS.Services
 {
     public class StateService : IStateService
     {

@@ -1,7 +1,7 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using System.Data;
 
-namespace GCMS.WEB.Data
+namespace GCMS.Data
 {
     public class OracleConnectionFactory
     {

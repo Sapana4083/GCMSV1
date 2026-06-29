@@ -1,4 +1,4 @@
-﻿namespace GCMS.Web.Models.Session
+﻿namespace GCMS.Models.Session
 {
     public static class SessionKeys
     {

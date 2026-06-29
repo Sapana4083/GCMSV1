@@ -1,22 +1,264 @@
+@font-face {
+    font-family: 'poppins-regular';
+    src: url('../lib/font/poppins/poppins-regular.ttf') format('truetype');
+}
+
+*, *::after, *::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.2);
+    z-index: 99999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.d-none {
+    display: none !important;
+}
+
+p {
+    overflow-wrap: break-word;
+}
+
 html {
-  font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    font-family: 'poppins-regular', sans-serif; /* Added fallback font */
+    font-size: clamp(14px, 2vw, 17px);
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    margin-bottom: 60px;
+    background-color: #fff;
+    -webkit-text-size-adjust: 100%;
+    background-image: url('../images/white_background-01.jpg');
+    background-repeat: repeat;
 }
+
+
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder { /* Split selectors onto separate lines */
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder { /* Split selectors onto separate lines */
+    text-align: start;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus { /* Split selectors onto separate lines */
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.btn-font-size {
+    font-size: 12px;
+}
+
+.carousal-img-size { /* Consider fixing typo: 'carousal' → 'carousel' */
+    height: 80vh;
+}
+
+.container-footer {
+    height: 0; /* Removed invalid unit: '0vh' → '0' (units unnecessary on zero values) */
+}
+
+.btn-custom-color {
+    background-color: #c5c5c5;
+}
+/* ── Header ─────────────────────────────────────────────── */
+/* Top Bar */
+.top-bar {
+    background-color: #4967f8;
+}
+
+/*.nav-link {
+    font-size: 1.1rem;
+    font-weight:500;
+}*/
+
+.nav-link:hover { /* Removed incorrect nesting — plain CSS doesn't support '&' nesting here */
+    background-color: #c5c5c5;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.raj-sarkar-name {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.btn-custum-color { /* Consider fixing typo: 'custum' → 'custom' */
+    background-color: #c0c3f6; /* Added missing semicolon */
+}
+
+.btn-skip-button:hover {
+    background-color: #c0c3f6; /* Added missing semicolon */
+}
+
+.btn-skip-button:focus {
+    outline: none;
+    background-color: #c0c3f6; /* Added missing semicolon */
+}
+
+.logo-size-header {
+    width: auto;
+    height: 60px;
+}
+
+.minister-img-header {
+    width: auto;
+    height: 100px;
+}
+
+.court-logos {
+    width: 200px;
+    height: 200px;
+}
+/* ── Owl Carousel ────────────────────────────────────────── */
+
+img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.owl-nav button {
+    position: absolute;
+    top: 50%;
+    background-color: #000;
+    color: #fff;
+    margin: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+    .owl-nav button.owl-prev { /* Removed incorrect nesting */
+        left: 0;
+    }
+
+    .owl-nav button.owl-next { /* Removed incorrect nesting */
+        right: 0;
+    }
+
+.owl-dots {
+    text-align: center;
+    padding-top: 15px;
+}
+
+    .owl-dots button.owl-dot { /* Removed incorrect nesting */
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        background: #ccc;
+        margin: 0 3px;
+    }
+
+        .owl-dots button.owl-dot.active { /* Removed incorrect nesting */
+            background-color: #000;
+        }
+
+        .owl-dots button.owl-dot:focus { /* Removed incorrect nesting */
+            outline: none;
+        }
+
+.owl-nav button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.38) !important;
+}
+
+    .owl-nav button:focus {
+        outline: none;
+    }
+
+.owl-item {
+    height: 80px !important;
+    display: flex;
+}
+
+/* ── Media Queries ───────────────────────────────────────── */
+
+@media (max-width: 767.9px) {
+    .middle-bar {
+        display: none;
+    }
+
+    .carousal-img-size {
+        height: 300px;
+    }
+}
+
+@media only screen and (min-width: 576px) and (max-width: 991.9px) {
+    .minister-img-header {
+        width: auto;
+        height: 50px;
+    }
+}
+
+/*Board Of Revenue CSS*/
+
+.borLogoPage {
+    width: auto;
+    height: 100px;
+}
+
+.nav-btn {
+    width: 50%;
+    padding: 12px;
+    border: none;
+    background: white;
+    color: black;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+    .nav-btn.active {
+        border-bottom: 3px solid #0d6efd;
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+.sub-btn {
+    padding: 8px 18px;
+    border: none;
+    background: #f0f0f0;
+    color: #333;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+    .sub-btn.active-sub {
+        background: #0d6efd;
+        color: white;
+        font-weight: 600;
+    }

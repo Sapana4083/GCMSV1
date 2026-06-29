@@ -3,10 +3,6 @@ using GCMS.Repository.Interfaces;
 using GCMS.Services;
 using GCMS.Services.Interfaces;
 using GCMS.Data;
-using GCMS.Repository;
-using GCMS.Repository.Interfaces;
-using GCMS.Services;
-using GCMS.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 

@@ -134,6 +134,10 @@ namespace GCMS.Repository
             cmd.Parameters.Add("p_state_name", OracleDbType.Varchar2).Value =
                 model.StateName ?? (object)DBNull.Value;
 
+            // Required even though we don't use it here — no default in the proc signature
+            var outCursorParam = cmd.Parameters.Add("out_cursor", OracleDbType.RefCursor);
+            outCursorParam.Direction = ParameterDirection.Output;
+
             cmd.ExecuteNonQuery();
 
             await Task.CompletedTask;
@@ -166,8 +170,13 @@ namespace GCMS.Repository
 
             cmd.Parameters.Add("p_inactive", OracleDbType.Varchar2).Value =
                 model.InActive ?? "F";
+
             cmd.Parameters.Add("p_username", OracleDbType.Varchar2).Value =
-               model.UserName ?? "SYSTEM";
+                model.UserName ?? "SYSTEM";
+
+            // Required — no default value in the proc signature
+            var outCursorParam = cmd.Parameters.Add("out_cursor", OracleDbType.RefCursor);
+            outCursorParam.Direction = ParameterDirection.Output;
 
             cmd.ExecuteNonQuery();
 

@@ -41,4 +41,6 @@ public class DistrictMaster
 
     [Column("CREATEDBY")]
     public string? CreatedBy { get; set; }
+
+   
 }

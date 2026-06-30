@@ -121,7 +121,6 @@
                     </button>
                 </div>
                 <a href="https://ssotest.rajasthan.gov.in/signin"
-                  
                    rel="noopener noreferrer"
                    class="btn btn-skip-button btn-custom-color btn-font-size fw-bold mb-1 mb-md-0 text-center">
 
@@ -132,7 +131,7 @@
               
             </div>
         </div>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white mb-1">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="width:auto;height:60px; ">
                     <img src="~/images/gcms_logo.png" />
@@ -160,31 +159,54 @@
                                 Privacy
                             </a>
                         </li>
+
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle @(string.Equals(currentController, "Master", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "StateList", StringComparison.OrdinalIgnoreCase) ? "active" : "")" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle @(string.Equals(currentController, "Master", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
+                               href="#" id="mastersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Masters
                             </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" asp-area=""
-                                       asp-controller="Master"
-                                       asp-action="StateList">State</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area=""
-                                       asp-controller="Master"
-                                       asp-action="DivisionList">Division</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" asp-area=""
-                                       asp-controller="Master"
-                                       asp-action="DistrictList">District</a>
-                                </li>
-                               
 
+                            <ul class="dropdown-menu" aria-labelledby="mastersDropdown">
+                                <li class="dropdown-submenu position-relative">
+                                    <a class="dropdown-item dropdown-toggle" href="#" id="commonMasterDropdown">
+                                        Common Master
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="commonMasterDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-area=""
+                                               asp-controller="Master"
+                                               asp-action="StateList">State</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area=""
+                                               asp-controller="Master"
+                                               asp-action="DivisionList">Division</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area=""
+                                               asp-controller="Master"
+                                               asp-action="DistrictList">District</a>
+                                        </li>
+                                    </ul>
+                                </li>
                             
+                                <li class="dropdown-submenu position-relative">
+                                    <a class="dropdown-item dropdown-toggle" href="#" id="commonMasterDropdown">
+                                        User Master
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="commonMasterDropdown">
+                                        <li>
+                                            <a class="dropdown-item" 
+                                               asp-area=""
+                                               asp-controller="usermaster"
+                                               asp-action="userlogin">Login User</a>
+                                        </li>
+                                       
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -213,7 +235,7 @@
         </div>
     </div> *@
 
-   <div>
+    <div>
         <main role="main">
             @RenderBody();
         </main>
@@ -223,7 +245,8 @@
         <div class="container">
             &copy; 2026 - GCMS.WEB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer> 
+    </footer>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/jquery.datatables.min.js" asp-append-version="true"></script>

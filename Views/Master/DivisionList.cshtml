@@ -276,8 +276,7 @@
                     $("#DivisionNameHindi").val(data.divisionNameHindi);
                     $("#DivisionCode").val(data.divisionCode);
                     $("#StateName").val(data.stateName);
-                    $("#InActive").val(data.inActive);
-                   
+                    $("#InActive").prop("checked", data.inActive === "T");
                     $("#errDivisionName").text('');
                     $("#errDivisionCode").text('');
                     $("#errCapital").text('');

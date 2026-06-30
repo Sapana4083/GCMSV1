@@ -19,14 +19,11 @@ namespace GCMS.Repository
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<List<DistrictMaster>> GetAllAsync(
-            int pageNo,
-            int rowCnt)
+        public async Task<List<DistrictMaster>> GetAllAsync(int pageNo, int rowCnt)
         {
             var districts = new List<DistrictMaster>();
 
             using var conn = _connectionFactory.CreateConnection();
-
             conn.Open();
 
             using var cmd = (OracleCommand)conn.CreateCommand();
@@ -35,17 +32,11 @@ namespace GCMS.Repository
             cmd.CommandText = "proc_dist_mast";
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.Add("v_input", OracleDbType.Int32)
-               .Value = 5;
+            cmd.Parameters.Add("v_input", OracleDbType.Int32).Value = 5;
+            cmd.Parameters.Add("p_row_cnt", OracleDbType.Int32).Value = rowCnt;
+            cmd.Parameters.Add("p_page_no", OracleDbType.Int32).Value = pageNo;
 
-            cmd.Parameters.Add("p_row_cnt", OracleDbType.Int32)
-               .Value = rowCnt;
-
-            cmd.Parameters.Add("p_page_no", OracleDbType.Int32)
-               .Value = pageNo;
-
-            cmd.Parameters.Add("out_cursor",
-                OracleDbType.RefCursor)
+            cmd.Parameters.Add("out_cursor", OracleDbType.RefCursor)
                 .Direction = ParameterDirection.Output;
 
             using var reader = cmd.ExecuteReader();
@@ -54,14 +45,9 @@ namespace GCMS.Repository
             {
                 districts.Add(new DistrictMaster
                 {
-                    DistrictMastId =
-                        Convert.ToInt64(reader["DISTRICT_MASTID"]),
-
-                    DistrictName =
-                        reader["DISTRICT_NAME"]?.ToString(),
-
-                    DistrictCode =
-                        reader["DISTRICT_CODE"]?.ToString(),
+                    DistrictMastId = Convert.ToInt64(reader["DISTRICT_MASTID"]),
+                    DistrictName = reader["DISTRICT_NAME"]?.ToString(),
+                    DistrictCode = reader["DISTRICT_CODE"]?.ToString(),
 
                     StateName =
                         reader["STATE_NAME"] == DBNull.Value
@@ -73,17 +59,10 @@ namespace GCMS.Repository
                         ? null
                         : Convert.ToInt64(reader["DIVISION_NAME"]),
 
-                    DistAbr =
-                        reader["DIST_ABR"]?.ToString(),
-
-                    DistrictNameEmg =
-                        reader["DISTRICT_NAME_EMG"]?.ToString(),
-
-                    DistNameHinEng =
-                        reader["DIST_NAME_HINENG"]?.ToString(),
-
-                    InActive =
-                        reader["INACTIVE"]?.ToString()
+                    DistAbr = reader["DIST_ABR"]?.ToString(),
+                    DistrictNameEmg = reader["DISTRICT_NAME_ENG"]?.ToString(), // fixed: ENG not EMG
+                    DistNameHinEng = reader["DIST_NAME_HINENG"]?.ToString(),
+                    InActive = reader["INACTIVE"]?.ToString()
                 });
             }
 
@@ -184,11 +163,18 @@ namespace GCMS.Repository
             cmd.Parameters.Add("p_district_code", OracleDbType.Varchar2)
                .Value = model.DistrictCode;
 
-            cmd.Parameters.Add("p_state_name", OracleDbType.Int64)
-               .Value = model.StateName;
+            cmd.Parameters.Add("p_state_name", OracleDbType.Int64).Value =
+     model.StateName.HasValue ? model.StateName.Value : (object)DBNull.Value;
 
-            cmd.Parameters.Add("p_division_name", OracleDbType.Int64)
-               .Value = model.DivisionName;
+            cmd.Parameters.Add("p_division_name", OracleDbType.Int64).Value =
+                model.DivisionName.HasValue ? model.DivisionName.Value : (object)DBNull.Value;
+            cmd.Parameters.Add("p_dist_name_eng", OracleDbType.Varchar2)
+                .Value = model.DistrictNameEmg ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_dist_name_hineng", OracleDbType.Varchar2)
+                .Value = model.DistNameHinEng ?? (object)DBNull.Value;
+
+          
 
             cmd.Parameters.Add("p_inactive", OracleDbType.Varchar2)
                .Value = "F";
@@ -205,7 +191,6 @@ namespace GCMS.Repository
         public async Task UpdateAsync(DistrictMaster model)
         {
             using var conn = _connectionFactory.CreateConnection();
-
             conn.Open();
 
             using var cmd = (OracleCommand)conn.CreateCommand();
@@ -214,14 +199,22 @@ namespace GCMS.Repository
             cmd.CommandText = "proc_dist_mast";
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.Add("v_input", OracleDbType.Int32)
-               .Value = 2;
+            cmd.Parameters.Add("v_input", OracleDbType.Int32).Value = 2;
 
             cmd.Parameters.Add("p_dist_mastid", OracleDbType.Int64)
-               .Value = model.DistrictMastId;
+                .Value = model.DistrictMastId;
 
             cmd.Parameters.Add("p_district_name", OracleDbType.Varchar2)
-               .Value = model.DistrictName;
+                .Value = model.DistrictName ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_dist_name_eng", OracleDbType.Varchar2)
+                .Value = model.DistrictNameEmg ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_dist_name_hineng", OracleDbType.Varchar2)
+                .Value = model.DistNameHinEng ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_inactive", OracleDbType.Varchar2)
+                .Value = model.InActive ?? "F";
 
             cmd.ExecuteNonQuery();
 

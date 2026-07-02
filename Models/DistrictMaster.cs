@@ -26,8 +26,8 @@ public class DistrictMaster
     [Required(ErrorMessage = "Division is required")]
     public long? DivisionName { get; set; }
 
-    [Column("DISTRICT_NAME_EMG")]
-    public string? DistrictNameEmg { get; set; }
+    [Column("DISTRICT_NAME_ENG")]
+    public string? DistrictNameEng { get; set; }
 
     [Column("DIST_ABR")]
     [Required(ErrorMessage = "District Abbreviation is required")]

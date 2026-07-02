@@ -60,7 +60,7 @@ namespace GCMS.Repository
                         : Convert.ToInt64(reader["DIVISION_NAME"]),
 
                     DistAbr = reader["DIST_ABR"]?.ToString(),
-                    DistrictNameEmg = reader["DISTRICT_NAME_ENG"]?.ToString(), // fixed: ENG not EMG
+                    DistrictNameEng = reader["DISTRICT_NAME_ENG"]?.ToString(), // fixed: ENG not EMG
                     DistNameHinEng = reader["DIST_NAME_HINENG"]?.ToString(),
                     InActive = reader["INACTIVE"]?.ToString()
                 });
@@ -121,8 +121,8 @@ namespace GCMS.Repository
                     DistAbr =
                         reader["DIST_ABR"]?.ToString(),
 
-                    DistrictNameEmg =
-                        reader["DISTRICT_NAME_EMG"]?.ToString(),
+                    DistrictNameEng =
+                        reader["DISTRICT_NAME_ENG"]?.ToString(),
 
                     DistNameHinEng =
                         reader["DIST_NAME_HINENG"]?.ToString(),
@@ -139,7 +139,6 @@ namespace GCMS.Repository
         public async Task AddAsync(DistrictMaster model)
         {
             using var conn = _connectionFactory.CreateConnection();
-
             conn.Open();
 
             using var cmd = (OracleCommand)conn.CreateCommand();
@@ -148,42 +147,48 @@ namespace GCMS.Repository
             cmd.CommandText = "proc_dist_mast";
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.Add("v_input", OracleDbType.Int32)
-               .Value = 1;
-
-            cmd.Parameters.Add("p_username", OracleDbType.Varchar2)
-               .Value = model.CreatedBy;
-
-            cmd.Parameters.Add("p_createdby", OracleDbType.Varchar2)
-               .Value = model.CreatedBy;
-
-            cmd.Parameters.Add("p_district_name", OracleDbType.Varchar2)
-               .Value = model.DistrictName;
-
-            cmd.Parameters.Add("p_district_code", OracleDbType.Varchar2)
-               .Value = model.DistrictCode;
+            cmd.Parameters.Add("v_input", OracleDbType.Int32).Value = 1;
+            cmd.Parameters.Add("p_username", OracleDbType.Varchar2).Value = model.CreatedBy;
+            cmd.Parameters.Add("p_createdby", OracleDbType.Varchar2).Value = model.CreatedBy;
+            cmd.Parameters.Add("p_district_name", OracleDbType.Varchar2).Value = model.DistrictName;
+            cmd.Parameters.Add("p_district_code", OracleDbType.Varchar2).Value = model.DistrictCode;
 
             cmd.Parameters.Add("p_state_name", OracleDbType.Int64).Value =
-     model.StateName.HasValue ? model.StateName.Value : (object)DBNull.Value;
+                model.StateName.HasValue ? model.StateName.Value : (object)DBNull.Value;
 
             cmd.Parameters.Add("p_division_name", OracleDbType.Int64).Value =
                 model.DivisionName.HasValue ? model.DivisionName.Value : (object)DBNull.Value;
-            cmd.Parameters.Add("p_dist_name_eng", OracleDbType.Varchar2)
-                .Value = model.DistrictNameEmg ?? (object)DBNull.Value;
 
-            cmd.Parameters.Add("p_dist_name_hineng", OracleDbType.Varchar2)
-                .Value = model.DistNameHinEng ?? (object)DBNull.Value;
+            cmd.Parameters.Add("p_dist_name_eng", OracleDbType.Varchar2).Value =
+                model.DistrictNameEng ?? (object)DBNull.Value;
 
-          
+            cmd.Parameters.Add("p_dist_name_hineng", OracleDbType.Varchar2).Value =
+                model.DistNameHinEng ?? (object)DBNull.Value;
 
-            cmd.Parameters.Add("p_inactive", OracleDbType.Varchar2)
-               .Value = "F";
+            cmd.Parameters.Add("p_inactive", OracleDbType.Varchar2).Value = "F";
 
-            cmd.Parameters.Add("out_cursor",
-                OracleDbType.RefCursor)
+            cmd.Parameters.Add("out_cursor", OracleDbType.RefCursor)
                 .Direction = ParameterDirection.Output;
 
-            cmd.ExecuteNonQuery();
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (OracleException ex) when (ex.Number == 20001)
+            {
+                // Raised by proc's district_name duplicate check
+                throw new InvalidOperationException("This District Name already exists.", ex);
+            }
+            catch (OracleException ex) when (ex.Number == 20002)
+            {
+                // Raised by proc's district_code duplicate check (after you add it)
+                throw new InvalidOperationException("This District Code already exists.", ex);
+            }
+            catch (OracleException ex) when (ex.Number == 1)
+            {
+                // ORA-00001 fallback — unique constraint hit without a proc-level check
+                throw new InvalidOperationException("A record with this District Code or Name already exists.", ex);
+            }
 
             await Task.CompletedTask;
         }
@@ -201,20 +206,44 @@ namespace GCMS.Repository
 
             cmd.Parameters.Add("v_input", OracleDbType.Int32).Value = 2;
 
-            cmd.Parameters.Add("p_dist_mastid", OracleDbType.Int64)
-                .Value = model.DistrictMastId;
+            cmd.Parameters.Add("p_username", OracleDbType.Varchar2).Value =
+                model.CreatedBy ?? (object)DBNull.Value;
 
-            cmd.Parameters.Add("p_district_name", OracleDbType.Varchar2)
-                .Value = model.DistrictName ?? (object)DBNull.Value;
+            cmd.Parameters.Add("p_createdby", OracleDbType.Varchar2).Value =
+                model.CreatedBy ?? (object)DBNull.Value;
 
-            cmd.Parameters.Add("p_dist_name_eng", OracleDbType.Varchar2)
-                .Value = model.DistrictNameEmg ?? (object)DBNull.Value;
+            cmd.Parameters.Add("p_district_name", OracleDbType.Varchar2).Value =
+                model.DistrictName ?? (object)DBNull.Value;
 
-            cmd.Parameters.Add("p_dist_name_hineng", OracleDbType.Varchar2)
-                .Value = model.DistNameHinEng ?? (object)DBNull.Value;
+            cmd.Parameters.Add("p_district_code", OracleDbType.Varchar2).Value =
+                model.DistrictCode ?? (object)DBNull.Value;
 
-            cmd.Parameters.Add("p_inactive", OracleDbType.Varchar2)
-                .Value = model.InActive ?? "F";
+            cmd.Parameters.Add("p_state_name", OracleDbType.Int64).Value =
+                model.StateName ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_division_name", OracleDbType.Int64).Value =
+                model.DivisionName ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_dist_name_eng", OracleDbType.Varchar2).Value =
+                model.DistrictNameEng ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_dist_abr", OracleDbType.Varchar2).Value =
+                model.DistAbr ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_apnakhata_id", OracleDbType.Varchar2).Value =
+                DBNull.Value;
+
+            cmd.Parameters.Add("p_dist_name_hineng", OracleDbType.Varchar2).Value =
+                model.DistNameHinEng ?? (object)DBNull.Value;
+
+            cmd.Parameters.Add("p_dist_mastid", OracleDbType.Int64).Value =
+                model.DistrictMastId;
+
+            cmd.Parameters.Add("p_inactive", OracleDbType.Varchar2).Value =
+                model.InActive ?? "F";
+
+            cmd.Parameters.Add("out_cursor", OracleDbType.RefCursor)
+                .Direction = ParameterDirection.Output;
 
             cmd.ExecuteNonQuery();
 

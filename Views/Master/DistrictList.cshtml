@@ -36,6 +36,7 @@
                 <th>English Name</th>
                 <th>Abbreviation</th>
                 <th>Hindi Name</th>
+                <th>Active</th>
                 <th width="170">Action</th>
             </tr>
         </thead>
@@ -73,7 +74,20 @@
                     <td>@item.DistAbr</td>
 
                     <td>@item.DistNameHinEng</td>
-
+                    <td>
+                        @if (item.InActive == "F")
+                        {
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Inactive
+                            </span>
+                        }
+                    </td>
                     <td>
 
                         <button class="btn btn-warning btn-sm edit"

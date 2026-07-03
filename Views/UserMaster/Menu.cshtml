@@ -1,0 +1,258 @@
+﻿@{
+    ViewData["Title"] = "Menu Master";
+}
+
+<div class="container bg-light rounded-4 shadow px-4 py-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center border-bottom border-3 pb-3 mb-4">
+        <h3>Menu Master</h3>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Menu Details</h5>
+        </div>
+
+        <div class="card-body">
+
+            <input type="hidden" id="MenuId" />
+
+            <!-- Menu Type -->
+            <div class="row mb-4">
+
+                <label class="form-label fw-bold">
+                    Menu Type
+                </label>
+
+                <div class="col-md-2">
+
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="MenuType"
+                               id="rbParent"
+                               value="Parent">
+
+                        <label class="form-check-label">
+                            Parent
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="MenuType"
+                               id="rbChild"
+                               value="Child">
+
+                        <label class="form-check-label">
+                            Children
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="MenuType"
+                               id="rbSubChild"
+                               value="SubChild">
+
+                        <label class="form-check-label">
+                            Sub Children
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <!-- Parent Dropdown -->
+                <div class="col-md-6 mb-3 d-none" id="divParent">
+
+                    <label class="form-label">
+                        Parent Menu
+                    </label>
+
+                    <select class="form-select" id="ParentId">
+                        <option value="">Select Parent</option>
+
+                        <option value="1">Dashboard</option>
+                        <option value="2">Master</option>
+                        <option value="3">Reports</option>
+
+                    </select>
+
+                </div>
+
+                <!-- Child Dropdown -->
+                <div class="col-md-6 mb-3 d-none" id="divChild">
+
+                    <label class="form-label">
+                        Children Menu
+                    </label>
+
+                    <select class="form-select" id="ChildId">
+                        <option value="">Select Children</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label" id="lblMenuName">
+                        Parent Menu Name
+                    </label>
+
+                    <input type="text"
+                           id="MenuName"
+                           class="form-control"
+                           placeholder="Enter Menu Name" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-footer text-end">
+
+            <button class="btn btn-success"
+                    id="btnSubmit">
+
+                <i class="bi bi-check-circle"></i>
+
+                Submit
+
+            </button>
+
+            <button type="reset"
+                    class="btn btn-secondary">
+
+                <i class="bi bi-arrow-clockwise"></i>
+
+                Reset
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(function () {
+
+            $("#rbParent").prop("checked", true);
+
+            showControls("Parent");
+
+        });
+
+        $("input[name='MenuType']").change(function () {
+
+            showControls($(this).val());
+
+        });
+
+        function showControls(type)
+        {
+
+            $("#divParent").addClass("d-none");
+
+            $("#divChild").addClass("d-none");
+
+            if(type=="Parent")
+            {
+
+                $("#lblMenuName").text("Parent Menu Name");
+
+            }
+
+            else if(type=="Child")
+            {
+
+                $("#divParent").removeClass("d-none");
+
+                $("#lblMenuName").text("Children Menu Name");
+
+            }
+
+            else if(type=="SubChild")
+            {
+
+                $("#divParent").removeClass("d-none");
+
+                $("#divChild").removeClass("d-none");
+
+                $("#lblMenuName").text("Sub Children Menu Name");
+
+            }
+
+        }
+
+        $("#btnSubmit").click(function(){
+
+            var model = {
+
+                MenuId : $("#MenuId").val(),
+
+                MenuType : $("input[name='MenuType']:checked").val(),
+
+                ParentId : $("#ParentId").val(),
+
+                ChildId : $("#ChildId").val(),
+
+                MenuName : $("#MenuName").val()
+
+            };
+
+            console.log(model);
+
+            /*
+            $.ajax({
+
+                url:'/Master/SaveMenu',
+
+                type:'POST',
+
+                data:model,
+
+                success:function(r){
+
+                    if(r.success){
+
+                        alert("Saved Successfully");
+
+                        location.reload();
+
+                    }
+
+                }
+
+            });
+            */
+
+        });
+
+    </script>
+
+}

@@ -1,10 +1,9 @@
-﻿using GCMS.Models;
+﻿using GCMS.Data;
+using GCMS.Models;
 using GCMS.Services;
 using GCMS.Services.Interfaces;
-using GCMS.Data;
-using GCMS.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace GCMS.Controllers
 {
@@ -25,7 +24,7 @@ namespace GCMS.Controllers
         }
 
         //State Master
-        public async Task<IActionResult> StateList( int pageNo = 1, int rowCnt = 999999999)
+        public async Task<IActionResult> StateList(int pageNo = 1, int rowCnt = 999999999)
         {
             var data =
                 await _service.GetAllAsync(
@@ -63,7 +62,7 @@ namespace GCMS.Controllers
                 else
 
                 {
-                  
+
                     await _service.UpdateAsync(model);
                 }
 
@@ -115,43 +114,59 @@ namespace GCMS.Controllers
         }
 
         //District Master
-        public async Task<IActionResult> DistrictList(int pageNo = 1,int rowCnt = 999999999)
+        public async Task<IActionResult> DistrictList(
+     int pageNo = 1,
+     int rowCnt = 1000)
         {
-            var model =
-                await _districtService
-                .GetAllAsync(pageNo, rowCnt);
+            var model = await _districtService.GetAllAsync(pageNo, rowCnt);
 
             ViewBag.StateList =
-                await _service
-                .GetAllAsync(1, 1000);
+                await _service.GetAllAsync(1, 1000);
+
+            ViewBag.DivisionList =
+                await _divisionService.GetAllAsync(1, 1000);
 
             return View(model);
         }
 
+
         [HttpPost]
         public async Task<IActionResult> SaveDistrict(DistrictMaster model)
         {
-            model.CreatedBy =
-                HttpContext.Session.GetString("Username")
-                ?? "SYSTEM";
+            try
+            {
+                model.CreatedBy =
+                    HttpContext.Session.GetString("Username") ?? "SYSTEM";
 
-            if (model.DistrictMastId == 0)
-            {
-                await _districtService.AddAsync(model);
-            }
-            else
-            {
-                await _districtService.UpdateAsync(model);
-            }
+                model.InActive = "F";
 
-            return Json(new
+                if (model.DistrictMastId == 0)
+                {
+                    await _districtService.AddAsync(model);
+                }
+                else
+                {
+                    await _districtService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
             {
-                success = true
-            });
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpGet]
-        public async Task<IActionResult>GetDistrict(long id)
+        public async Task<IActionResult> GetDistrict(long id)
         {
             var data =
                 await _districtService.GetByIdAsync(id);
@@ -171,10 +186,11 @@ namespace GCMS.Controllers
         }
 
         //Division Master
-        public async Task<IActionResult> DivisionList(int pageNo = 1,int rowCnt = 999999999)
+        public async Task<IActionResult> DivisionList(int pageNo = 1, int rowCnt = 999999999)
         {
             var data = await _divisionService.GetAllAsync(pageNo, rowCnt);
-
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
             ViewBag.StateList =
                 await _service
                 .GetAllAsync(1, 1000);
@@ -204,7 +220,7 @@ namespace GCMS.Controllers
                     HttpContext.Session.GetString("AxUserID");
                 if (model.DivisionMastId == 0)
                 {
-                   
+
 
                     model.CreatedBy = username;
                     model.UserName = username;

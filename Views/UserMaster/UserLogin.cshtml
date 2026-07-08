@@ -1,0 +1,234 @@
+﻿@{
+    ViewData["Title"] = "User Login";
+}
+<div class="container-fluid py-3 mb-5">
+
+    <!-- Main Panel Header -->
+    <div class="panel-header">
+        <h5><i class="bi bi-star me-2"></i>User Login</h5>
+        <div>
+            <button class="icon-btn"><i class="bi bi-arrow-clockwise"></i></button>
+            <button class="icon-btn"><i class="bi bi-search"></i></button>
+            <button class="icon-btn"><i class="bi bi-list"></i></button>
+            <button class="icon-btn"><i class="bi bi-grid-3x3-gap"></i></button>
+        </div>
+    </div>
+
+    <!-- Main Form Body -->
+    <div class="panel-body">
+        <form id="userLoginForm">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">User Name <span class="required-asterisk">*</span></label>
+                    <input type="text" class="form-control" id="userName" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Password <span class="required-asterisk">*</span></label>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="password" value="" />
+                        <button class="btn btn-light border" type="button" data-toggle-password="password">
+                            <i class="bi bi-eye"></i>
+                        </button>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">E-Mail <span class="required-asterisk">*</span></label>
+                    <input type="email" class="form-control" id="email" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Category <span class="required-asterisk">*</span></label>
+                    <select class="form-select" id="category">
+                        <option selected>Others</option>
+                        <option>Judicial</option>
+                        <option>Administrative</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Name</label>
+                    <select class="form-select" id="name">
+                        <option selected>N/A</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">SSO ID</label>
+                    <input type="text" class="form-control" id="ssoId" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label d-block">Active</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="active" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- User Roles Section -->
+    <div class="mt-3">
+        <div class="collapsible-section" data-bs-toggle="collapse" data-bs-target="#userRolesBody" style="cursor:pointer;">
+            <i class="bi bi-chevron-up"></i>
+            <span>User Roles</span>
+        </div>
+        <div class="collapse show" id="userRolesBody">
+            <div class="toolbar">
+                <button class="btn-tool" data-action="add-row"><i class="bi bi-plus-lg"></i></button>
+                <button class="btn-tool secondary" data-action="delete-row"><i class="bi bi-trash"></i></button>
+                <button class="btn-tool secondary"><i class="bi bi-layout-three-columns"></i></button>
+                <button class="btn-tool secondary"><i class="bi bi-copy"></i></button>
+                <button class="btn-tool secondary"><i class="bi bi-list-ul"></i></button>
+            </div>
+            <div class="table-responsive border border-top-0">
+                <table class="table table-bordered table-grid mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:40px;"><input type="checkbox" /></th>
+                            <th style="width:60px;">S.no</th>
+                            <th>User Name</th>
+                            <th>Role <span class="required-asterisk">*</span></th>
+                            <th>Assigned From <span class="required-asterisk">*</span></th>
+                            <th>Assigned To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm" /></td>
+                            <td>
+                                <select class="form-select form-select-sm">
+                                    <option selected disabled>Select an option</option>
+                                    <option>Admin</option>
+                                    <option>Clerk</option>
+                                    <option>Judge</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <input type="date" class="form-control" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <input type="date" class="form-control" />
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accessible Courts Section -->
+    <div class="mt-3">
+        <div class="collapsible-section" data-bs-toggle="collapse" data-bs-target="#accessibleCourtsBody" style="cursor:pointer;">
+            <i class="bi bi-chevron-up"></i>
+            <span>Accessible Courts</span>
+        </div>
+        <div class="collapse show" id="accessibleCourtsBody">
+            <div class="toolbar">
+                <button class="btn-tool" data-action="add-row"><i class="bi bi-plus-lg"></i></button>
+                <button class="btn-tool secondary" data-action="delete-row"><i class="bi bi-trash"></i></button>
+                <button class="btn-tool secondary"><i class="bi bi-layout-three-columns"></i></button>
+                <button class="btn-tool secondary"><i class="bi bi-copy"></i></button>
+                <button class="btn-tool secondary"><i class="bi bi-list-ul"></i></button>
+                <button class="btn-tool secondary"><i class="bi bi-grid-3x3-gap"></i></button>
+            </div>
+            <div class="table-responsive border border-top-0">
+                <table class="table table-bordered table-grid mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:40px;"><input type="checkbox" /></th>
+                            <th style="width:60px;">S.no</th>
+                            <th>Department Name <span class="required-asterisk">*</span></th>
+                            <th>Court Type <span class="required-asterisk">*</span></th>
+                            <th>Court Office <span class="required-asterisk">*</span></th>
+                            <th>Is Default</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" /></td>
+                            <td>1</td>
+                            <td><input type="text" class="form-control form-control-sm" /></td>
+                            <td><input type="text" class="form-control form-control-sm" /></td>
+                            <td><input type="text" class="form-control form-control-sm" /></td>
+                            <td class="text-center">
+                                <input type="checkbox" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- dc4 Section -->
+    <div class="mt-3">
+        <div class="collapsible-section" data-bs-toggle="collapse" data-bs-target="#dc4Body" style="cursor:pointer;">
+            <i class="bi bi-chevron-up"></i>
+            <span>dc4</span>
+        </div>
+        <div class="collapse show" id="dc4Body">
+            <div class="border border-top-0 p-3">
+                <!-- Additional content placeholder -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="footer-actions">
+        <button type="button" class="btn btn-submit"><i class="bi bi-save me-1"></i> SUBMIT</button>
+        <button type="button" class="btn btn-new"><i class="bi bi-plus-circle-fill me-1"></i> NEW</button>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        document.querySelectorAll('[data-toggle-password]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const input = document.getElementById(btn.dataset.togglePassword);
+                if (!input) return;
+
+                const isHidden = input.type === 'text';
+                input.type = isHidden ? 'password' : 'text';
+
+                const icon = btn.querySelector('i');
+                icon.classList.toggle('bi-eye-slash', isHidden);
+                icon.classList.toggle('bi-eye', !isHidden);
+            });
+        });
+
+        document.querySelectorAll('[data-action="add-row"]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const tbody = btn.closest('.mt-3').querySelector('table tbody');
+                const templateRow = tbody.querySelector('tr');
+                const newRow = templateRow.cloneNode(true);
+                newRow.querySelectorAll('input').forEach(i => i.type === 'checkbox' ? i.checked = false : i.value = '');
+                newRow.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+                tbody.appendChild(newRow);
+
+                tbody.querySelectorAll('tr').forEach((row, i) => row.children[1].textContent = i + 1);
+            });
+        });
+         document.querySelectorAll('[data-action="delete-row"]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const tbody = btn.closest('.mt-3').querySelector('table tbody');
+                const checkedRows = tbody.querySelectorAll('tr td:first-child input[type="checkbox"]:checked');
+
+                checkedRows.forEach(function (checkbox) {
+                    if (tbody.querySelectorAll('tr').length > 1) {
+                        checkbox.closest('tr').remove();
+                    }
+                });
+
+                tbody.querySelectorAll('tr').forEach((row, i) => row.children[1].textContent = i + 1);
+            });
+        });
+    </script>
+}

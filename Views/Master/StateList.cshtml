@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "State Master";
+    var srNo = 1;
 }
 
 <!-- ========== PAGE CONTAINER ========== -->
@@ -31,12 +32,12 @@
 
         <thead>
             <tr>
-
+                <td width="20">S. No.</td>
                 <th>State Name</th>
                 <th>State Name (In Hindi)</th>
                 <th>State Code</th>
                 <th>Capital</th>
-                <th>Disable</th>
+                <th>Active</th>
                 <th>Created By</th>
                 <th>Modified Date</th>
 
@@ -48,12 +49,28 @@
             @foreach (var item in Model)
             {
                 <tr>
-
+                    <td>@srNo</td>
                     <td>@item.StateName</td>
                     <td>@item.StateNameHindi</td>
                     <td>@item.StateCode</td>
                     <td>@item.Capital</td>
-                    <td>@(item.InActive == "F" ? "No" : "Yes")</td>
+                    <td>
+                        
+                       
+                        @if (item.InActive == "F")
+                        {
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Inactive
+                            </span>
+                        }
+
+                    </td>
                     <td>@item.CreatedBy</td>
                     <td>@item.ModifiedOn</td>
 
@@ -70,6 +87,7 @@
                         </button> *@
                     </td>
                 </tr>
+                srNo++;
             }
         </tbody>
 

@@ -1,0 +1,373 @@
+﻿@model List<GCMS.Models.RoleMaster>
+
+@{
+    ViewData["Title"] = "Role Master";
+}
+<div class="container bg-light rounded-4 shadow px-4 py-5">
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h3>Role Master</h3>
+
+        <div class="d-flex gap-2">
+
+            <button class="btn btn-primary"
+                    id="btnAddRole">
+                Add Role
+            </button>
+
+            <button class="btn btn-secondary"
+                    id="btnPrint">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+
+            <button class="btn btn-success"
+                    id="btnExcel">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+    <table id="tblRole" class="table table-bordered table-striped">
+
+        <thead>
+
+            <tr>
+
+                <th>S.No.</th>
+                <th>Role Name</th>
+                <th>Role Type</th>
+                <th>Order No</th>
+                <th>Active</th>
+                <th width="180">Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @{
+                int i = 1;
+            }
+            @if (Model != null)
+            {
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@i</td>
+
+                        <td>@item.RoleName</td>
+
+                        <td>@item.RoleType</td>
+
+                        <td>@item.OrderNo</td>
+
+                        <td>
+
+                            @if (item.IsActvFlag == 1)
+                            {
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+                            }
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm edit"
+                                    data-id="@item.RoleId">
+                                Edit
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    i++;
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+<div class="modal fade"
+     id="roleModal"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Role Master
+                </h5>
+
+                <button class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden"
+                       id="RoleId" />
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Role Name
+                    </label>
+
+                    <input id="RoleName"
+                           class="form-control" />
+
+                    <div class="text-danger small" id="errRoleName"></div>
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Role Type
+                    </label>
+
+                    <input id="RoleType"
+                           class="form-control" />
+                    <div class="text-danger small" id="errRoleType"></div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Order No
+                    </label>
+
+                    <input id="OrderNo"
+                           type="number"
+                           class="form-control" />
+                    <div class="text-danger small" id="errOrderNo"></div>
+
+                </div>
+
+                <div class="form-check form-switch">
+
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="IsActvFlag">
+
+                    <label class="form-check-label">
+                        Active
+                    </label>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
+
+                <button class="btn btn-success"
+                        id="btnSave">
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        var roleModal =
+        new bootstrap.Modal(
+        document.getElementById("roleModal"));
+
+        $(document).ready(function () {
+
+            $("#tblRole").DataTable({
+                dom:'lBfrtip',
+                buttons:[
+                {
+                    extend:'print',
+                    title:'Role Master'
+                },
+                {
+                    extend:'excelHtml5',
+                    title:'Role Master'
+                }]
+            });
+
+            $(".dt-buttons").hide();
+
+        });
+
+        $("#btnPrint").click(function(){
+
+            window.print();
+
+        });
+
+        $("#btnExcel").click(function(){
+
+            let table=document.getElementById("tblRole");
+
+            let html=table.outerHTML;
+
+            let url='data:application/vnd.ms-excel,'+
+            encodeURIComponent(html);
+
+            let a=document.createElement("a");
+
+            a.href=url;
+
+            a.download="RoleMaster.xls";
+
+            a.click();
+
+        });
+
+        $("#btnAddRole").click(function(){
+
+            $("#RoleId").val("");
+
+            $("#RoleName").val("");
+
+            $("#RoleType").val("");
+
+            $("#OrderNo").val("");
+
+            $("#IsActvFlag").prop("checked",true);
+
+            roleModal.show();
+
+        });
+
+        $(document).on("click",".edit",function(){
+
+            var id=$(this).data("id");
+
+            $.get("/UserMaster/GetRole",
+            {id:id},
+            function(data){
+
+                $("#RoleId").val(data.roleId);
+
+                $("#RoleName").val(data.roleName);
+
+                $("#RoleType").val(data.roleType);
+
+                $("#OrderNo").val(data.orderNo);
+
+                $("#IsActvFlag").prop("checked",
+                data.isActvFlag==1);
+
+                roleModal.show();
+
+            });
+
+        });
+
+        $("#btnSave").click(function(){
+                // Clear previous errors
+        $("#errRoleName").text("");
+        $("#errRoleType").text("");
+        $("#errOrderNo").text("");
+
+        let isValid = true;
+
+        if (!$("#RoleName").val().trim()) {
+            $("#errRoleName").text("Role Name is required.");
+            isValid = false;
+        }
+
+        if (!$("#RoleType").val().trim()) {
+            $("#errRoleType").text("Role Type is required.");
+            isValid = false;
+        }
+
+                if (!$("#OrderNo").val() || isNaN($("#OrderNo").val())) {
+            $("#errOrderNo").text("Order No is required and must be a number.");
+            isValid = false;
+        } else if (parseInt($("#OrderNo").val()) <= 0) {
+            $("#errOrderNo").text("Order No must be greater than 0.");
+            isValid = false;
+        }
+
+        if (!isValid) return;
+            var isActive = $("#IsActvFlag").is(":checked") ? 1 : 0;
+            $.ajax({
+
+                url:"/UserMaster/SaveRole",
+
+                type:"POST",
+
+                data:{
+
+                    RoleId:$("#RoleId").val(),
+
+                    RoleName:$("#RoleName").val(),
+
+                    RoleType:$("#RoleType").val(),
+
+                    OrderNo:$("#OrderNo").val(),
+
+                   IsActvFlag: isActive,
+
+                    IsDelFlag:  isActive === 1 ? 0 : 1
+
+                },
+
+                success:function(r){
+
+                    if(r.success){
+
+                        roleModal.hide();
+
+                        location.reload();
+
+                    }
+                    else{
+
+                        alert(r.message);
+
+                    }
+
+                },
+
+                error:function(){
+
+                    alert("Save Failed");
+
+                }
+
+            });
+
+        });
+
+    </script>
+}

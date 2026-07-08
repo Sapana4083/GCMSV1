@@ -132,4 +132,53 @@ function setSubActive(clickedBtn, viewId) {
     document.getElementById(viewId).classList.remove('d-none');
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle nested submenu on click/tap (works at any screen size)
+    document.querySelectorAll('.dropdown-submenu > .dropdown-toggle').forEach(function (toggle) {
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const submenu = this.nextElementSibling;
+            const isOpen = submenu.classList.contains('show');
+
+            // close sibling submenus at the same level first
+            const parentMenu = this.closest('.dropdown-menu');
+            if (parentMenu) {
+                parentMenu.querySelectorAll(':scope > li.dropdown-submenu > .dropdown-menu.show').forEach(function (menu) {
+                    menu.classList.remove('show');
+                    const sibToggle = menu.previousElementSibling;
+                    if (sibToggle) sibToggle.setAttribute('aria-expanded', 'false');
+                });
+            }
+
+            submenu.classList.toggle('show', !isOpen);
+            this.setAttribute('aria-expanded', String(!isOpen));
+        });
+    });
+
+    // Reset all open submenus whenever the parent Bootstrap dropdown closes
+    document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+        dropdown.addEventListener('hidden.bs.dropdown', function () {
+            dropdown.querySelectorAll('.dropdown-menu.show').forEach(function (menu) {
+                menu.classList.remove('show');
+            });
+            dropdown.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(function (t) {
+                if (t.id !== dropdown.querySelector(':scope > .dropdown-toggle')?.id) {
+                    t.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+    });
+
+    // Optional: collapse the mobile navbar after clicking a real (non-toggle) nav link
+    document.querySelectorAll('.navbar-collapse .dropdown-item:not(.dropdown-toggle)').forEach(function (link) {
+        link.addEventListener('click', function () {
+            const collapseEl = document.querySelector('.navbar-collapse.show');
+            if (collapseEl) {
+                bootstrap.Collapse.getOrCreateInstance(collapseEl).hide();
+            }
+        });
+    });
+});
 

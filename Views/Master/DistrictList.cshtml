@@ -2,88 +2,128 @@
 
 @{
     ViewData["Title"] = "District Master";
+    var states = ViewBag.StateList as List<GCMS.Models.StateMaster>;
+    var divisions = ViewBag.DivisionList as List<GCMS.Models.DivisionMaster>;
 }
-
-<div class="container bg-light rounded-4 shadow p-4 mb-5">
-
-    <!-- Header -->
+<div class="container bg-light rounded-4 shadow px-4 py-5">
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
-
         <h3>District Master</h3>
 
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary" id="btnAddDistrict">
+            <button class="btn btn-primary" id="btnAddDistrict">
                 Add District
             </button>
-            <button type="button" class="btn btn-secondary" id="btnPrint">
+
+            <button class="btn btn-secondary" id="btnPrint">
                 <i class="bi bi-printer-fill"></i>
             </button>
-            <button type="button" class="btn btn-success" id="btnExcel">
+
+            <button class="btn btn-success" id="btnExcel">
                 <i class="bi bi-file-earmark-excel"></i>
             </button>
         </div>
-
     </div>
 
-    <!-- Data Table -->
-    <table id="tblDistrict"
-           class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped" id="tblDistrict">
 
         <thead>
             <tr>
+                <th>S.No.</th>
                 <th>District Name</th>
                 <th>District Code</th>
                 <th>State</th>
-                <th width="180">Action</th>
+                <th>Division</th>
+                <th>English Name</th>
+                <th>Abbreviation</th>
+                <th>Hindi Name</th>
+                <th>Active</th>
+                <th width="170">Action</th>
             </tr>
         </thead>
 
         <tbody>
+
+            @{
+                int i = 1;
+            }
+
             @foreach (var item in Model)
             {
                 <tr>
 
+                    <td>@i</td>
+
                     <td>@item.DistrictName</td>
+
                     <td>@item.DistrictCode</td>
-                    <td>@item.StateName</td>
 
                     <td>
-                        <button type="button"
-                                class="btn btn-warning btn-sm edit"
+                        @(states?
+                        .FirstOrDefault(x => x.StateMastId == item.StateName)?
+                        .StateName)
+                    </td>
+
+                    <td>
+                        @(divisions?
+                        .FirstOrDefault(x => x.DivisionMastId == item.DivisionName)?
+                        .DivisionName)
+                    </td>
+
+                    <td>@item.DistrictNameEng</td>
+
+                    <td>@item.DistAbr</td>
+
+                    <td>@item.DistNameHinEng</td>
+                    <td>
+                        @if (item.InActive == "F")
+                        {
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Inactive
+                            </span>
+                        }
+                    </td>
+                    <td>
+
+                        <button class="btn btn-warning btn-sm edit"
                                 data-id="@item.DistrictMastId">
                             Edit
                         </button>
 
-                        <button type="button"
-                                class="btn btn-danger btn-sm delete"
-                                data-id="@item.DistrictMastId">
-                            Delete
-                        </button>
                     </td>
 
                 </tr>
+
+                i++;
             }
+
         </tbody>
 
     </table>
-
 </div>
+<div class="modal fade"
+     id="districtModal"
+     tabindex="-1">
 
-<!-- ========== MODAL ========== -->
-<div class="modal fade" id="districtModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
 
         <div class="modal-content">
 
             <div class="modal-header">
+
                 <h5 class="modal-title">
                     District Master
                 </h5>
 
-                <button type="button"
-                        class="btn-close"
+                <button class="btn-close"
                         data-bs-dismiss="modal">
                 </button>
+
             </div>
 
             <div class="modal-body">
@@ -92,7 +132,27 @@
                        id="DistrictMastId" />
 
                 <div class="row">
+
                     <div class="col-md-6 mb-3">
+
+                        <label>District Name</label>
+
+                        <input id="DistrictName"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>District Code</label>
+
+                        <input id="DistrictCode"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
                         <label>State</label>
 
                         <select id="StateName"
@@ -102,76 +162,74 @@
                                 Select State
                             </option>
 
-                            @foreach (var state in ViewBag.StateList)
+                            @foreach (var s in states)
                             {
-                                <option value="@state.StateMastId">
-                                    @state.StateName
+                                <option value="@s.StateMastId">
+                                    @s.StateName
                                 </option>
                             }
 
                         </select>
-                        <span id="errState" class="text-danger"></span>
+
                     </div>
+
                     <div class="col-md-6 mb-3">
+
                         <label>Division</label>
 
                         <select id="DivisionName"
                                 class="form-select">
 
                             <option value="">
-                                Select State
+                                Select Division
                             </option>
 
-                            @foreach (var division in ViewBag.StateList)
+                            @foreach (var d in divisions)
                             {
-                                <option value="@division.StateMastId">
-                                    @division.StateName
+                                <option value="@d.DivisionMastId">
+                                    @d.DivisionName
                                 </option>
                             }
 
                         </select>
-                        <span id="errDivision" class="text-danger"></span>
+
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label>District Name</label>
 
-                        <input type="text"
-                               id="DistrictName"
+                        <label>District English Name</label>
+
+                        <input id="DistrictNameEng"
                                class="form-control" />
-                        <span id="errDistName" class="text-danger"></span>
+
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label>District Code</label>
 
-                        <input type="text"
-                               id="DistrictCode"
+                        <label>District Abbreviation</label>
+
+                        <input id="DistAbr"
                                class="form-control" />
-                        <span id="errDistCode" class="text-danger"></span>
+
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label>District Name EMG</label>
 
-                        <input type="text"
-                               id="DistNameEmg"
+                        <label>English - Hindi Name</label>
+
+                        <input id="DistNameHinEng"
                                class="form-control" />
-                    </div>
 
+                    </div>
                     <div class="col-md-6 mb-3">
-                        <label>District Name HinEng</label>
 
-                        <input type="text"
-                               id="DistNameHinEng"
-                               class="form-control" />
-                    </div>
+                        <label>In Active</label>
 
-                    <div class="mb-3">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="InActive">
                             <label class="form-check-label">Disable</label>
                         </div>
+
                     </div>
 
                 </div>
@@ -180,14 +238,12 @@
 
             <div class="modal-footer">
 
-                <button type="button"
-                        class="btn btn-secondary"
+                <button class="btn btn-secondary"
                         data-bs-dismiss="modal">
                     Close
                 </button>
 
-                <button type="button"
-                        class="btn btn-success"
+                <button class="btn btn-success"
                         id="btnSave">
                     Save
                 </button>
@@ -197,195 +253,144 @@
         </div>
 
     </div>
+
 </div>
 
 @section Scripts {
     <script>
-                // ── Init ─────────────────────────────────────────────
-        $(document).ready(function() {
 
-            $('#tblDistrict').DataTable({
-                dom: 'lBfrtip',
+        $(function () {
 
-                responsive: true,
-                autoWidth: false,
+            $("#tblDistrict").DataTable();
 
-                pageLength: 10,
+            var modal =
+                new bootstrap.Modal(
+                    document.getElementById("districtModal"));
 
-                lengthMenu: [
-                    [10, 25, 50, 100],
-                    [10, 25, 50, 100]
-                ],
+            $("#btnAddDistrict").click(function () {
 
-                paging: true,
-                searching: true,
-                ordering: true,
-                info: true,
+                $("#DistrictMastId").val("");
+                $("#DistrictName").val("");
+                $("#DistrictCode").val("");
+                $("#StateName").val("");
+                $("#DivisionName").val("");
+                $("#DistrictNameEng").val("");
+                $("#DistAbr").val("");
+                $("#DistNameHinEng").val("");
+                $("#InActive").val("");
 
-                columnDefs: [{
-                        responsivePriority: 1,
-                        targets: 3
-                    },
-                    {
-                        responsivePriority: 2,
-                        targets: 0
-                    }
-                ],
+                modal.show();
 
-                buttons: [{
-                        extend: 'print',
-                        title: 'District Master'
-                    },
-                    {
-                        extend: 'excelHtml5',
-                        title: 'District Master'
-                    }
-                ]
             });
 
-            $('.dt-buttons').hide();
-        });
-
-        $("#btnPrint").click(function() {
-
-            window.print();
-
-        });
-
-        $("#btnExcel").click(function() {
-
-            let table = document.getElementById("tblState");
-
-            let html = table.outerHTML;
-
-            let url = 'data:application/vnd.ms-excel,' +
-                encodeURIComponent(html);
-
-            let a = document.createElement('a');
-
-            a.href = url;
-            a.download = 'StateMaster.xls';
-
-            a.click();
-
-        });
-
-        var stateModal = new bootstrap.Modal(
-            document.getElementById('districtModal')
-        );
-
-
-        // ── Add State ─────────────────────────────────────────
-         $("#btnAddDistrict").click(function() {
-            $("#DistrictMastId").val('');
-            $("#DistrictName").val('');
-            $("#DistrictCode").val('');
-            $("#StateName").val('');
-
-            districtModal.show();
-        });
-        var districtModal =
-            new bootstrap.Modal(
-                document.getElementById('districtModal'));
-
-        $("#btnAddDistrict").click(function() {
-
-            $("#DistrictMastId").val('');
-            $("#DistrictName").val('');
-            $("#DistrictCode").val('');
-            $("#StateName").val('');
-
-            districtModal.show();
-
-        });
-
-        $(document).on("click", ".edit", function() {
+         $(document).on("click", ".edit", function () {
 
             var id = $(this).data("id");
 
-            $.get('/Master/GetDistrict', {
-                    id: id
-                },
-                function(data) {
-
-                    $("#DistrictMastId")
-                        .val(data.districtMastId);
-
-                    $("#DistrictName")
-                        .val(data.districtName);
-
-                    $("#DistrictCode")
-                        .val(data.districtCode);
-
-                    $("#StateName")
-                        .val(data.stateName);
-
-                    $("#DistAbr")
-                        .val(data.distAbr);
-
-                    $("#DistNameEmg")
-                        .val(data.distNameEmg);
-
-                    $("#DistNameHinEng")
-                        .val(data.distNameHinEng);
-
-                    districtModal.show();
-                });
-        });
-
-        $("#btnSave").click(function() {
+            console.log("District Id:", id);
 
             $.ajax({
+                url: "/Master/GetDistrict",
+                type: "GET",
+                data: { id: id },
 
-                url: '/Master/SaveDistrict',
+                success: function (data) {
 
-                type: 'POST',
+                    console.log(data);
 
-                data: {
+                    if (data == null) {
+                        alert("No data returned from server");
+                        return;
+                    }
 
-                    DistrictMastId: $("#DistrictMastId").val(),
+                    $("#DistrictMastId").val(data.districtMastId);
+                    $("#DistrictName").val(data.districtName);
+                    $("#DistrictCode").val(data.districtCode);
+                    $("#StateName").val(data.stateName);
+                    $("#DivisionName").val(data.divisionName);
+                    $("#DistrictNameEng").val(data.districtNameEng);
+                    $("#DistAbr").val(data.distAbr);
+                    $("#DistNameHinEng").val(data.distNameHinEng);
+                    $("#inActive").val(data.inActive);
 
-                    DistrictName: $("#DistrictName").val(),
-
-                    DistrictCode: $("#DistrictCode").val(),
-
-                    StateName: $("#StateName").val(),
-
-                    DistAbr: $("#DistAbr").val(),
-
-                    DistNameEmg: $("#DistNameEmg").val(),
-
-                    DistNameHinEng: $("#DistNameHinEng").val()
+                    modal.show();
                 },
 
-                success: function(r) {
-
-                    if (r.success) {
-
-                        location.reload();
-                    } else {
-
-                        alert(r.message);
-                    }
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    alert("Error loading district.");
                 }
             });
+
         });
 
-        $(document).on("click", ".delete", function() {
+            $("#btnSave").click(function(){
 
-            if (!confirm("Delete District ?"))
-                return;
+                $.ajax({
 
-            $.post('/Master/DeleteDistrict', {
-                    id: $(this).data("id")
-                },
-                function(r) {
+                    url:'/Master/SaveDistrict',
 
-                    if (r.success) {
+                    type:'POST',
 
-                        location.reload();
+                    data:{
+
+                        DistrictMastId:$("#DistrictMastId").val(),
+
+                        DistrictName:$("#DistrictName").val(),
+
+                        DistrictCode:$("#DistrictCode").val(),
+
+                        StateName:$("#StateName").val(),
+
+                        DivisionName:$("#DivisionName").val(),
+
+                        DistrictNameEng:$("#DistrictNameEng").val(),
+
+                        DistAbr:$("#DistAbr").val(),
+
+                        DistNameHinEng:$("#DistNameHinEng").val(),
+
+                        InActice:$("#InActive").val()
+
+                    },
+
+                    success:function(r){
+
+                        if(r.success){
+
+                            location.reload();
+
+                        }
+                        else{
+
+                            alert(r.message);
+
+                        }
+
                     }
+
                 });
+
+            });
+
+            $(document).on("click",".delete",function(){
+
+                if(!confirm("Are you sure?"))
+                    return;
+
+                var id=$(this).data("id");
+
+                $.post("/Master/DeleteDistrict",
+                {id:id},
+                function(){
+
+                    location.reload();
+
+                });
+
+            });
+
         });
+
     </script>
 }

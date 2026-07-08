@@ -1,0 +1,19 @@
+﻿@model CaseRegistrationWizardViewModel
+@{
+    ViewData["Title"] = "Private Party Details";
+}
+<div class="page-title"><h1>Private Party Details</h1><p>Step 4 of 4</p></div>
+<div class="wizard"><span>1 Basic</span><span>2 Appellant</span><span>3 Respondent</span><span class="active">4 Private Party</span></div>
+<form asp-action="Step4" method="post" class="content-panel">
+    @Html.AntiForgeryToken()<input asp-for="Id" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-md-4"><label asp-for="PrivatePartyName" class="form-label"></label><input asp-for="PrivatePartyName" class="form-control" /><span asp-validation-for="PrivatePartyName" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="PrivateDesignation" class="form-label"></label><input asp-for="PrivateDesignation" class="form-control" /><span asp-validation-for="PrivateDesignation" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="PrivateAdvocateName" class="form-label"></label><input asp-for="PrivateAdvocateName" class="form-control" /><span asp-validation-for="PrivateAdvocateName" class="text-danger"></span></div>
+    </div>
+    <div class="form-actions"><button type="submit" name="navigation" value="Back" class="btn btn-outline-primary cancel" formnovalidate>Back</button><button type="submit" name="navigation" value="Save" class="btn btn-success">Save Registration</button></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+
+

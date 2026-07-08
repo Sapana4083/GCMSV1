@@ -1,0 +1,22 @@
+﻿@model CaseRegistrationWizardViewModel
+@{
+    ViewData["Title"] = "Appellant Details";
+}
+<div class="page-title"><h1>Appellant Details</h1><p>Step 2 of 4</p></div>
+<div class="wizard"><span>1 Basic</span><span class="active">2 Appellant</span><span>3 Respondent</span><span>4 Private Party</span></div>
+<form asp-action="Step2" method="post" class="content-panel">
+    @Html.AntiForgeryToken()<input asp-for="Id" type="hidden" />
+    <div class="row g-3">
+        <div class="col-md-4"><label asp-for="AppellantName" class="form-label"></label><input asp-for="AppellantName" class="form-control" /><span asp-validation-for="AppellantName" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="Designation" class="form-label"></label><input asp-for="Designation" class="form-control" /><span asp-validation-for="Designation" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="District" class="form-label"></label><input asp-for="District" class="form-control" /><span asp-validation-for="District" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="MobileNumber" class="form-label"></label><input asp-for="MobileNumber" class="form-control" /><span asp-validation-for="MobileNumber" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="AdvocateId" class="form-label"></label><input asp-for="AdvocateId" class="form-control" /><span asp-validation-for="AdvocateId" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="AdvocateEmail" class="form-label"></label><input asp-for="AdvocateEmail" class="form-control" /><span asp-validation-for="AdvocateEmail" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="AdvocateMobile" class="form-label"></label><input asp-for="AdvocateMobile" class="form-control" /><span asp-validation-for="AdvocateMobile" class="text-danger"></span></div>
+    </div>
+    <div class="form-actions"><a asp-action="Create" class="btn btn-outline-secondary">Start Over</a><button type="submit" name="navigation" value="Back" class="btn btn-outline-primary cancel" formnovalidate>Back</button><button type="submit" name="navigation" value="Next" class="btn btn-primary">Next</button></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+
+

@@ -1,0 +1,19 @@
+﻿@model CaseRegistrationWizardViewModel
+@{
+    ViewData["Title"] = "Respondent Details";
+}
+<div class="page-title"><h1>Respondent Details</h1><p>Step 3 of 4</p></div>
+<div class="wizard"><span>1 Basic</span><span>2 Appellant</span><span class="active">3 Respondent</span><span>4 Private Party</span></div>
+<form asp-action="Step3" method="post" class="content-panel">
+    @Html.AntiForgeryToken()<input asp-for="Id" type="hidden" />
+    <div class="row g-3">
+        <div class="col-md-4"><label asp-for="DepartmentId" class="form-label"></label><select asp-for="DepartmentId" asp-items="Model.Departments" class="form-select select2"><option value="">Select</option></select><span asp-validation-for="DepartmentId" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="RespondentAdvocateId" class="form-label"></label><input asp-for="RespondentAdvocateId" class="form-control" /><span asp-validation-for="RespondentAdvocateId" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="RespondentAdvocateEmail" class="form-label"></label><input asp-for="RespondentAdvocateEmail" class="form-control" /><span asp-validation-for="RespondentAdvocateEmail" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="RespondentAdvocateMobile" class="form-label"></label><input asp-for="RespondentAdvocateMobile" class="form-control" /><span asp-validation-for="RespondentAdvocateMobile" class="text-danger"></span></div>
+    </div>
+    <div class="form-actions"><button type="submit" name="navigation" value="Back" class="btn btn-outline-primary cancel" formnovalidate>Back</button><button type="submit" name="navigation" value="Next" class="btn btn-primary">Next</button></div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+
+

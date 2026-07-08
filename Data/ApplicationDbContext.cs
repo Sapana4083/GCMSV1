@@ -26,5 +26,13 @@ namespace GCMS.Data
         public DbSet<DistrictMaster> DistrictMasters { get; set; }
 
         public DbSet<DivisionMaster> DivisionMasters { get; set; }
+
+        public DbSet<CaseRegistration> CaseRegistrations { get; set; }
+
+        public DbSet<CaseAppellant> CaseAppellants { get; set; }
+
+        public DbSet<CaseRespondent> CaseRespondents { get; set; }
+
+        public DbSet<CasePrivateParty> CasePrivateParties { get; set; }
     }
 }

@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Case Details";
+}
+<div class="page-title"><h1>Case Details</h1><p>@Model.CaseNumber</p></div>
+<div class="content-panel">
+    <h2>Basic Details</h2>
+    <dl class="row">
+        <dt class="col-md-3">Institution Date</dt>
+        <dd class="col-md-9">@Model.InstitutionDate.ToString("dd-MMM-yyyy")</dd>
+        <dt class="col-md-3">Case Type</dt>
+        <dd class="col-md-9">@Model.CaseTypeName</dd>
+        <dt class="col-md-3">Case Subject</dt>
+        <dd class="col-md-9">@Model.CaseSubjectName</dd>
+        <dt class="col-md-3">Case Purpose</dt>
+        <dd class="col-md-9">@Model.CasePurposeName</dd>
+        <dt class="col-md-3">Hearing Date</dt>
+        <dd class="col-md-9">@Model.HearingDate.ToString("dd-MMM-yyyy")</dd>
+        <dt class="col-md-3">Bench Type</dt>
+        <dd class="col-md-9">@Model.BenchTypeName</dd>
+    </dl>
+    <h2>Parties</h2>
+    <dl class="row">
+        <dt class="col-md-3">Appellant</dt>
+        <dd class="col-md-9">@Model.AppellantName</dd>
+        <dt class="col-md-3">Appellant Mobile</dt>
+        <dd class="col-md-9">@(Model.AppellantMobileNumber ?? "-")</dd>
+        <dt class="col-md-3">Department</dt>
+        <dd class="col-md-9">@Model.DepartmentName</dd>
+        <dt class="col-md-3">Private Party</dt>
+        <dd class="col-md-9">@(Model.PrivatePartyName ?? "-")</dd>
+    </dl>
+    <div class="form-actions">
+        <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+        @if (User.IsInRole("Admin") || User.IsInRole("Registrar")) 
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> 
+        }
+    </div>
+</div>

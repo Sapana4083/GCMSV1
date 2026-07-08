@@ -1,0 +1,316 @@
+﻿@model List<GCMS.Models.RoleMenuMapping>
+
+@{
+    ViewData["Title"] = "Role Menu Mapping";
+}
+
+<div class="container">
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Role Menu Mapping</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row mb-4">
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-bold">
+                        Select Role
+                    </label>
+
+                    <select id="RoleId" class="form-select">
+
+                        <option value="">Select Role</option>
+
+                        @foreach (var role in ViewBag.RoleList)
+                        {
+                            <option value="@role.RoleId">
+                                @role.RoleName
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <hr />
+
+            <div id="menuContainer">
+
+                @foreach (var parent in ViewBag.ParentMenus)
+                {
+                    <div class="card mb-3 border-primary">
+
+                        <div class="card-header bg-light">
+
+                            <div class="form-check">
+
+                                <input type="checkbox"
+                                       class="form-check-input menu-check"
+                                       id="menu_@parent.MenuId"
+                                       value="@parent.MenuId" />
+
+                                <label class="form-check-label fw-bold"
+                                       for="menu_@parent.MenuId">
+
+                                    @parent.MenuName
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            @{
+                                var children = ((List<GCMS.Models.MenuMaster>)ViewBag.MenuList)
+                                    .Where(x => x.ParentId == parent.MenuId)
+                                    .ToList();
+                            }
+
+                            @foreach (var child in children)
+                            {
+                                <div class="ms-4 mb-3">
+
+                                    <div class="form-check">
+
+                                        <input type="checkbox"
+                                               class="form-check-input menu-check"
+                                               id="menu_@child.MenuId"
+                                               value="@child.MenuId" />
+
+                                        <label class="form-check-label fw-semibold"
+                                               for="menu_@child.MenuId">
+
+                                            @child.MenuName
+
+                                        </label>
+
+                                    </div>
+
+                                    @{
+                                        var subChildren = ((List<GCMS.Models.MenuMaster>)ViewBag.MenuList)
+                                            .Where(x => x.ParentId == child.MenuId)
+                                            .ToList();
+                                    }
+
+                                    @foreach (var sub in subChildren)
+                                    {
+                                        <div class="ms-5 mt-2">
+
+                                            <div class="form-check">
+
+                                                <input type="checkbox"
+                                                       class="form-check-input menu-check"
+                                                       id="menu_@sub.MenuId"
+                                                       value="@sub.MenuId" />
+
+                                                <label class="form-check-label"
+                                                       for="menu_@sub.MenuId">
+
+                                                    @sub.MenuName
+
+                                                </label>
+
+                                            </div>
+
+                                        </div>
+                                    }
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="card-footer text-end">
+
+            <button type="button"
+                    class="btn btn-success"
+                    id="btnSave">
+
+                <i class="bi bi-check-circle"></i>
+
+                Save Permission
+
+            </button>
+
+            <button type="button"
+                    class="btn btn-secondary ms-2"
+                    id="btnReset">
+
+                <i class="bi bi-arrow-clockwise"></i>
+
+                Reset
+
+            </button>
+
+        </div>
+
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+
+            //-----------------------------------------
+            // Role Change
+            //-----------------------------------------
+            $("#RoleId").change(function () {
+
+                let roleId = $(this).val();
+
+                $(".menu-check").prop("checked", false);
+
+                if (roleId == "")
+                    return;
+
+                $.ajax({
+
+                    url: "/UserMaster/GetRolePermissions",
+
+                    type: "GET",
+
+                    data: { roleId: roleId },
+
+                    success: function (result) {
+
+                        $.each(result, function (i, item) {
+
+                            $("#menu_" + item.menuId).prop("checked", true);
+
+                        });
+
+                    },
+
+                    error: function () {
+
+                        alert("Unable to load permissions.");
+
+                    }
+
+                });
+
+            });
+
+
+            //-----------------------------------------
+            // Save
+            //-----------------------------------------
+            $("#btnSave").click(function () {
+
+                let roleId = $("#RoleId").val();
+
+                if (roleId == "") {
+
+                    alert("Please Select Role");
+
+                    return;
+
+                }
+
+                let permissions = [];
+
+                $(".menu-check").each(function () {
+
+                    permissions.push({
+
+                        MenuId: Number($(this).val()),
+
+                        IsActvFlag: $(this).is(":checked") ? 1 : 0,
+
+                        IsDelFlag: $(this).is(":checked") ? 0 : 1
+
+                    });
+
+                });
+
+                $.ajax({
+
+                    url: "/UserMaster/SaveRoleMenuMapping",
+
+                    type: "POST",
+
+                    contentType: "application/json",
+
+                    data: JSON.stringify({
+
+                        RoleId: Number(roleId),
+
+                        Permissions: permissions
+
+                    }),
+
+                    success: function (response) {
+
+                        if (response.success) {
+
+                            alert(response.message);
+
+                        }
+                        else {
+
+                            alert(response.message);
+
+                        }
+
+                    },
+
+                    error: function () {
+
+                        alert("Error while saving.");
+
+                    }
+
+                });
+
+            });
+
+            $(".parent-check").change(function () {
+
+            $(this)
+                .closest(".card")
+                .find(".child-check,.subchild-check")
+                .prop("checked", $(this).is(":checked"));
+
+        });
+
+        $(".child-check").change(function () {
+
+            $(this)
+                .closest(".ms-4")
+                .find(".subchild-check")
+                .prop("checked", $(this).is(":checked"));
+
+        });
+
+
+            //-----------------------------------------
+            // Reset
+            //-----------------------------------------
+            $("#btnReset").click(function () {
+
+                $("#RoleId").val("");
+
+                $(".menu-check").prop("checked", false);
+
+            });
+
+        });
+
+    </script>
+}

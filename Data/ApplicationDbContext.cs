@@ -28,5 +28,7 @@ namespace GCMS.Data
         public DbSet<DivisionMaster> DivisionMasters { get; set; }
 
         public DbSet<RoleMaster> RoleMasters { get; set; }
+
+        public DbSet<MenuMaster> MenuMasters { get; set; }
     }
 }

@@ -1,24 +1,23 @@
-﻿@{
+﻿@model List<GCMS.Models.MenuMaster>
+
+@{
     ViewData["Title"] = "Menu Master";
 }
 
-<div class="container bg-light rounded-4 shadow px-4 py-5">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center border-bottom border-3 pb-3 mb-4">
-        <h3>Menu Master</h3>
-    </div>
+<div class="container">
 
-    <div class="card shadow-sm">
+    <div class="card shadow">
 
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Menu Details</h5>
+            <h4 class="mb-0">
+                Menu Master
+            </h4>
         </div>
 
         <div class="card-body">
 
             <input type="hidden" id="MenuId" />
 
-            <!-- Menu Type -->
             <div class="row mb-4">
 
                 <label class="form-label fw-bold">
@@ -28,15 +27,18 @@
                 <div class="col-md-2">
 
                     <div class="form-check">
+
                         <input class="form-check-input"
                                type="radio"
                                name="MenuType"
                                id="rbParent"
-                               value="Parent">
+                               value="Parent"
+                               checked>
 
                         <label class="form-check-label">
                             Parent
                         </label>
+
                     </div>
 
                 </div>
@@ -44,6 +46,7 @@
                 <div class="col-md-2">
 
                     <div class="form-check">
+
                         <input class="form-check-input"
                                type="radio"
                                name="MenuType"
@@ -51,15 +54,17 @@
                                value="Child">
 
                         <label class="form-check-label">
-                            Children
+                            Child
                         </label>
+
                     </div>
 
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-3">
 
                     <div class="form-check">
+
                         <input class="form-check-input"
                                type="radio"
                                name="MenuType"
@@ -67,8 +72,9 @@
                                value="SubChild">
 
                         <label class="form-check-label">
-                            Sub Children
+                            Sub Child
                         </label>
+
                     </div>
 
                 </div>
@@ -77,33 +83,48 @@
 
             <div class="row">
 
-                <!-- Parent Dropdown -->
-                <div class="col-md-6 mb-3 d-none" id="divParent">
+                <div class="col-md-6 mb-3 d-none"
+                     id="divParent">
 
                     <label class="form-label">
                         Parent Menu
                     </label>
 
-                    <select class="form-select" id="ParentId">
-                        <option value="">Select Parent</option>
+                    <select id="ParentId"
+                            class="form-select">
 
-                        <option value="1">Dashboard</option>
-                        <option value="2">Master</option>
-                        <option value="3">Reports</option>
+                        <option value="">
+                            Select Parent
+                        </option>
+
+                        @if (ViewBag.ParentMenus != null)
+                        {
+                            foreach (var item in ViewBag.ParentMenus)
+                            {
+                                <option value="@item.MenuId">
+                                    @item.MenuName
+                                </option>
+                            }
+                        }
 
                     </select>
 
                 </div>
 
-                <!-- Child Dropdown -->
-                <div class="col-md-6 mb-3 d-none" id="divChild">
+                <div class="col-md-6 mb-3 d-none"
+                     id="divChild">
 
                     <label class="form-label">
-                        Children Menu
+                        Child Menu
                     </label>
 
-                    <select class="form-select" id="ChildId">
-                        <option value="">Select Children</option>
+                    <select id="ChildId"
+                            class="form-select">
+
+                        <option value="">
+                            Select Child Menu
+                        </option>
+
                     </select>
 
                 </div>
@@ -114,14 +135,51 @@
 
                 <div class="col-md-6 mb-3">
 
-                    <label class="form-label" id="lblMenuName">
+                    <label class="form-label"
+                           id="lblMenuName">
+
                         Parent Menu Name
+
                     </label>
 
-                    <input type="text"
-                           id="MenuName"
+                    <input id="MenuName"
                            class="form-control"
                            placeholder="Enter Menu Name" />
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Menu URL
+                    </label>
+
+                    <input id="MenuUrl"
+                           class="form-control"
+                           placeholder="/UserMaster/RoleList" />
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="form-check form-switch">
+
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="IsActive"
+                               checked>
+
+                        <label class="form-check-label">
+
+                            Active
+
+                        </label>
+
+                    </div>
 
                 </div>
 
@@ -140,8 +198,9 @@
 
             </button>
 
-            <button type="reset"
-                    class="btn btn-secondary">
+            <button class="btn btn-secondary"
+                    type="button"
+                    id="btnReset">
 
                 <i class="bi bi-arrow-clockwise"></i>
 
@@ -153,105 +212,447 @@
 
     </div>
 
-</div>
 
+
+    <hr class="my-5" />
+
+    <div class="card shadow">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+                Menu List
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-striped table-hover"
+                   id="tblMenu">
+
+                <thead class="table-primary">
+
+                    <tr>
+
+                        <th width="70">S.No.</th>
+
+                        <th>Menu Name</th>
+
+                        <th>Parent Menu</th>
+
+                        <th>Menu Url</th>
+
+                        <th width="90">Status</th>
+
+                        <th width="150">Action</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @{
+                        int i = 1;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@i</td>
+
+                            <td>@item.MenuName</td>
+
+                            <td>
+
+                                @{
+                                    var parent = Model.FirstOrDefault(x => x.MenuId == item.ParentId);
+                                }
+
+                                @(parent == null ? "-" : parent.MenuName)
+
+                            </td>
+
+                            <td>@item.MenuUrl</td>
+
+                            <td>
+
+                                @if (item.IsActvFlag == 1)
+                                {
+                                    <span class="badge bg-success">
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        Inactive
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td>
+
+                                <button class="btn btn-warning btn-sm edit"
+                                        data-id="@item.MenuId">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </button>
+
+                                @* <button class="btn btn-danger btn-sm delete"
+                                        data-id="@item.MenuId">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button> *@
+
+                            </td>
+
+                        </tr>
+
+                        i++;
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
 @section Scripts {
+
 
     <script>
 
-        $(function () {
+        $(document).ready(function () {
 
+            //==========================
+            // DataTable
+            //==========================
+            $("#tblMenu").DataTable({
+                responsive: true,
+                pageLength: 10
+            });
+
+            //==========================
+            // Default
+            //==========================
             $("#rbParent").prop("checked", true);
-
             showControls("Parent");
 
+            //==========================
+            // Menu Type Change
+            //==========================
+            $("input[name='MenuType']").change(function () {
+
+                showControls($(this).val());
+
+            });
+
+            //==========================
+            // Parent Change
+            //==========================
+            $("#ParentId").change(function () {
+
+                loadChildMenus($(this).val());
+
+            });
+
+            //==========================
+            // Add
+            //==========================
+            $("#btnAdd").click(function () {
+
+                clearForm();
+
+            });
+
+            //==========================
+            // Save
+            //==========================
+            $("#btnSubmit").click(function () {
+
+                if ($("#MenuName").val().trim() == "") {
+
+                    alert("Please Enter Menu Name");
+                    return;
+
+                }
+
+                var parentId = 0;
+
+                if ($("#rbParent").is(":checked")) {
+
+                    parentId = 0;
+
+                }
+                else if ($("#rbChild").is(":checked")) {
+
+                    parentId = $("#ParentId").val();
+
+                }
+                else {
+
+                    parentId = $("#ChildId").val();
+
+                }
+
+                var model = {
+
+                    MenuId: $("#MenuId").val(),
+
+                    MenuName: $("#MenuName").val(),
+
+                    ParentId: parentId,
+
+                    MenuUrl: $("#MenuUrl").val(),
+
+                    IsActvFlag: $("#IsActive").is(":checked") ? 1 : 0,
+
+                    IsDelFlag: 0
+
+                };
+
+                $.ajax({
+
+                    url: "/UserMaster/SaveMenu",
+
+                    type: "POST",
+
+                    data: model,
+
+                    success: function (r) {
+
+                        if (r.success) {
+
+                            alert("Saved Successfully");
+                            location.reload();
+
+                        }
+                        else {
+
+                            alert(r.message);
+
+                        }
+
+                    },
+
+                    error: function () {
+
+                        alert("Save Failed");
+
+                    }
+
+                });
+
+            });
+
+            //==========================
+            // Edit
+            //==========================
+            $(document).on("click", ".edit", function () {
+
+                var id = $(this).data("id");
+
+                $.get("/UserMaster/GetMenu",
+                    { id: id },
+                    function (data) {
+
+                        $("#MenuId").val(data.menuId);
+                        $("#MenuName").val(data.menuName);
+                        $("#MenuUrl").val(data.menuUrl);
+
+                        $("#IsActive").prop("checked", data.isActvFlag == 1);
+
+                        // Parent Menu
+                        if (data.parentId == null || data.parentId == 0) {
+
+                            $("#rbParent").prop("checked", true);
+                            showControls("Parent");
+
+                            return;
+
+                        }
+
+                        // Get Parent Record
+                        $.get("/UserMaster/GetMenu",
+                            { id: data.parentId },
+                            function (parent) {
+
+                                // Child Menu
+                                if (parent.parentId == null || parent.parentId == 0) {
+
+                                    $("#rbChild").prop("checked", true);
+
+                                    showControls("Child");
+
+                                    $("#ParentId").val(data.parentId);
+
+                                }
+                                else {
+
+                                    // Sub Child Menu
+
+                                    $("#rbSubChild").prop("checked", true);
+
+                                    showControls("SubChild");
+
+                                    $("#ParentId").val(parent.parentId);
+
+                                    loadChildMenus(parent.parentId);
+
+                                    setTimeout(function () {
+
+                                        $("#ChildId").val(data.parentId);
+
+                                    },300);
+
+                                }
+
+                            });
+
+                    });
+
+            });
+
+            //==========================
+            // Delete
+            //==========================
+            $(document).on("click", ".delete", function () {
+
+                if (!confirm("Are you sure?"))
+                    return;
+
+                $.post("/UserMaster/DeleteMenu",
+                    {
+                        id: $(this).data("id")
+                    },
+                    function (r) {
+
+                        if (r.success) {
+
+                            location.reload();
+
+                        }
+                        else {
+
+                            alert(r.message);
+
+                        }
+
+                    });
+
+            });
+
+            //==========================
+            // Reset
+            //==========================
+            $("#btnReset").click(function () {
+
+                clearForm();
+
+            });
+
         });
 
-        $("input[name='MenuType']").change(function () {
 
-            showControls($(this).val());
-
-        });
-
-        function showControls(type)
-        {
+        //==========================
+        // Show Controls
+        //==========================
+        function showControls(type) {
 
             $("#divParent").addClass("d-none");
-
             $("#divChild").addClass("d-none");
 
-            if(type=="Parent")
-            {
+            if (type == "Parent") {
 
                 $("#lblMenuName").text("Parent Menu Name");
 
             }
-
-            else if(type=="Child")
-            {
+            else if (type == "Child") {
 
                 $("#divParent").removeClass("d-none");
 
-                $("#lblMenuName").text("Children Menu Name");
+                $("#lblMenuName").text("Child Menu Name");
 
             }
-
-            else if(type=="SubChild")
-            {
+            else {
 
                 $("#divParent").removeClass("d-none");
 
                 $("#divChild").removeClass("d-none");
 
-                $("#lblMenuName").text("Sub Children Menu Name");
+                $("#lblMenuName").text("Sub Child Menu Name");
+
+                if ($("#ParentId").val() != "") {
+
+                    loadChildMenus($("#ParentId").val());
+
+                }
 
             }
 
         }
 
-        $("#btnSubmit").click(function(){
 
-            var model = {
+        //==========================
+        // Load Child Menus
+        //==========================
+        function loadChildMenus(parentId) {
 
-                MenuId : $("#MenuId").val(),
+            $("#ChildId").html('<option value="">Select Child Menu</option>');
 
-                MenuType : $("input[name='MenuType']:checked").val(),
+            if (parentId == "" || parentId == null)
+                return;
 
-                ParentId : $("#ParentId").val(),
+            $.get("/UserMaster/GetChildMenus",
+                {
+                    parentId: parentId
+                },
+                function (data) {
 
-                ChildId : $("#ChildId").val(),
+                    $.each(data, function (i, item) {
 
-                MenuName : $("#MenuName").val()
+                        $("#ChildId").append(
+                            '<option value="' + item.menuId + '">' +
+                            item.menuName +
+                            '</option>');
 
-            };
+                    });
 
-            console.log(model);
+                });
 
-            /*
-            $.ajax({
+        }
 
-                url:'/Master/SaveMenu',
 
-                type:'POST',
+        //==========================
+        // Clear Form
+        //==========================
+        function clearForm() {
 
-                data:model,
+            $("#MenuId").val("");
 
-                success:function(r){
+            $("#MenuName").val("");
 
-                    if(r.success){
+            $("#MenuUrl").val("");
 
-                        alert("Saved Successfully");
+            $("#ParentId").val("");
 
-                        location.reload();
+            $("#ChildId").html('<option value="">Select Child Menu</option>');
 
-                    }
+            $("#IsActive").prop("checked", true);
 
-                }
+            $("#rbParent").prop("checked", true);
 
-            });
-            */
+            showControls("Parent");
 
-        });
+        }
 
     </script>
 

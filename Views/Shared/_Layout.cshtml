@@ -207,6 +207,17 @@
                             </ul>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark @(string.Equals(currentController, "CaseRegistration", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Privacy", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
+                               asp-area=""
+                               asp-controller="CaseRegistration"
+                               asp-action="Step1">
+                                Privacy
+                            </a>
+                        </li>
+
+
+
                     </ul>
                 </div>
             </div>

@@ -193,21 +193,18 @@ namespace GCMS.Repository
             using var cmd = conn.CreateCommand();
 
             cmd.BindByName = true;
-            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = "proc_gcms_role_menu_mapping";
+            cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.CommandText = @"
-        SELECT ROLE_MENU_ID,
-               ROLE_ID,
-               MENU_ID,
-               PARENT_MENU_ID,
-               IS_ACTV_FLAG,
-               IS_DEL_FLAG
-        FROM GCMS_ROLE_MENU_MAPPING
-        WHERE ROLE_ID = :ROLE_ID
-          AND IS_ACTV_FLAG = 1
-          AND IS_DEL_FLAG = 0";
+            // Input Parameters
+            cmd.Parameters.Add("v_input", OracleDbType.Int32).Value = 4;
+            cmd.Parameters.Add("p_role_id", OracleDbType.Int64).Value = roleId;
+            cmd.Parameters.Add("p_is_actv_flag", OracleDbType.Int32).Value = 1;
+            cmd.Parameters.Add("p_is_del_flag", OracleDbType.Int32).Value = 0;
 
-            cmd.Parameters.Add("ROLE_ID", OracleDbType.Int64).Value = roleId;
+            // Output Cursor
+            cmd.Parameters.Add("out_cursor", OracleDbType.RefCursor)
+                          .Direction = ParameterDirection.Output;
 
             using var reader = await cmd.ExecuteReaderAsync();
 
@@ -215,14 +212,12 @@ namespace GCMS.Repository
             {
                 list.Add(new RoleMenuMapping
                 {
-                    RoleMenuId = reader.GetInt64(reader.GetOrdinal("ROLE_MENU_ID")),
-                    RoleId = reader.GetInt64(reader.GetOrdinal("ROLE_ID")),
-                    MenuId = reader.GetInt64(reader.GetOrdinal("MENU_ID")),
-                    ParentMenuId = reader.IsDBNull(reader.GetOrdinal("PARENT_MENU_ID"))
-                        ? 0
-                        : reader.GetInt64(reader.GetOrdinal("PARENT_MENU_ID")),
-                    IsActvFlag = reader.GetInt32(reader.GetOrdinal("IS_ACTV_FLAG")),
-                    IsDelFlag = reader.GetInt32(reader.GetOrdinal("IS_DEL_FLAG"))
+                    RoleMenuId = reader["ROLE_MENU_ID"] == DBNull.Value ? 0 : Convert.ToInt64(reader["ROLE_MENU_ID"]),
+                    RoleId = reader["ROLE_ID"] == DBNull.Value ? 0 : Convert.ToInt64(reader["ROLE_ID"]),
+                    MenuId = reader["MENU_ID"] == DBNull.Value ? 0 : Convert.ToInt64(reader["MENU_ID"]),
+                    ParentMenuId = reader["PARENT_MENU_ID"] == DBNull.Value ? 0 : Convert.ToInt64(reader["PARENT_MENU_ID"]),
+                    IsActvFlag = reader["IS_ACTV_FLAG"] == DBNull.Value ? 0 : Convert.ToInt32(reader["IS_ACTV_FLAG"]),
+                    IsDelFlag = reader["IS_DEL_FLAG"] == DBNull.Value ? 0 : Convert.ToInt32(reader["IS_DEL_FLAG"])
                 });
             }
 
@@ -231,44 +226,64 @@ namespace GCMS.Repository
 
         public async Task<RoleMenuMapping?> GetByRoleAndMenuAsync(long roleId, long menuId)
         {
-            using var conn = _connectionFactory.CreateConnection();
-            conn.Open();
+            using var conn = (OracleConnection)_connectionFactory.CreateConnection();
+            await conn.OpenAsync();
 
-            using var cmd = (OracleCommand)conn.CreateCommand();
+            using var cmd = conn.CreateCommand();
 
-            cmd.CommandText = @"SELECT ROLE_MENU_ID,
-                               ROLE_ID,
-                               MENU_ID,
-                               IS_ACTV_FLAG,
-                               IS_DEL_FLAG
-                        FROM GCMS_ROLE_MENU_MAPPING
-                        WHERE ROLE_ID = :ROLE_ID
-                          AND MENU_ID = :MENU_ID";
+            cmd.BindByName = true;
+            cmd.CommandText = "proc_gcms_role_menu_mapping";
+            cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.Add("ROLE_ID", OracleDbType.Int64).Value = roleId;
-            cmd.Parameters.Add("MENU_ID", OracleDbType.Int64).Value = menuId;
+            cmd.Parameters.Add("v_input", OracleDbType.Int32).Value = 5;
 
-            using var reader = cmd.ExecuteReader();
+            cmd.Parameters.Add("p_role_id", OracleDbType.Int64).Value = roleId;
+            cmd.Parameters.Add("p_menu_id", OracleDbType.Int64).Value = menuId;
 
-            if (reader.Read())
+            // Required for pagination in procedure
+            cmd.Parameters.Add("p_row_cnt", OracleDbType.Int32).Value = 1;
+            cmd.Parameters.Add("p_page_no", OracleDbType.Int32).Value = 1;
+
+            cmd.Parameters.Add("out_cursor", OracleDbType.RefCursor)
+                          .Direction = ParameterDirection.Output;
+
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
             {
                 return new RoleMenuMapping
                 {
-                    RoleMenuId = Convert.ToInt64(reader["ROLE_MENU_ID"]),
+                    RoleMenuId = reader["ROLE_MENU_ID"] == DBNull.Value
+                        ? 0
+                        : Convert.ToInt64(reader["ROLE_MENU_ID"]),
 
-                    RoleId = Convert.ToInt64(reader["ROLE_ID"]),
+                    RoleId = reader["ROLE_ID"] == DBNull.Value
+                        ? 0
+                        : Convert.ToInt64(reader["ROLE_ID"]),
 
-                    MenuId = Convert.ToInt64(reader["MENU_ID"]),
+                    MenuId = reader["MENU_ID"] == DBNull.Value
+                        ? 0
+                        : Convert.ToInt64(reader["MENU_ID"]),
 
-                    IsActvFlag =
-                        reader["IS_ACTV_FLAG"] == DBNull.Value
+                    ParentMenuId = reader["PARENT_MENU_ID"] == DBNull.Value
+                        ? 0
+                        : Convert.ToInt64(reader["PARENT_MENU_ID"]),
+
+                    IsActvFlag = reader["IS_ACTV_FLAG"] == DBNull.Value
                         ? 0
                         : Convert.ToInt32(reader["IS_ACTV_FLAG"]),
 
-                    IsDelFlag =
-                        reader["IS_DEL_FLAG"] == DBNull.Value
+                    IsDelFlag = reader["IS_DEL_FLAG"] == DBNull.Value
                         ? 0
-                        : Convert.ToInt32(reader["IS_DEL_FLAG"])
+                        : Convert.ToInt32(reader["IS_DEL_FLAG"]),
+
+                    CreateBy = reader["CREATE_BY"] == DBNull.Value
+                        ? null
+                        : reader["CREATE_BY"].ToString(),
+
+                    ModifyBy = reader["MODIFY_BY"] == DBNull.Value
+                        ? null
+                        : reader["MODIFY_BY"].ToString()
                 };
             }
 

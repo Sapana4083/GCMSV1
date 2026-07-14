@@ -98,11 +98,26 @@
     <header>
         <div class="top-bar d-md-flex justify-content-between align-items-center p-2">
             <p class="text-center raj-sarkar-name mb-1 mb-md-0 text-light">राजस्थान सरकार | Government Of Rajasthan</p>
-
+           
             <p class="text-center mb-0 fs-6 fw-bold text-light">@Context.Session.GetString("CourtName") </p>
+             
+               
+              
+               
 
             <div class="d-block d-md-flex justify-content-between align-items-center">
                 <p class="text-center mb-0 fs-6 fw-bold text-light me-2">@Context.Session.GetString("Username") </p>
+                <div class="dropdown me-2">
+                    <a class="btn btn-secondary dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Role
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </div>
                 <div class="mb-1 mb-md-0 text-center me-2 ">
                     <button class="btn btn-sm btn-custom-color btn-font-size fw-bold"
                             id="increase-font"

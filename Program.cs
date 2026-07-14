@@ -44,6 +44,10 @@ builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IRoleMenuMappingRepository, RoleMenuMappingRepository>();
 builder.Services.AddScoped<IRoleMenuMappingService, RoleMenuMappingService>();
+builder.Services.AddScoped<ITehsilRepository, TehsilRepository>();
+builder.Services.AddScoped<ITehsilService, TehsilService>();
+builder.Services.AddScoped<ISdoRepository, SdoRepository>();
+builder.Services.AddScoped<ISdoService, SdoService>();
 
 
 

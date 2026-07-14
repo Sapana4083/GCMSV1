@@ -1,0 +1,604 @@
+﻿@model IEnumerable<GCMS.Models.TehsilMaster>
+
+@{
+    ViewData["Title"] = "Tehsil Master";
+}
+
+<div class="container-fluid">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+
+            <h4 class="mb-0">
+                <i class="bi bi-geo-alt-fill"></i>
+                Tehsil Master
+            </h4>
+
+            <button class="btn btn-light"
+                    id="btnAdd">
+
+                <i class="bi bi-plus-circle"></i>
+                Add New
+
+            </button>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover table-striped align-middle"
+                       id="tblTehsil">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th style="width:70px">
+                                #
+                            </th>
+
+                            <th>
+                                State
+                            </th>
+
+                            <th>
+                                District
+                            </th>
+
+                            <th>
+                                SDO
+                            </th>
+
+                            <th>
+                                Tehsil Name (Hindi)
+                            </th>
+
+                            <th>
+                                Tehsil Name (English)
+                            </th>
+
+                            <th>
+                                Tehsil Code
+                            </th>
+
+                            <th>
+                                GIS Tehsil Id
+                            </th>
+
+                            <th>
+                                Apna Khata Id
+                            </th>
+
+                            <th>
+                                Inactive
+                            </th>
+
+                            <th style="width:140px">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Modal -->
+
+<div class="modal fade"
+     id="tehsilModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                    Add / Edit Tehsil
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden"
+                       id="TehsilMastId" />
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-bold">
+                            State
+                        </label>
+
+                        <select id="StateId"
+                                class="form-select">
+
+                            <option value="">
+                                Select State
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-bold">
+                            District
+                        </label>
+
+                        <select id="DistrictId"
+                                class="form-select">
+
+                            <option value="">
+                                Select District
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-bold">
+                            SDO
+                        </label>
+
+                        <select id="SdoId"
+                                class="form-select">
+
+                            <option value="">
+                                Select SDO
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Tehsil Name (Hindi)
+
+                        </label>
+
+                        <input type="text"
+                               id="TehsilName"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Tehsil Name (English)
+
+                        </label>
+
+                        <input type="text"
+                               id="TehsilEng"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Tehsil Code
+
+                        </label>
+
+                        <input type="text"
+                               id="TehsilCode"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            GIS Tehsil Id
+
+                        </label>
+
+                        <input type="number"
+                               id="GisTehsilId"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label fw-bold">
+
+                            Apna Khata Id
+
+                        </label>
+
+                        <input type="text"
+                               id="ApnaKhataId"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label fw-bold">
+
+                            Inactive
+
+                        </label>
+
+                        <select id="Inactive"
+                                class="form-select">
+
+                            <option value="F">
+
+                                Active
+
+                            </option>
+
+                            <option value="T">
+
+                                Inactive
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnSave">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Save
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            loadTehsil();
+            loadStates();
+            loadDivisions();
+
+            //==========================
+            // Add New
+            //==========================
+            $("#btnAdd").click(function () {
+                clearForm();
+                $("#hdnTehsilId").val(0);
+                $("#tehsilModalLabel").text("Add Tehsil");
+                $("#tehsilModal").modal("show");
+            });
+
+            //==========================
+            // Save
+            //==========================
+            $("#btnSave").click(function () {
+
+                if ($("#StateId").val() == "") {
+                    alert("Select State");
+                    return;
+                }
+
+                if ($("#DistrictId").val() == "") {
+                    alert("Select District");
+                    return;
+                }
+
+                if ($("#TehsilName").val().trim() == "") {
+                    alert("Enter Tehsil Name");
+                    return;
+                }
+
+                var model = {
+                    TehsilMastId: $("#hdnTehsilId").val(),
+                    StateId:      $("#StateId").val(),
+                    DistIdOld:    $("#DistrictId").val(),
+                    SdoNameId:    $("#SdoId").val(),
+                    TehsilName:   $("#TehsilName").val().trim(),
+                    TehsilCode:   $("#TehsilCode").val(),
+                    TehsilEng:    $("#TehsilEng").val(),
+                    GisTehsilId:  $("#GisTehsilId").val(),
+                    ApnaKhataId:  $("#ApnaKhataId").val(),
+                    Inactive:     $("#Inactive").is(":checked") ? "T" : "F"
+                };
+
+                $.ajax({
+                    url:  "/Master/SaveTehsil",
+                    type: "POST",
+                    data: model,
+                    success: function (r) {
+                        if (r.success) {
+                            $("#tehsilModal").modal("hide");
+                            loadTehsil();
+                            alert(r.message);
+                        } else {
+                            alert(r.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Error while saving.");
+                    }
+                });
+            });
+
+            //==============================
+            // Load Districts By State
+            // ✅ moved inside document.ready so the event binds correctly
+            //==============================
+            $("#StateId").change(function () {
+
+                var stateId = $(this).val();
+
+                $("#DistrictId").empty();
+                $("#DistrictId").append('<option value="">Select District</option>');
+
+                if (stateId == "") return;
+
+                $.ajax({
+                    url:  "/Master/GetDistricts",
+                    type: "GET",
+                    data: { stateId: stateId },
+                    success: function (data) {
+                        $.each(data, function (i, item) {
+                            $("#DistrictId").append(
+                                '<option value="' + item.districtMastId + '">' +
+                                item.districtName +
+                                '</option>'
+                            );
+                        });
+                    }
+                });
+            }); // ✅ closing brace was missing
+
+        }); // end document.ready
+
+
+        //=====================================
+        // Load Grid
+        //=====================================
+        function loadTehsil(page = 1) {
+
+            $.ajax({
+                url:  "/Master/GetTehsilList",
+                type: "GET",
+                data: { pageNo: page },
+                success: function (result) {
+
+                    $("#tblTehsil tbody").html("");
+
+                    if (!result || result.length === 0) {
+                        $("#tblTehsil tbody").append(
+                            "<tr><td colspan='7' class='text-center'>No records found.</td></tr>"
+                        );
+                        return;
+                    }
+
+                    $.each(result, function (i, item) {
+
+                        var inactive = item.inactive == "T"
+                            ? "<span class='badge bg-danger'>Inactive</span>"
+                            : "<span class='badge bg-success'>Active</span>";
+
+                        var row = "<tr>" +
+                            "<td>" + (item.tehsilMastId ?? "") + "</td>" +
+                            "<td>" + (item.stateName    ?? "") + "</td>" +
+                            "<td>" + (item.districtName ?? "") + "</td>" +
+                            "<td>" + (item.tehsilName   ?? "") + "</td>" +
+                            "<td>" + (item.tehsilCode   ?? "") + "</td>" +
+                            "<td>" + (item.tehsilEng    ?? "") + "</td>" +
+                            "<td>" + inactive + "</td>" +
+                            "<td>" +
+                                "<button class='btn btn-warning btn-sm me-1' onclick='editTehsil(" + item.tehsilMastId + ")'>" +
+                                    "<i class='bi bi-pencil'></i>" +
+                                "</button>" +
+                                "<button class='btn btn-danger btn-sm' onclick='deleteTehsil(" + item.tehsilMastId + ")'>" +
+                                    "<i class='bi bi-trash'></i>" +
+                                "</button>" +
+                            "</td>" +
+                            "</tr>";
+
+                        $("#tblTehsil tbody").append(row);
+                    });
+                }
+            });
+        }
+
+
+        //=====================================
+        // Edit
+        //=====================================
+        function editTehsil(id) {
+
+            $.ajax({
+                url:  "/Master/GetTehsil",
+                type: "GET",
+                data: { id: id },
+                success: function (r) {
+
+                    $("#hdnTehsilId").val(r.tehsilMastId);
+                    $("#StateId").val(r.stateId).trigger("change"); // ✅ trigger to load districts
+                    $("#TehsilName").val(r.tehsilName);
+                    $("#TehsilCode").val(r.tehsilCode);
+                    $("#TehsilEng").val(r.tehsilEng);
+                    $("#GisTehsilId").val(r.gisTehsilId);
+                    $("#ApnaKhataId").val(r.apnaKhataId);
+                    $("#Inactive").prop("checked", r.inactive == "T");
+                    $("#tehsilModalLabel").text("Edit Tehsil");
+
+                    // ✅ wait for districts to load before setting district value
+                    setTimeout(function () {
+                        $("#DistrictId").val(r.distIdOld);
+                        $("#SdoId").val(r.sdoNameId);
+                        $("#tehsilModal").modal("show");
+                    }, 500);
+                }
+            });
+        }
+
+
+        //=====================================
+        // Delete
+        //=====================================
+        function deleteTehsil(id) {
+
+            if (!confirm("Are you sure you want to delete this Tehsil?"))
+                return;
+
+            $.ajax({
+                url:  "/Master/DeleteTehsil",
+                type: "POST",
+                data: { id: id },
+                success: function (r) {
+                    if (r.success) {
+                        loadTehsil();
+                        alert(r.message);
+                    } else {
+                        alert(r.message);
+                    }
+                },
+                error: function () {
+                    alert("Error while deleting.");
+                }
+            });
+        }
+
+
+        //=====================================
+        // Clear Form
+        //=====================================
+        function clearForm() {
+            $("#hdnTehsilId").val(0);
+            $("#StateId").val("");
+            $("#DistrictId").empty().append('<option value="">Select District</option>');
+            $("#SdoId").val("");
+            $("#TehsilName").val("");
+            $("#TehsilCode").val("");
+            $("#TehsilEng").val("");
+            $("#GisTehsilId").val("");
+            $("#ApnaKhataId").val("");
+            $("#Inactive").prop("checked", false);
+        }
+
+
+        //==============================
+        // Load States
+        //==============================
+        function loadStates() {
+            $.ajax({
+                url:  "/Master/GetStates",
+                type: "GET",
+                success: function (data) {
+                    $("#StateId").empty();
+                    $("#StateId").append('<option value="">Select State</option>');
+                    $.each(data, function (i, item) {
+                        $("#StateId").append(
+                            '<option value="' + item.stateMastId + '">' +
+                            item.stateName +
+                            '</option>'
+                        );
+                    });
+                }
+            });
+        }
+
+
+        //==============================
+        // Load Divisions
+        //==============================
+        function loadDivisions() {
+            $.ajax({
+                url:  "/Master/GetDivisions",
+                type: "GET",
+                success: function (data) {
+                    $("#DivisionId").empty();
+                    $("#DivisionId").append('<option value="">Select Division</option>');
+                    $.each(data, function (i, item) {
+                        $("#DivisionId").append(
+                            '<option value="' + item.divisionMastId + '">' +
+                            item.divisionName +
+                            '</option>'
+                        );
+                    });
+                }
+            });
+        }
+
+    </script>
+}

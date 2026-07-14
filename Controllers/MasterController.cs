@@ -12,15 +12,24 @@ namespace GCMS.Controllers
         private readonly IStateService _service;
         private readonly IDistrictService _districtService;
         private readonly IDivisionService _divisionService;
+        private readonly ITehsilService _tehsilService;
         private readonly ApplicationDbContext _context;
+        private readonly ISdoService _sdoService;
 
         public MasterController(
-            IStateService service, ApplicationDbContext context, IDistrictService districtService, IDivisionService divisionService)
+     IStateService service,
+     ApplicationDbContext context,
+     IDistrictService districtService,
+     IDivisionService divisionService,
+     ITehsilService tehsilService,
+     ISdoService sdoService)
         {
             _service = service;
             _context = context;
             _districtService = districtService;
             _divisionService = divisionService;
+            _tehsilService = tehsilService;
+            _sdoService = sdoService;
         }
 
         //State Master
@@ -259,6 +268,133 @@ namespace GCMS.Controllers
             {
                 success = true
             });
+        }
+
+
+        //Tehsil Master
+        public async Task<IActionResult> TehsilList()
+        {
+            var data = await _tehsilService.GetAllAsync(1, 100);
+
+            return View(data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTehsil(long id)
+        {
+            var data = await _tehsilService.GetByIdAsync(id);
+
+            if (data == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Record not found."
+                });
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveTehsil(TehsilMaster model)
+        {
+            try
+            {
+                if (model.TehsilMastId == 0)
+                {
+                    model.CreatedBy = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                    await _tehsilService.AddAsync(model);
+                }
+                else
+                {
+                    model.Username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                    await _tehsilService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetStates()
+        {
+            var data = await _service.GetAllAsync(1, 9999999);
+
+            return Json(data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDivisions()
+        {
+            var data = await _divisionService.GetAllAsync(1, 9999999);
+
+            return Json(data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDistricts(long stateId)
+        {
+            var data = await _districtService.GetAllAsync(1, 999999);
+
+            return Json(data);
+        }
+
+
+        //SDO Master (Sub District Office)
+
+        public async Task<IActionResult> SdoList()
+        {
+            var list = await _sdoService.GetAllAsync(1, 999999);
+
+            return View(list);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveSdo(SdoMaster model)
+        {
+            if (model.SdoMastId == 0)
+                await _sdoService.AddAsync(model);
+            else
+                await _sdoService.UpdateAsync(model);
+
+            return Json(new
+            {
+                success = true,
+                message = "Saved Successfully"
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSdo(long id)
+        {
+            var data = await _sdoService.GetByIdAsync(id);
+
+            return Json(data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSdoList(int pageNo = 1, int rowCount = 999999)
+        {
+            var data = await _sdoService.GetAllAsync(pageNo, rowCount);
+
+            return Json(data);
         }
     }
 }

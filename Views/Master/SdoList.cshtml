@@ -1,0 +1,620 @@
+﻿@model List<GCMS.Models.SdoMaster>
+
+@{
+    ViewData["Title"] = "SDO Master";
+    var srNo = 1;
+}
+<div class="container bg-light rounded-4 shadow px-4 py-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h3>SDO Master</h3>
+
+        <div class="d-flex gap-2">
+            <button type="button"
+                    class="btn btn-primary"
+                    id="btnAddSDO">
+                Add SDO
+            </button>
+
+            <button type="button"
+                    class="btn btn-secondary"
+                    id="btnPrint">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+
+            <button type="button"
+                    class="btn btn-success"
+                    id="btnExcel">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Data Table -->
+    <table id="tblSDO" class="table table-bordered table-striped">
+
+        <thead>
+            <tr>
+                <th width="20">S. No.</th>
+                <th>District Name</th>
+                <th>SDO Name</th>
+                <th>SDO Name (English)</th>
+                <th>SDO Code</th>
+                @* <th>P Code</th> *@
+                <th>Active</th>
+                <th>Created By</th>
+                <th>Modified Date</th>
+                <th width="180">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@srNo</td>
+
+                    <td>@item.DistrictName1</td>
+
+                    <td>@item.SdoName</td>
+
+                    <td>@item.SdoNameEng</td>
+
+                    <td>@item.SdoCode</td>
+
+                    @* <td>@item.Pcode</td> *@
+
+                    <td>
+                        @if (item.Inactive == "F")
+                        {
+                            <span class="badge bg-success">
+                                Active
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Inactive
+                            </span>
+                        }
+                    </td>
+
+                    <td>@item.CreatedBy</td>
+
+                    <td>
+                        @(item.ModifiedOn?.ToString("dd/MM/yyyy HH:mm"))
+                    </td>
+
+                    <td>
+
+                        <button type="button"
+                                class="btn btn-warning btn-sm edit"
+                                data-id="@item.SdoMastId">
+                            Edit
+                        </button>
+
+                        @*
+                    <button type="button"
+                            class="btn btn-danger btn-sm delete"
+                            data-id="@item.SdoMastId">
+                        Delete
+                    </button>
+                    *@
+
+                    </td>
+
+                </tr>
+
+                srNo++;
+            }
+
+        </tbody>
+
+    </table>
+</div>
+<!-- SDO Modal -->
+<div class="modal fade"
+     id="sdoModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    SDO Master
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <input type="hidden"
+                       id="SdoMastId" />
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            District
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <select id="DistrictName"
+                                class="form-select">
+
+                            <option value="">
+                                Select District
+                            </option>
+
+                        </select>
+
+                        <span class="text-danger"
+                              id="errDistrictName"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            SDO Name
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="SdoName"
+                               class="form-control" />
+
+                        <span class="text-danger"
+                              id="errSdoName"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            SDO Name (English)
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="SdoNameEng"
+                               class="form-control" />
+
+                        <span class="text-danger"
+                              id="errSdoNameEng"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            SDO Code
+                            <span class="text-danger">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="SdoCode"
+                               class="form-control" />
+
+                        <span class="text-danger"
+                              id="errSdoCode"></span>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Panchayat Code
+                        </label>
+
+                        <input type="text"
+                               id="PCode"
+                               class="form-control" />
+
+                        <span class="text-danger"
+                              id="errPCode"></span>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Disable
+                        </label>
+
+                        <div class="form-check form-switch mt-2">
+
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="Inactive">
+
+                            <label class="form-check-label">
+                                Inactive
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnSave">
+
+                    Save
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        // ─────────────────────────────────────────────
+        // Init
+        // ─────────────────────────────────────────────
+        $(document).ready(function () {
+
+            $('#tblSDO').DataTable({
+
+                dom: 'lBfrtip',
+
+                responsive: true,
+                autoWidth: false,
+
+                pageLength: 10,
+
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+
+                columnDefs: [
+                    {
+                        responsivePriority: 1,
+                        targets: 8
+                    },
+                    {
+                        responsivePriority: 2,
+                        targets: 0
+                    }
+                ],
+
+                buttons: [
+                    {
+                        extend: 'print',
+                        title: 'SDO Master'
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'SDO Master'
+                    }
+                ]
+            });
+
+            $('.dt-buttons').hide();
+
+            loadDistricts();
+
+        });
+
+        //─────────────────────────────────────────────
+        // Print
+        //─────────────────────────────────────────────
+        $("#btnPrint").click(function () {
+
+            window.print();
+
+        });
+
+        //─────────────────────────────────────────────
+        // Excel
+        //─────────────────────────────────────────────
+        $("#btnExcel").click(function () {
+
+            let table = document.getElementById("tblSDO");
+
+            let html = table.outerHTML;
+
+            let url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+
+            let a = document.createElement('a');
+
+            a.href = url;
+
+            a.download = 'SDOMaster.xls';
+
+            a.click();
+
+        });
+
+        var sdoModal = new bootstrap.Modal(document.getElementById('sdoModal'));
+
+        //─────────────────────────────────────────────
+        // Load District Dropdown
+        //─────────────────────────────────────────────
+        function loadDistricts() {
+
+            $.ajax({
+
+                url: '/Master/GetDistricts',
+
+                type: 'GET',
+
+                success: function (data) {
+
+                    $("#DistrictName").empty();
+
+                    $("#DistrictName").append('<option value="">Select District</option>');
+
+                    $.each(data, function (i, item) {
+
+                        $("#DistrictName").append(
+
+                            '<option value="' + item.districtMastId + '">' +
+
+                            item.districtNameEng +
+
+                            '</option>'
+
+                        );
+
+                    });
+
+                }
+
+            });
+
+        }
+
+        //─────────────────────────────────────────────
+        // Add
+        //─────────────────────────────────────────────
+        $("#btnAddSDO").click(function () {
+
+            $("#SdoMastId").val('');
+            $("#DistrictName").val('');
+            $("#SdoName").val('');
+            $("#SdoNameEng").val('');
+            $("#SdoCode").val('');
+            $("#PCode").val('');
+
+            $("#Inactive").prop("checked", false);
+
+            $("#errDistrictName").text('');
+            $("#errSdoName").text('');
+            $("#errSdoNameEng").text('');
+            $("#errSdoCode").text('');
+
+            sdoModal.show();
+
+        });
+
+        //─────────────────────────────────────────────
+        // Edit
+        //─────────────────────────────────────────────
+        $(document).on("click", ".edit", function () {
+
+            var id = $(this).data("id");
+
+            $.ajax({
+
+                url: '/Master/GetSDO',
+
+                type: 'GET',
+
+                data: { id: id },
+
+                success: function (data) {
+
+                    $("#SdoMastId").val(data.sdoMastId);
+
+                    $("#DistrictName").val(data.districtMastId);
+
+                    $("#SdoName").val(data.sdoName);
+
+                    $("#SdoNameEng").val(data.sdoNameEng);
+
+                    $("#SdoCode").val(data.sdoCode);
+
+                    $("#PCode").val(data.pcode);
+
+                    $("#Inactive").prop("checked", data.inactive === "T");
+
+                    sdoModal.show();
+
+                }
+
+            });
+
+        });
+
+        //─────────────────────────────────────────────
+        // Save
+        //─────────────────────────────────────────────
+        $("#btnSave").click(function () {
+
+            let isValid = true;
+
+            $("#errDistrictName").text('');
+            $("#errSdoName").text('');
+            $("#errSdoNameEng").text('');
+            $("#errSdoCode").text('');
+
+            if ($("#DistrictName").val() == "") {
+
+                $("#errDistrictName").text("District is required");
+
+                isValid = false;
+
+            }
+
+            if ($("#SdoName").val().trim() == "") {
+
+                $("#errSdoName").text("SDO Name is required");
+
+                isValid = false;
+
+            }
+
+            if ($("#SdoNameEng").val().trim() == "") {
+
+                $("#errSdoNameEng").text("SDO English Name is required");
+
+                isValid = false;
+
+            }
+
+            if ($("#SdoCode").val().trim() == "") {
+
+                $("#errSdoCode").text("SDO Code is required");
+
+                isValid = false;
+
+            }
+
+            if (!isValid)
+                return;
+
+            $.ajax({
+
+                url: '/Master/SaveSDO',
+
+                type: 'POST',
+
+                data: {
+
+                    SdoMastId: $("#SdoMastId").val(),
+
+                    DistrictName: $("#DistrictName").val(),
+
+                    SdoName: $("#SdoName").val(),
+
+                    SdoNameEng: $("#SdoNameEng").val(),
+
+                    SdoCode: $("#SdoCode").val(),
+
+                    Pcode: $("#PCode").val(),
+
+                    Inactive: $("#Inactive").is(":checked") ? "T" : "F"
+
+                },
+
+                success: function (r) {
+
+                    if (r.success) {
+
+                        sdoModal.hide();
+
+                        location.reload();
+
+                    }
+                    else {
+
+                        alert(r.message);
+
+                    }
+
+                },
+
+                error: function () {
+
+                    alert("Save Failed");
+
+                }
+
+            });
+
+        });
+
+        //─────────────────────────────────────────────
+        // Delete
+        //─────────────────────────────────────────────
+        $(document).on("click", ".delete", function () {
+
+            if (!confirm("Are you sure want to delete?"))
+                return;
+
+            var id = $(this).data("id");
+
+            $.ajax({
+
+                url: '/Master/DeleteSDO',
+
+                type: 'POST',
+
+                data: { id: id },
+
+                success: function (r) {
+
+                    if (r.success) {
+
+                        location.reload();
+
+                    }
+
+                },
+
+                error: function () {
+
+                    alert("Delete Failed");
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+}

@@ -22,7 +22,6 @@
     transition: width .25s ease, transform .25s ease;
     overflow-x: hidden;
     overflow-y: auto;
-    box-shadow: 10px 0px 15px 0px lightblue;
 }
 
 .sidebar-header {
@@ -74,7 +73,7 @@
     transition: margin-left .25s ease, width .25s ease;
     width: calc(100% - var(--sidebar-width));
     max-width: 100%;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
@@ -154,7 +153,6 @@
     padding: 0;
     margin: 0;
     display: none; /* controlled via JS by toggling .show on the owning <li> */
-
 }
 
 /* One rule handles every nesting level */
@@ -279,4 +277,29 @@ html, body {
    any overflow should scroll inside the table itself, not the whole page */
 .table-responsive {
     overflow-x: auto;
+}
+
+/* ===========================
+   Footer override
+   site.css positions .footer with position:absolute/bottom:0, which was
+   built for the old full-width layout with no sidebar. Inside .content-area
+   (a flex column) that math breaks whenever content height changes.
+   Use a flexbox sticky-footer instead: main grows to fill space, footer
+   sits right after it — pinned to the bottom on short pages, and simply
+   below the content (scrolls with the page) on tall pages. Never overlaps.
+=========================== */
+.content-area main {
+    flex: 1 1 auto;
+}
+
+.content-area .footer {
+    position: static;
+    bottom: auto;
+    width: auto;
+    line-height: normal;
+    margin-top: auto;
+}
+
+body {
+    margin-bottom: 0;
 }

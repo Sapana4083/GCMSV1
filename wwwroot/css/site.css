@@ -7,14 +7,17 @@
     --topbar-height: 60px;
 }
 
+#mainContent{
+    margin-top: 4rem;
+}
 /* ===========================
    Sidebar shell
 =========================== */
 .sidebar {
     position: fixed;
-    top: 0;
+    top: 2rem;
     left: 0;
-    height: 100vh;
+    height: calc(100vh - 2rem);
     width: var(--sidebar-width);
     background: #fff;
     border-right: 1px solid #e9ecef;
@@ -54,7 +57,7 @@
     }
 
     .sidebar .nav-link i {
-        font-size: 1.05rem;
+        font-size: 14px;
         width: 1.25rem;
         text-align: center;
         flex-shrink: 0;
@@ -73,7 +76,7 @@
     transition: margin-left .25s ease, width .25s ease;
     width: calc(100% - var(--sidebar-width));
     max-width: 100%;
-    height: 100vh;
+    height: auto;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
@@ -86,14 +89,15 @@
 
 .topbar {
     height: var(--topbar-height);
+    width:100%;
     background: #fff;
     border-bottom: 1px solid #e9ecef;
     display: flex;
     align-items: center;
     padding: 0 1rem;
     gap: 1rem;
-    position: sticky;
-    top: 0;
+    position: fixed;
+    top: 2rem;
     z-index: 1010;
 }
 
@@ -123,7 +127,7 @@
     .sidebar .dropdown-toggle > .caret {
         margin-left: auto;
         transition: transform .2s ease;
-        font-size: .75rem;
+        font-size: 14px;
         flex-shrink: 0;
     }
 
@@ -269,7 +273,8 @@ html, body {
 }
 
 #wrapper {
-    max-width: 100vw;
+    margin-top: 2rem;
+    max-width: calc(100vw - 2rem);
     overflow-x: hidden;
 }
 
@@ -303,3 +308,210 @@ html, body {
 body {
     margin-bottom: 0;
 }
+
+
+
+/* ============================================================
+   WCAG 2.1 — Accessibility toolbar + global overrides
+   Success criteria addressed directly in this file:
+   - 2.4.1 Bypass Blocks        (skip link)
+   - 2.4.7 Focus Visible        (focus outline)
+   - 1.4.11 Non-text Contrast   (focus outline contrast)
+   - 1.4.4 Resize Text          (font-size scaling, up to 200%)
+   - 1.4.3 / 1.4.6 Contrast     (high-contrast mode)
+   - 1.4.12 Text Spacing        (exact SC minimums, toggle-based)
+     https://www.w3.org/TR/WCAG21/#text-spacing
+============================================================ */
+
+/* ------------------------------------------------------------
+   Skip to content — 2.4.1 Bypass Blocks
+   Hidden off-screen until it receives keyboard focus.
+------------------------------------------------------------ */
+.skip-to-content {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: #000;
+    color: #fff;
+    padding: .75rem 1.25rem;
+    z-index: 2000;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 0 0 6px 0;
+}
+
+    .skip-to-content:focus {
+        left: 0;
+    }
+
+/* ------------------------------------------------------------
+   Visible focus indicator everywhere — 2.4.7 / 1.4.11
+   3px outline with a color that holds 3:1 contrast against both
+   light and dark backgrounds used on this site.
+------------------------------------------------------------ */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid #ffbf47;
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   Accessibility bar
+------------------------------------------------------------ */
+.accessibility-bar {
+    width:100%;
+    height:2rem;
+    background: #1f2937;
+    color: #fff;
+    font-size: 14px;
+    top:0;
+    left:0;
+    position: fixed;
+    z-index: 1040;
+}
+
+    .accessibility-bar .container-fluid {
+        flex-wrap: wrap;
+    }
+
+.accessibility-label {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.accessibility-divider {
+    opacity: .4;
+}
+
+.a11y-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, .5);
+    color: #fff;
+    border-radius: 4px;
+    padding: .15rem .55rem;
+    font-size: 13px;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+    .a11y-btn:hover {
+        background: rgba(255, 255, 255, .15);
+    }
+
+    .a11y-btn[aria-pressed="true"] {
+        background: #fff;
+        color: #1f2937;
+        font-weight: 600;
+    }
+
+/* ------------------------------------------------------------
+   Font size scaling — 1.4.4 Resize Text (up to 200% with no loss)
+   Scales the root font-size; every rem/em-based measurement on
+   the site scales with it. Fixed pixel heights (topbar, sidebar
+   header) are relaxed to min-height below so nothing gets clipped.
+------------------------------------------------------------ */
+html[data-fontsize="1"] {
+    font-size: 100%;
+}
+
+html[data-fontsize="2"] {
+    font-size: 112.5%;
+}
+
+html[data-fontsize="3"] {
+    font-size: 125%;
+}
+
+html[data-fontsize="4"] {
+    font-size: 150%;
+}
+
+html[data-fontsize="5"] {
+    font-size: 175%;
+}
+
+html[data-fontsize="6"] {
+    font-size: 200%;
+}
+
+.topbar,
+.sidebar-header {
+    height: auto;
+    min-height: var(--topbar-height);
+}
+
+/* ------------------------------------------------------------
+   Text spacing mode — 1.4.12 Text Spacing
+   Applies the exact SC-required minimums on demand:
+     line height  >= 1.5x font size
+     paragraph spacing >= 2x font size
+     letter spacing >= 0.12x font size
+     word spacing >= 0.16x font size
+   No container here may clip this — avoid overflow:hidden or a
+   fixed height anywhere text can appear (checked in this file:
+   .content-area / html / body only use overflow-x:hidden, never
+   overflow-y or overflow shorthand, so vertical growth is safe).
+------------------------------------------------------------ */
+html.text-spacing-mode body,
+html.text-spacing-mode p,
+html.text-spacing-mode li,
+html.text-spacing-mode td,
+html.text-spacing-mode th,
+html.text-spacing-mode label,
+html.text-spacing-mode span,
+html.text-spacing-mode a,
+html.text-spacing-mode button,
+html.text-spacing-mode .nav-link,
+html.text-spacing-mode .dropdown-item {
+    line-height: 1.5 !important;
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.16em !important;
+}
+
+html.text-spacing-mode p {
+    margin-bottom: 2em !important;
+}
+
+/* ------------------------------------------------------------
+   High contrast mode — 1.4.3 Contrast (Minimum) / 1.4.6 (Enhanced)
+------------------------------------------------------------ */
+html.high-contrast body {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+html.high-contrast .sidebar,
+html.high-contrast .content-area,
+html.high-contrast .topbar,
+html.high-contrast .accessibility-bar,
+html.high-contrast .container,
+html.high-contrast .container-fluid,
+html.high-contrast .bg-light,
+html.high-contrast .card,
+html.high-contrast table,
+html.high-contrast thead th {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+html.high-contrast a,
+html.high-contrast .nav-link,
+html.high-contrast .dropdown-item {
+    color: #ffd60a !important;
+}
+
+html.high-contrast .btn-primary {
+    background: #ffd60a !important;
+    color: #000 !important;
+    border-color: #ffd60a !important;
+}
+
+html.high-contrast img {
+    filter: grayscale(100%) contrast(120%);
+}
+

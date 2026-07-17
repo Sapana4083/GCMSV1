@@ -51,14 +51,19 @@
 
     // ======================
     // Sidebar Dropdown - RECURSIVE, works for unlimited depth (2, 3, 4+ levels)
+    // Includes ARIA state (4.1.2 Name, Role, Value) and keyboard support (2.1.1 Keyboard)
     // ======================
-    document.querySelectorAll('.sidebar .dropdown-toggle').forEach(function (toggle) {
-        toggle.addEventListener('click', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
+    const dropdownToggles = document.querySelectorAll('.sidebar .dropdown-toggle');
 
-            const li = this.closest('.dd-parent');      // the <li> that owns this toggle
-            const menu = this.nextElementSibling;         // its direct <ul class="dropdown-menu">
+    dropdownToggles.forEach(function (toggle) {
+        // Static ARIA setup
+        toggle.setAttribute('role', 'button');
+        toggle.setAttribute('aria-haspopup', 'true');
+        toggle.setAttribute('aria-expanded', 'false');
+
+        function toggleDropdown() {
+            const li = toggle.closest('.dd-parent');
+            const menu = toggle.nextElementSibling;
             if (!li || !menu) return;
 
             const willOpen = !li.classList.contains('show');
@@ -68,19 +73,53 @@
             parentUl.querySelectorAll(':scope > li.dd-parent').forEach(function (sibling) {
                 if (sibling !== li) {
                     sibling.classList.remove('show');
-                    // collapse any open descendants inside that sibling too
                     sibling.querySelectorAll('.dd-parent.show').forEach(el => el.classList.remove('show'));
+                    const sibToggle = sibling.querySelector(':scope > .dropdown-toggle');
+                    if (sibToggle) sibToggle.setAttribute('aria-expanded', 'false');
+                    sibling.querySelectorAll('.dropdown-toggle').forEach(t => t.setAttribute('aria-expanded', 'false'));
                 }
             });
 
-            // Toggle current item
             li.classList.toggle('show', willOpen);
+            toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
 
-            // If we just closed it, collapse any open descendants too
             if (!willOpen) {
                 li.querySelectorAll('.dd-parent.show').forEach(el => el.classList.remove('show'));
+                li.querySelectorAll('.dropdown-toggle').forEach(t => t.setAttribute('aria-expanded', 'false'));
+            }
+        }
+
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleDropdown();
+        });
+
+        // Anchors fire click on Enter natively, but NOT on Space — add it explicitly
+        toggle.addEventListener('keydown', function (e) {
+            if (e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                toggleDropdown();
+            }
+            if (e.key === 'Escape') {
+                const li = toggle.closest('.dd-parent');
+                if (li && li.classList.contains('show')) {
+                    li.classList.remove('show');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    li.querySelectorAll('.dd-parent.show').forEach(el => el.classList.remove('show'));
+                    li.querySelectorAll('.dropdown-toggle').forEach(t => t.setAttribute('aria-expanded', 'false'));
+                    toggle.focus();
+                }
             }
         });
+    });
+
+    // Escape anywhere in the sidebar closes all open levels and returns focus sensibly
+    sidebar.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.sidebar .dd-parent.show').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.sidebar .dropdown-toggle').forEach(t => t.setAttribute('aria-expanded', 'false'));
+        }
     });
 
     // Clicking outside the sidebar closes all open dropdown levels (desktop, non-collapsed)

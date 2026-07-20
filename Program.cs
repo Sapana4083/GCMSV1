@@ -41,6 +41,14 @@ builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
 builder.Services.AddScoped<IDivisionService, DivisionService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IMenuRepository, MenuRepository>();
+builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IRoleMenuMappingRepository, RoleMenuMappingRepository>();
+builder.Services.AddScoped<IRoleMenuMappingService, RoleMenuMappingService>();
+builder.Services.AddScoped<ITehsilRepository, TehsilRepository>();
+builder.Services.AddScoped<ITehsilService, TehsilService>();
+builder.Services.AddScoped<ISdoRepository, SdoRepository>();
+builder.Services.AddScoped<ISdoService, SdoService>();
 
 
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();

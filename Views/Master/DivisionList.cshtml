@@ -7,7 +7,7 @@
 }
 
 <!-- ========== PAGE CONTAINER ========== -->
-<div class="container bg-light rounded-4 shadow px-4 py-5">
+<div class="container-fluid bg-light rounded-4 shadow m-3 py-4 px-3">
 
     <!-- Header -->
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
@@ -29,75 +29,76 @@
     </div>
 
     <!-- Data Table -->
-    <table id="tblDivision" class="table table-bordered table-striped">
+    <div class="table-responsive">
+        <table id="tblDivision" class="table table-bordered table-striped">
 
-        <thead>
-            <tr>
-                <td width="20">S. No.</td>
-                <th>Division Name</th>
-                <th>Division Name (In Hindi)</th>
-                <th>State</th>
-                <th>Active</th>
-                <th>Created By</th>
-                <th>Modified Date</th>
-                <th width="60">Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var item in Model)
-            {
+            <thead>
                 <tr>
-                    <td>@srNo</td>
-                    <td>@item.DivisionName</td>
-                    <td>@item.DivisionNameHindi</td>
-                    <td>
-                        @{
-                            var stateName = states?
-                                .FirstOrDefault(x =>
-                                    x.StateMastId.ToString() == item.StateName)
-                                ?.StateName;
-                        }
+                    <td width="20">S. No.</td>
+                    <th>Division Name</th>
+                    <th>Division Name (In Hindi)</th>
+                    <th>State</th>
+                    <th>Active</th>
+                    <th>Created By</th>
+                    <th>Modified Date</th>
+                    <th width="60">Action</th>
+                </tr>
+            </thead>
 
-                        @stateName
-                    </td>
-                    <td>
-                        @if (item.InActive == "F")
-                        {
-                            <span class="badge bg-success">
-                                Active
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">
-                                Inactive
-                            </span>
-                        }
-                    </td>
-                    <td>@item.CreatedBy</td>
-                    <td>@item.ModifiedOn</td>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.DivisionName</td>
+                        <td>@item.DivisionNameHindi</td>
+                        <td>
+                            @{
+                                var stateName = states?
+                                    .FirstOrDefault(x =>
+                                        x.StateMastId.ToString() == item.StateName)
+                                    ?.StateName;
+                            }
 
-                    <td>
-                        <button type="button"
-                                class="btn btn-warning btn-sm edit"
-                                data-id="@item.DivisionMastId">
-                            Edit
-                        </button>
-                        @* <button type="button"
+                            @stateName
+                        </td>
+                        <td>
+                            @if (item.InActive == "F")
+                            {
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+                            }
+                        </td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ModifiedOn</td>
+
+                        <td>
+                            <button type="button"
+                                    class="btn btn-warning btn-sm edit"
+                                    data-id="@item.DivisionMastId">
+                                Edit
+                            </button>
+                            @* <button type="button"
                                 class="btn btn-danger btn-sm delete"
                                 data-id="@item.DivisionMastId">
                             Delete
                         </button> *@
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
 
-                srNo++;
-            }
-        </tbody>
+                    srNo++;
+                }
+            </tbody>
 
-    </table>
-
+        </table>
+    </div>
 </div>
 
 
@@ -180,12 +181,12 @@
 @section Scripts {
     <script>
 
-                  // ── Init ─────────────────────────────────────────────
-            $(document).ready(function() {
+        // ── Init ─────────────────────────────────────────────
+        $(document).ready(function () {
 
-                $('#tblDivision').DataTable({
+            $('#tblDivision').DataTable({
 
-                    dom: 'lBfrtip',
+                dom: 'lBfrtip',
 
                 responsive: true,
                 autoWidth: false,
@@ -203,35 +204,35 @@
                 info: true,
 
                 columnDefs: [{
-                        responsivePriority: 1,
-                        targets: 3
-                    },
-                    {
-                        responsivePriority: 2,
-                        targets: 0
-                    }
+                    responsivePriority: 1,
+                    targets: 3
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 0
+                }
                 ],
 
-                    buttons: [{
-                            extend: 'print',
-                            title: 'Division Master'
-                        },
-                        {
-                            extend: 'excelHtml5',
-                            title: 'Division Master'
-                        }
-                    ]
-                });
-
-                $('.dt-buttons').hide();
+                buttons: [{
+                    extend: 'print',
+                    title: 'Division Master'
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: 'Division Master'
+                }
+                ]
             });
-        $("#btnPrint").click(function() {
+
+            $('.dt-buttons').hide();
+        });
+        $("#btnPrint").click(function () {
 
             window.print();
 
         });
 
-        $("#btnExcel").click(function() {
+        $("#btnExcel").click(function () {
 
             let table = document.getElementById("tblDivision");
 
@@ -254,7 +255,7 @@
         );
 
         // ── Add Division ─────────────────────────────────────────
-        $("#btnAddDivision").click(function() {
+        $("#btnAddDivision").click(function () {
             $("#DivisionMastId").val('');
             $("#DivisionName").val('');
             $("#DivisionNameHindi").val('');
@@ -266,7 +267,7 @@
         });
 
         // ── Edit Division ────────────────────────────────────────
-        $(document).on("click", ".edit", function() {
+        $(document).on("click", ".edit", function () {
             var id = $(this).data("id");
 
             $.ajax({
@@ -275,7 +276,7 @@
                 data: {
                     id: id
                 },
-                success: function(data) {
+                success: function (data) {
 
                     console.log(data);
 
@@ -299,19 +300,19 @@
         });
 
         // ── Save Division ────────────────────────────────────────
-        $("#btnSave").click(function() {
-        let isValid = true;
+        $("#btnSave").click(function () {
+            let isValid = true;
 
-        $("#errDivisionName").text('');
-        $("#errDivisionCode").text('');
+            $("#errDivisionName").text('');
+            $("#errDivisionCode").text('');
 
-        if ($("#DivisionName").val().trim() === "") {
-            $("#errDivisionName").text("Division Name is required");
-            isValid = false;
-        }
+            if ($("#DivisionName").val().trim() === "") {
+                $("#errDivisionName").text("Division Name is required");
+                isValid = false;
+            }
 
-        if (!isValid)
-            return;
+            if (!isValid)
+                return;
 
             
             $.ajax({
@@ -326,7 +327,7 @@
                     Capital: $("#Capital").val(),
                     InActive: $("#InActive").is(":checked") ? "T" : "F"
                 },
-                success: function(r) {
+                success: function (r) {
                     if (r.success) {
                         DivisionModal.hide();
                         location.reload();
@@ -334,14 +335,14 @@
                         alert(r.message);
                     }
                 },
-                error: function() {
+                error: function () {
                     alert("Save Failed");
                 }
             });
         });
 
         // ── Delete Division ──────────────────────────────────────
-        $(document).on("click", ".delete", function() {
+        $(document).on("click", ".delete", function () {
             if (!confirm("Are you sure want to delete?")) return;
 
             var id = $(this).data("id");
@@ -352,12 +353,12 @@
                 data: {
                     id: id
                 },
-                success: function(r) {
+                success: function (r) {
                     if (r.success) {
                         location.reload();
                     }
                 },
-                error: function() {
+                error: function () {
                     alert("Delete Failed");
                 }
             });

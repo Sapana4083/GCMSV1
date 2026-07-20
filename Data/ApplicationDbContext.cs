@@ -36,6 +36,8 @@ namespace GCMS.Data
         public DbSet<CasePrivateParty> CasePrivateParties { get; set; }
 
         public DbSet<RoleMaster> RoleMasters { get; set; }
+
+        public DbSet<MenuMaster> MenuMasters { get; set; }
         public DbSet<AdvocateMaster> AdvocateMaster { get; set; }
 
 

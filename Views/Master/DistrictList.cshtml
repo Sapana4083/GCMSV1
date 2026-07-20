@@ -5,7 +5,7 @@
     var states = ViewBag.StateList as List<GCMS.Models.StateMaster>;
     var divisions = ViewBag.DivisionList as List<GCMS.Models.DivisionMaster>;
 }
-<div class="container bg-light rounded-4 shadow px-4 py-5">
+<div class="container-fluid bg-light rounded-4 shadow m-3 py-4 px-3">
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
         <h3>District Master</h3>
 
@@ -24,87 +24,88 @@
         </div>
     </div>
 
-    <table class="table table-bordered table-striped" id="tblDistrict">
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="tblDistrict">
 
-        <thead>
-            <tr>
-                <th>S.No.</th>
-                <th>District Name</th>
-                <th>District Code</th>
-                <th>State</th>
-                <th>Division</th>
-                <th>English Name</th>
-                <th>Abbreviation</th>
-                <th>Hindi Name</th>
-                <th>Active</th>
-                <th width="170">Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            @{
-                int i = 1;
-            }
-
-            @foreach (var item in Model)
-            {
+            <thead>
                 <tr>
-
-                    <td>@i</td>
-
-                    <td>@item.DistrictName</td>
-
-                    <td>@item.DistrictCode</td>
-
-                    <td>
-                        @(states?
-                        .FirstOrDefault(x => x.StateMastId == item.StateName)?
-                        .StateName)
-                    </td>
-
-                    <td>
-                        @(divisions?
-                        .FirstOrDefault(x => x.DivisionMastId == item.DivisionName)?
-                        .DivisionName)
-                    </td>
-
-                    <td>@item.DistrictNameEng</td>
-
-                    <td>@item.DistAbr</td>
-
-                    <td>@item.DistNameHinEng</td>
-                    <td>
-                        @if (item.InActive == "F")
-                        {
-                            <span class="badge bg-success">
-                                Active
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">
-                                Inactive
-                            </span>
-                        }
-                    </td>
-                    <td>
-
-                        <button class="btn btn-warning btn-sm edit"
-                                data-id="@item.DistrictMastId">
-                            Edit
-                        </button>
-
-                    </td>
-
+                    <th>S.No.</th>
+                    <th>District Name</th>
+                    <th>District Code</th>
+                    <th>State</th>
+                    <th>Division</th>
+                    <th>English Name</th>
+                    <th>Abbreviation</th>
+                    <th>Hindi Name</th>
+                    <th>Active</th>
+                    <th width="170">Action</th>
                 </tr>
+            </thead>
 
-                i++;
-            }
+            <tbody>
 
-        </tbody>
+                @{
+                    int i = 1;
+                }
 
-    </table>
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@i</td>
+
+                        <td>@item.DistrictName</td>
+
+                        <td>@item.DistrictCode</td>
+
+                        <td>
+                            @(states?
+                            .FirstOrDefault(x => x.StateMastId == item.StateName)?
+                            .StateName)
+                        </td>
+
+                        <td>
+                            @(divisions?
+                            .FirstOrDefault(x => x.DivisionMastId == item.DivisionName)?
+                            .DivisionName)
+                        </td>
+
+                        <td>@item.DistrictNameEng</td>
+
+                        <td>@item.DistAbr</td>
+
+                        <td>@item.DistNameHinEng</td>
+                        <td>
+                            @if (item.InActive == "F")
+                            {
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+                            }
+                        </td>
+                        <td>
+
+                            <button class="btn btn-warning btn-sm edit"
+                                    data-id="@item.DistrictMastId">
+                                Edit
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    i++;
+                }
+
+            </tbody>
+        </table>
+    </div>
 </div>
 <div class="modal fade"
      id="districtModal"
@@ -261,7 +262,74 @@
 
         $(function () {
 
-            $("#tblDistrict").DataTable();
+            // ── Init ─────────────────────────────────────────────
+            $(document).ready(function () {
+
+                $('#tblDistrict').DataTable({
+
+                    dom: 'lBfrtip',
+
+                    responsive: true,
+                    autoWidth: false,
+
+                    pageLength: 10,
+
+                    lengthMenu: [
+                        [10, 25, 50, 100],
+                        [10, 25, 50, 100]
+                    ],
+
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+
+                    columnDefs: [{
+                        responsivePriority: 1,
+                        targets: 7
+                    },
+                    {
+                        responsivePriority: 2,
+                        targets: 0
+                    }
+                    ],
+
+                    buttons: [{
+                        extend: 'print',
+                        title: 'District Master'
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'District Master'
+                    }
+                    ]
+                });
+
+                $('.dt-buttons').hide();
+            });
+            $("#btnPrint").click(function () {
+
+                window.print();
+
+            });
+
+            $("#btnExcel").click(function () {
+
+                let table = document.getElementById("tblState");
+
+                let html = table.outerHTML;
+
+                let url = 'data:application/vnd.ms-excel,' +
+                    encodeURIComponent(html);
+
+                let a = document.createElement('a');
+
+                a.href = url;
+                a.download = 'District.xls';
+
+                a.click();
+
+            });
 
             var modal =
                 new bootstrap.Modal(
@@ -283,85 +351,85 @@
 
             });
 
-         $(document).on("click", ".edit", function () {
+            $(document).on("click", ".edit", function () {
 
-            var id = $(this).data("id");
+                var id = $(this).data("id");
 
-            console.log("District Id:", id);
+                console.log("District Id:", id);
 
-            $.ajax({
-                url: "/Master/GetDistrict",
-                type: "GET",
-                data: { id: id },
+                $.ajax({
+                    url: "/Master/GetDistrict",
+                    type: "GET",
+                    data: { id: id },
 
-                success: function (data) {
+                    success: function (data) {
 
-                    console.log(data);
+                        console.log(data);
 
-                    if (data == null) {
-                        alert("No data returned from server");
-                        return;
+                        if (data == null) {
+                            alert("No data returned from server");
+                            return;
+                        }
+
+                        $("#DistrictMastId").val(data.districtMastId);
+                        $("#DistrictName").val(data.districtName);
+                        $("#DistrictCode").val(data.districtCode);
+                        $("#StateName").val(data.stateName);
+                        $("#DivisionName").val(data.divisionName);
+                        $("#DistrictNameEng").val(data.districtNameEng);
+                        $("#DistAbr").val(data.distAbr);
+                        $("#DistNameHinEng").val(data.distNameHinEng);
+                        $("#inActive").val(data.inActive);
+
+                        modal.show();
+                    },
+
+                    error: function (xhr) {
+                        console.log(xhr.responseText);
+                        alert("Error loading district.");
                     }
+                });
 
-                    $("#DistrictMastId").val(data.districtMastId);
-                    $("#DistrictName").val(data.districtName);
-                    $("#DistrictCode").val(data.districtCode);
-                    $("#StateName").val(data.stateName);
-                    $("#DivisionName").val(data.divisionName);
-                    $("#DistrictNameEng").val(data.districtNameEng);
-                    $("#DistAbr").val(data.distAbr);
-                    $("#DistNameHinEng").val(data.distNameHinEng);
-                    $("#inActive").val(data.inActive);
-
-                    modal.show();
-                },
-
-                error: function (xhr) {
-                    console.log(xhr.responseText);
-                    alert("Error loading district.");
-                }
             });
 
-        });
-
-            $("#btnSave").click(function(){
+            $("#btnSave").click(function () {
 
                 $.ajax({
 
-                    url:'/Master/SaveDistrict',
+                    url: '/Master/SaveDistrict',
 
-                    type:'POST',
+                    type: 'POST',
 
-                    data:{
+                    data: {
 
-                        DistrictMastId:$("#DistrictMastId").val(),
+                        DistrictMastId: $("#DistrictMastId").val(),
 
-                        DistrictName:$("#DistrictName").val(),
+                        DistrictName: $("#DistrictName").val(),
 
-                        DistrictCode:$("#DistrictCode").val(),
+                        DistrictCode: $("#DistrictCode").val(),
 
-                        StateName:$("#StateName").val(),
+                        StateName: $("#StateName").val(),
 
-                        DivisionName:$("#DivisionName").val(),
+                        DivisionName: $("#DivisionName").val(),
 
-                        DistrictNameEng:$("#DistrictNameEng").val(),
+                        DistrictNameEng: $("#DistrictNameEng").val(),
 
-                        DistAbr:$("#DistAbr").val(),
+                        DistAbr: $("#DistAbr").val(),
 
-                        DistNameHinEng:$("#DistNameHinEng").val(),
+                        DistNameHinEng: $("#DistNameHinEng").val(),
 
-                        InActice:$("#InActive").val()
+                        InActice: $("#InActive").val()
 
                     },
 
-                    success:function(r){
+                    success: function (r) {
 
-                        if(r.success){
+                        if (r.success) {
 
                             location.reload();
 
                         }
-                        else{
+                        else {
 
                             alert(r.message);
 
@@ -373,20 +441,20 @@
 
             });
 
-            $(document).on("click",".delete",function(){
+            $(document).on("click", ".delete", function () {
 
-                if(!confirm("Are you sure?"))
+                if (!confirm("Are you sure?"))
                     return;
 
-                var id=$(this).data("id");
+                var id = $(this).data("id");
 
                 $.post("/Master/DeleteDistrict",
-                {id:id},
-                function(){
+                    { id: id },
+                    function () {
 
-                    location.reload();
+                        location.reload();
 
-                });
+                    });
 
             });
 

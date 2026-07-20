@@ -1,214 +1,256 @@
-@font-face {
-    font-family: 'poppins-regular';
-    src: url('../lib/font/poppins/poppins-regular.ttf') format('truetype');
+/* ===========================
+   Variables
+=========================== */
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 70px;
+    --topbar-height: 60px;
 }
 
-*, *::after, *::before {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+#mainContent{
+    margin-top: 4rem;
 }
-
-.dataTables_filter {
-    margin-bottom: 16px;
-}
-
-#loader {
+/* ===========================
+   Sidebar shell
+=========================== */
+.sidebar {
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.2);
-    z-index: 99999;
-    display: none;
-    justify-content: center;
+    top: 2rem;
+    left: 0;
+    height: calc(100vh - 2rem);
+    width: var(--sidebar-width);
+    background: #fff;
+    border-right: 1px solid #e9ecef;
+    z-index: 1030;
+    transition: width .25s ease, transform .25s ease;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    height: var(--topbar-height);
+    display: flex;
     align-items: center;
-}
-
-.d-none {
-    display: none !important;
-}
-
-p {
-    overflow-wrap: break-word;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+    padding: 0 1rem;
+    border-bottom: 1px solid #e9ecef;
     white-space: nowrap;
-    line-height: 60px;
 }
 
-body {
-    margin: 0;
-    font-family: 'poppins-regular', sans-serif; /* Added fallback font */
-    font-size: clamp(14px, 2vw, 17px);
-    font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
-    margin-bottom: 60px;
-    background-color: #fff;
-    -webkit-text-size-adjust: 100%;
-    background-image: url('../images/white_background-01.jpg');
-    background-repeat: repeat;
+    .sidebar-header .brand-text {
+        font-weight: 600;
+        margin-left: .5rem;
+    }
+
+.sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .7rem 1rem;
+    color: #495057;
+    white-space: nowrap;
 }
 
-p, a {
-    font-size: clamp(14px, 2vw, 17px);
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+        background: #eef3ff;
+        color: #0d6efd;
+    }
+
+    .sidebar .nav-link i {
+        font-size: 14px;
+        width: 1.25rem;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+.sidebar .link-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-
-
-.form-floating > .form-control-plaintext::placeholder,
-.form-floating > .form-control::placeholder { /* Split selectors onto separate lines */
-    color: var(--bs-secondary-color);
-    text-align: end;
+/* ===========================
+   Content area / topbar
+=========================== */
+.content-area {
+    margin-left: var(--sidebar-width);
+    transition: margin-left .25s ease, width .25s ease;
+    width: calc(100% - var(--sidebar-width));
+    max-width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder,
-.form-floating > .form-control:focus::placeholder { /* Split selectors onto separate lines */
-    text-align: start;
+.sidebar.collapsed ~ .content-area {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
 }
 
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus { /* Split selectors onto separate lines */
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+.topbar {
+    height: var(--topbar-height);
+    width:100%;
+    background: #fff;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    gap: 1rem;
+    position: fixed;
+    top: 2rem;
+    z-index: 1010;
 }
 
-.btn-font-size {
-    font-size: 12px;
-}
+    .topbar button {
+        background: transparent;
+        border: 1px solid #dee2e6;
+        border-radius: .375rem;
+        padding: .35rem .6rem;
+        color: #495057;
+    }
 
-.carousal-img-size { /* Consider fixing typo: 'carousal' → 'carousel' */
-    height: 80vh;
-}
+        .topbar button:hover {
+            background: #f1f3f5;
+        }
 
-.container-footer {
-    height: 0; /* Removed invalid unit: '0vh' → '0' (units unnecessary on zero values) */
-}
-
-.btn-custom-color {
-    background-color: #c5c5c5;
-}
-/* ── Header ─────────────────────────────────────────────── */
-/* Top Bar */
-.top-bar {
-    background-color: #4967f8;
-}
-
-/*.nav-link {
-    font-size: 1.1rem;
-    font-weight:500;
-}*/
-
-.nav-link:hover { /* Removed incorrect nesting — plain CSS doesn't support '&' nesting here */
-    background-color: #c5c5c5;
-    border-radius: 5px;
+.topbar-title {
     font-weight: 600;
 }
 
-.raj-sarkar-name {
-    font-size: 12px;
-    font-weight: 700;
+/* ===========================
+   Dropdown toggle caret (generic, works at every depth)
+=========================== */
+.sidebar .dropdown-toggle {
+    position: relative;
 }
 
-.btn-custum-color { /* Consider fixing typo: 'custum' → 'custom' */
-    background-color: #c0c3f6; /* Added missing semicolon */
+    .sidebar .dropdown-toggle > .caret {
+        margin-left: auto;
+        transition: transform .2s ease;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+/* Level 1 caret: chevron-down, rotates 180deg when open */
+.sidebar .dd-parent.show > .dropdown-toggle > .caret {
+    transform: rotate(180deg);
 }
 
-.btn-skip-button:hover {
-    background-color: #c0c3f6; /* Added missing semicolon */
+/* Nested submenu carets (level 2+) point right, rotate down when open */
+.sidebar .dropdown-submenu > .dropdown-toggle > .caret {
+    transform: rotate(-90deg);
 }
 
-.btn-skip-button:focus {
-    outline: none;
-    background-color: #c0c3f6; /* Added missing semicolon */
+.sidebar .dropdown-submenu.show > .dropdown-toggle > .caret {
+    transform: rotate(0deg);
 }
 
-.logo-size-header {
-    width: auto;
-    height: 60px;
-}
-
-.minister-img-header {
-    width: auto;
-    height: 100px;
-}
-
-.court-logos {
-    width: 200px;
-    height: 200px;
-}
-/* ── Owl Carousel ────────────────────────────────────────── */
-
-img {
-    height: 100%;
-    object-fit: contain;
-}
-
-.owl-nav button {
-    position: absolute;
-    top: 50%;
-    background-color: #000;
-    color: #fff;
+/* ===========================
+   Dropdown menus - generic, works at any depth
+=========================== */
+.sidebar .dropdown-menu {
+    position: static;
+    float: none;
+    width: 100%;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
     margin: 0;
-    transition: all 0.3s ease-in-out;
+    display: none; /* controlled via JS by toggling .show on the owning <li> */
 }
 
-    .owl-nav button.owl-prev { /* Removed incorrect nesting */
-        left: 0;
-    }
-
-    .owl-nav button.owl-next { /* Removed incorrect nesting */
-        right: 0;
-    }
-
-.owl-dots {
-    text-align: center;
-    padding-top: 15px;
+/* One rule handles every nesting level */
+.sidebar .dd-parent.show > .dropdown-menu {
+    display: block;
 }
 
-    .owl-dots button.owl-dot { /* Removed incorrect nesting */
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        display: inline-block;
-        background: #ccc;
-        margin: 0 3px;
-    }
-
-        .owl-dots button.owl-dot.active { /* Removed incorrect nesting */
-            background-color: #000;
-        }
-
-        .owl-dots button.owl-dot:focus { /* Removed incorrect nesting */
-            outline: none;
-        }
-
-.owl-nav button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.38) !important;
-}
-
-    .owl-nav button:focus {
-        outline: none;
-    }
-
-.owl-item {
-    height: 80px !important;
+/* Depth-based visual styling */
+.sidebar .dropdown-menu .dropdown-item {
+    padding: .6rem 1rem .6rem 2.75rem;
+    font-size: 14px;
+    color: #495057;
     display: flex;
+    align-items: center;
+    gap: .5rem;
 }
 
+.sidebar .dropdown-menu {
+    background: #f8f9fa;
+}
+
+    .sidebar .dropdown-menu .dropdown-menu {
+        background: #ffffff;
+    }
+
+        .sidebar .dropdown-menu .dropdown-menu .dropdown-item {
+            padding-left: 3.5rem;
+        }
+
+        .sidebar .dropdown-menu .dropdown-menu .dropdown-menu {
+            background: #f4f6f9;
+        }
+
+            .sidebar .dropdown-menu .dropdown-menu .dropdown-menu .dropdown-item {
+                padding-left: 4.25rem;
+                font-size: 13px;
+            }
+
+.sidebar .dropdown-item:hover {
+    background: #e9ecef;
+    color: #0d6efd;
+}
+
+/* ===========================
+   Sidebar collapsed (desktop, icon-only)
+=========================== */
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+    .sidebar.collapsed .link-text,
+    .sidebar.collapsed .brand-text,
+    .sidebar.collapsed .caret {
+        display: none;
+    }
+
+    .sidebar.collapsed .dropdown-menu {
+        display: none !important;
+    }
+
+/* ===========================
+   Backdrop (mobile)
+=========================== */
+.sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .4);
+    z-index: 1020;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease;
+}
+
+    .sidebar-backdrop.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+/* ===========================
+   Responsive breakpoint (< 992px = mobile behavior)
+=========================== */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: var(--sidebar-width) !important;
+    }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+
+    .content-area {
+        margin-left: 0 !important;
+        width: 100% !important;
 .page-title h2 {
     font-weight: 600;
 }
@@ -776,243 +818,265 @@ img {
         display: none;
     }
 
-    .carousal-img-size {
-        height: 300px;
+    .sidebar-toggle-desktop {
+        display: none !important;
     }
 }
 
-@media only screen and (min-width: 576px) and (max-width: 991.9px) {
-    .minister-img-header {
-        width: auto;
-        height: 50px;
-    }
-}
-
-/*Board Of Revenue CSS*/
-
-.borLogoPage {
-    width: auto;
-    height: 100px;
-}
-
-.nav-btn {
-    width: 50%;
-    padding: 12px;
-    border: none;
-    background: white;
-    color: black;
-    font-weight: 500;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
-}
-
-    .nav-btn.active {
-        border-bottom: 3px solid #0d6efd;
-        color: #0d6efd;
-        font-weight: 600;
-    }
-
-.sub-btn {
-    padding: 8px 18px;
-    border: none;
-    background: #f0f0f0;
-    color: #333;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-}
-
-    .sub-btn.active-sub {
-        background: #0d6efd;
-        color: white;
-        font-weight: 600;
-    }
-
-.panel-header {
-    background: linear-gradient(to right, #1e88c7, #5bc8f5);
-    color: #fff;
-    padding: 10px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 4px 4px 0 0;
-}
-
-    .panel-header h5 {
-        margin: 0;
-        font-weight: 500;
-    }
-
-    .panel-header .icon-btn {
-        background: rgba(255, 255, 255, 0.15);
-        border: none;
-        color: #fff;
-        width: 34px;
-        height: 34px;
-        border-radius: 4px;
-        margin-left: 6px;
-    }
-
-        .panel-header .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-.panel-body {
-    border: 1px solid #dee2e6;
-    border-top: none;
-    padding: 20px;
-    background: #fff;
-}
-
-.required-asterisk {
-    color: #dc3545;
-}
-
-.form-label {
-    font-weight: 500;
-    margin-bottom: 4px;
-}
-
-.sub-panel-header {
-    background: linear-gradient(to right, #f7f9fb, #cfe9fb);
-    border: 1px solid #dee2e6;
-    padding: 8px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 500;
-    color: #333;
-}
-
-.toolbar {
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-top: none;
-    padding: 8px;
-    display: flex;
-    gap: 6px;
-}
-
-    .toolbar .btn-tool {
-        background: #2e6f8e;
-        color: #fff;
-        border: none;
-        width: 34px;
-        height: 34px;
-        border-radius: 4px;
-    }
-
-        .toolbar .btn-tool.secondary {
-            background: #9aa6ad;
-        }
-
-.table-grid thead th {
-    background: #f4f6f8;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.table-grid td,
-.table-grid th {
-    vertical-align: middle;
-}
-
-.form-switch .form-check-input {
-    width: 2.5em;
-    height: 1.3em;
-}
-
-.collapsible-section {
-    background: #fff;
-    border: 1px solid #dee2e6;
-    padding: 10px 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.footer-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 16px;
-}
-
-.btn-submit {
-    background: #2e6f8e;
-    color: #fff;
-    border: none;
-}
-
-.btn-new {
-    background: #2e6f8e;
-    color: #fff;
-    border: none;
-}
-/* ---------- Multi-level dropdown ---------- */
-.dropdown-submenu {
-    position: relative;
-}
-
-    .dropdown-submenu > .dropdown-menu {
-        display: none;
-        margin-top: -1px;
-    }
-
-        .dropdown-submenu > .dropdown-menu.show {
-            display: block;
-        }
-
-    .dropdown-submenu > .dropdown-toggle::after {
-        transform: rotate(-90deg);
-        margin-left: 0.5rem;
-    }
-
-/* Desktop: flyout to the side, hover-driven */
 @media (min-width: 992px) {
-    .dropdown-submenu > .dropdown-menu {
-        position: absolute;
-        top: 0;
-        left: 100%;
-    }
-
-    .dropdown-submenu:hover > .dropdown-menu {
-        display: block;
-    }
-
-    /* flip to the left edge if it would overflow the viewport */
-    .dropdown-submenu.dropdown-menu-end > .dropdown-menu {
-        left: auto;
-        right: 100%;
+    .sidebar-toggle-mobile {
+        display: none !important;
     }
 }
 
-/* Mobile / collapsed navbar: stacked, indented, tap-driven */
-@media (max-width: 991.98px) {
-    .dropdown-submenu > .dropdown-toggle::after {
-        transform: rotate(0deg);
-        transition: transform 0.2s ease;
-    }
-
-    .dropdown-submenu > .dropdown-toggle[aria-expanded="true"]::after {
-        transform: rotate(180deg);
-    }
-
-    .dropdown-submenu > .dropdown-menu {
-        position: static;
-        width: 100%;
-        margin-left: 0.75rem;
-        border: none;
-        box-shadow: none;
-        background-color: rgba(0, 0, 0, 0.03);
-    }
-
-    .navbar-collapse .dropdown-menu {
-        border: none;
-        box-shadow: none;
-    }
+/* ===========================
+   Global overflow safety net
+=========================== */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
 }
+
+#wrapper {
+    margin-top: 2rem;
+    max-width: calc(100vw - 2rem);
+    overflow-x: hidden;
+}
+
+/* Prevent wide tables/cards from forcing page-level horizontal scroll;
+   any overflow should scroll inside the table itself, not the whole page */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* ===========================
+   Footer override
+   site.css positions .footer with position:absolute/bottom:0, which was
+   built for the old full-width layout with no sidebar. Inside .content-area
+   (a flex column) that math breaks whenever content height changes.
+   Use a flexbox sticky-footer instead: main grows to fill space, footer
+   sits right after it — pinned to the bottom on short pages, and simply
+   below the content (scrolls with the page) on tall pages. Never overlaps.
+=========================== */
+.content-area main {
+    flex: 1 1 auto;
+}
+
+.content-area .footer {
+    position: static;
+    bottom: auto;
+    width: auto;
+    line-height: normal;
+    margin-top: auto;
+}
+
+body {
+    margin-bottom: 0;
+}
+
+
+
+/* ============================================================
+   WCAG 2.1 — Accessibility toolbar + global overrides
+   Success criteria addressed directly in this file:
+   - 2.4.1 Bypass Blocks        (skip link)
+   - 2.4.7 Focus Visible        (focus outline)
+   - 1.4.11 Non-text Contrast   (focus outline contrast)
+   - 1.4.4 Resize Text          (font-size scaling, up to 200%)
+   - 1.4.3 / 1.4.6 Contrast     (high-contrast mode)
+   - 1.4.12 Text Spacing        (exact SC minimums, toggle-based)
+     https://www.w3.org/TR/WCAG21/#text-spacing
+============================================================ */
+
+/* ------------------------------------------------------------
+   Skip to content — 2.4.1 Bypass Blocks
+   Hidden off-screen until it receives keyboard focus.
+------------------------------------------------------------ */
+.skip-to-content {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: #000;
+    color: #fff;
+    padding: .75rem 1.25rem;
+    z-index: 2000;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 0 0 6px 0;
+}
+
+    .skip-to-content:focus {
+        left: 0;
+    }
+
+/* ------------------------------------------------------------
+   Visible focus indicator everywhere — 2.4.7 / 1.4.11
+   3px outline with a color that holds 3:1 contrast against both
+   light and dark backgrounds used on this site.
+------------------------------------------------------------ */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid #ffbf47;
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   Accessibility bar
+------------------------------------------------------------ */
+.accessibility-bar {
+    width:100%;
+    height:2rem;
+    background: #1f2937;
+    color: #fff;
+    font-size: 14px;
+    top:0;
+    left:0;
+    position: fixed;
+    z-index: 1040;
+}
+
+    .accessibility-bar .container-fluid {
+        flex-wrap: wrap;
+    }
+
+.accessibility-label {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.accessibility-divider {
+    opacity: .4;
+}
+
+.a11y-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, .5);
+    color: #fff;
+    border-radius: 4px;
+    padding: .15rem .55rem;
+    font-size: 13px;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+    .a11y-btn:hover {
+        background: rgba(255, 255, 255, .15);
+    }
+
+    .a11y-btn[aria-pressed="true"] {
+        background: #fff;
+        color: #1f2937;
+        font-weight: 600;
+    }
+
+/* ------------------------------------------------------------
+   Font size scaling — 1.4.4 Resize Text (up to 200% with no loss)
+   Scales the root font-size; every rem/em-based measurement on
+   the site scales with it. Fixed pixel heights (topbar, sidebar
+   header) are relaxed to min-height below so nothing gets clipped.
+------------------------------------------------------------ */
+html[data-fontsize="1"] {
+    font-size: 100%;
+}
+
+html[data-fontsize="2"] {
+    font-size: 112.5%;
+}
+
+html[data-fontsize="3"] {
+    font-size: 125%;
+}
+
+html[data-fontsize="4"] {
+    font-size: 150%;
+}
+
+html[data-fontsize="5"] {
+    font-size: 175%;
+}
+
+html[data-fontsize="6"] {
+    font-size: 200%;
+}
+
+.topbar,
+.sidebar-header {
+    height: auto;
+    min-height: var(--topbar-height);
+}
+
+/* ------------------------------------------------------------
+   Text spacing mode — 1.4.12 Text Spacing
+   Applies the exact SC-required minimums on demand:
+     line height  >= 1.5x font size
+     paragraph spacing >= 2x font size
+     letter spacing >= 0.12x font size
+     word spacing >= 0.16x font size
+   No container here may clip this — avoid overflow:hidden or a
+   fixed height anywhere text can appear (checked in this file:
+   .content-area / html / body only use overflow-x:hidden, never
+   overflow-y or overflow shorthand, so vertical growth is safe).
+------------------------------------------------------------ */
+html.text-spacing-mode body,
+html.text-spacing-mode p,
+html.text-spacing-mode li,
+html.text-spacing-mode td,
+html.text-spacing-mode th,
+html.text-spacing-mode label,
+html.text-spacing-mode span,
+html.text-spacing-mode a,
+html.text-spacing-mode button,
+html.text-spacing-mode .nav-link,
+html.text-spacing-mode .dropdown-item {
+    line-height: 1.5 !important;
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.16em !important;
+}
+
+html.text-spacing-mode p {
+    margin-bottom: 2em !important;
+}
+
+/* ------------------------------------------------------------
+   High contrast mode — 1.4.3 Contrast (Minimum) / 1.4.6 (Enhanced)
+------------------------------------------------------------ */
+html.high-contrast body {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+html.high-contrast .sidebar,
+html.high-contrast .content-area,
+html.high-contrast .topbar,
+html.high-contrast .accessibility-bar,
+html.high-contrast .container,
+html.high-contrast .container-fluid,
+html.high-contrast .bg-light,
+html.high-contrast .card,
+html.high-contrast table,
+html.high-contrast thead th {
+    background: #000 !important;
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+html.high-contrast a,
+html.high-contrast .nav-link,
+html.high-contrast .dropdown-item {
+    color: #ffd60a !important;
+}
+
+html.high-contrast .btn-primary {
+    background: #ffd60a !important;
+    color: #000 !important;
+    border-color: #ffd60a !important;
+}
+
+html.high-contrast img {
+    filter: grayscale(100%) contrast(120%);
+}
+

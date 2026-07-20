@@ -139,122 +139,126 @@
                 </button>
 
             </div>
+            <form method="post">
 
-            <!-- Modal Body -->
-            <div class="modal-body">
+                @Html.AntiForgeryToken()
+                <!-- Modal Body -->
+                <div class="modal-body">
 
-                <input type="hidden"
-                       id="SdoMastId" />
+                    <input type="hidden"
+                           id="SdoMastId" />
 
-                <div class="row">
+                    <div class="row">
 
-                    <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3">
 
-                        <label class="form-label">
-                            District
-                            <span class="text-danger">*</span>
-                        </label>
-
-                        <select id="DistrictName"
-                                class="form-select">
-
-                            <option value="">
-                                Select District
-                            </option>
-
-                        </select>
-
-                        <span class="text-danger"
-                              id="errDistrictName"></span>
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-                            SDO Name
-                            <span class="text-danger">*</span>
-                        </label>
-
-                        <input type="text"
-                               id="SdoName"
-                               class="form-control" />
-
-                        <span class="text-danger"
-                              id="errSdoName"></span>
-
-                    </div>
-
-                </div>
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-                            SDO Name (English)
-                            <span class="text-danger">*</span>
-                        </label>
-
-                        <input type="text"
-                               id="SdoNameEng"
-                               class="form-control" />
-
-                        <span class="text-danger"
-                              id="errSdoNameEng"></span>
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-                            SDO Code
-                            <span class="text-danger">*</span>
-                        </label>
-
-                        <input type="text"
-                               id="SdoCode"
-                               class="form-control" />
-
-                        <span class="text-danger"
-                              id="errSdoCode"></span>
-
-                    </div>
-
-                </div>
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-                            Panchayat Code
-                        </label>
-
-                        <input type="text"
-                               id="PCode"
-                               class="form-control" />
-
-                        <span class="text-danger"
-                              id="errPCode"></span>
-
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-                            Disable
-                        </label>
-
-                        <div class="form-check form-switch mt-2">
-
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   id="Inactive">
-
-                            <label class="form-check-label">
-                                Inactive
+                            <label class="form-label">
+                                District
+                                <span class="text-danger">*</span>
                             </label>
+
+                            <select id="DistrictName"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select District
+                                </option>
+
+                            </select>
+
+                            <span class="text-danger"
+                                  id="errDistrictName"></span>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                SDO Name
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text"
+                                   id="SdoName"
+                                   class="form-control" />
+
+                            <span class="text-danger"
+                                  id="errSdoName"></span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                SDO Name (English)
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text"
+                                   id="SdoNameEng"
+                                   class="form-control" />
+
+                            <span class="text-danger"
+                                  id="errSdoNameEng"></span>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                SDO Code
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text"
+                                   id="SdoCode"
+                                   class="form-control" />
+
+                            <span class="text-danger"
+                                  id="errSdoCode"></span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Panchayat Code
+                            </label>
+
+                            <input type="text"
+                                   id="PCode"
+                                   class="form-control" />
+
+                            <span class="text-danger"
+                                  id="errPCode"></span>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Disable
+                            </label>
+
+                            <div class="form-check form-switch mt-2">
+
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="Inactive">
+
+                                <label class="form-check-label">
+                                    Inactive
+                                </label>
+
+                            </div>
 
                         </div>
 
@@ -262,28 +266,29 @@
 
                 </div>
 
-            </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
 
-            <!-- Modal Footer -->
-            <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
 
-                <button type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
+                        Close
 
-                    Close
+                    </button>
 
-                </button>
+                    <button type="button"
+                            class="btn btn-success"
+                            id="btnSave">
 
-                <button type="button"
-                        class="btn btn-success"
-                        id="btnSave">
+                        Save
 
-                    Save
+                    </button>
 
-                </button>
 
-            </div>
+                </div>
+
+            </form>
 
         </div>
 
@@ -298,7 +303,7 @@
         // ─────────────────────────────────────────────
         // Init
         // ─────────────────────────────────────────────
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $('#tblSDO').DataTable({
 
@@ -351,7 +356,7 @@
         //─────────────────────────────────────────────
         // Print
         //─────────────────────────────────────────────
-        $("#btnPrint").click(function () {
+        $("#btnPrint").click(function() {
 
             window.print();
 
@@ -360,7 +365,7 @@
         //─────────────────────────────────────────────
         // Excel
         //─────────────────────────────────────────────
-        $("#btnExcel").click(function () {
+        $("#btnExcel").click(function() {
 
             let table = document.getElementById("tblSDO");
 
@@ -391,13 +396,13 @@
 
                 type: 'GET',
 
-                success: function (data) {
+                success: function(data) {
 
                     $("#DistrictName").empty();
 
                     $("#DistrictName").append('<option value="">Select District</option>');
 
-                    $.each(data, function (i, item) {
+                    $.each(data, function(i, item) {
 
                         $("#DistrictName").append(
 
@@ -420,7 +425,7 @@
         //─────────────────────────────────────────────
         // Add
         //─────────────────────────────────────────────
-        $("#btnAddSDO").click(function () {
+        $("#btnAddSDO").click(function() {
 
             $("#SdoMastId").val('');
             $("#DistrictName").val('');
@@ -443,7 +448,7 @@
         //─────────────────────────────────────────────
         // Edit
         //─────────────────────────────────────────────
-        $(document).on("click", ".edit", function () {
+        $(document).on("click", ".edit", function() {
 
             var id = $(this).data("id");
 
@@ -455,7 +460,7 @@
 
                 data: { id: id },
 
-                success: function (data) {
+                success: function(data) {
 
                     $("#SdoMastId").val(data.sdoMastId);
 
@@ -482,8 +487,8 @@
         //─────────────────────────────────────────────
         // Save
         //─────────────────────────────────────────────
-        $("#btnSave").click(function () {
-
+        $("#btnSave").click(function() { debugger
+            var token = $('input[name="__RequestVerificationToken"]').val();
             let isValid = true;
 
             $("#errDistrictName").text('');
@@ -532,6 +537,10 @@
 
                 type: 'POST',
 
+                headers: {
+                    RequestVerificationToken: token
+                },
+
                 data: {
 
                     SdoMastId: $("#SdoMastId").val(),
@@ -550,7 +559,7 @@
 
                 },
 
-                success: function (r) {
+                success: function(r) {
 
                     if (r.success) {
 
@@ -567,7 +576,7 @@
 
                 },
 
-                error: function () {
+                error: function() {
 
                     alert("Save Failed");
 
@@ -580,7 +589,7 @@
         //─────────────────────────────────────────────
         // Delete
         //─────────────────────────────────────────────
-        $(document).on("click", ".delete", function () {
+        $(document).on("click", ".delete", function() {
 
             if (!confirm("Are you sure want to delete?"))
                 return;
@@ -595,7 +604,7 @@
 
                 data: { id: id },
 
-                success: function (r) {
+                success: function(r) {
 
                     if (r.success) {
 
@@ -605,7 +614,7 @@
 
                 },
 
-                error: function () {
+                error: function() {
 
                     alert("Delete Failed");
 

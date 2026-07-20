@@ -1,9 +1,10 @@
+using GCMS.Data;
 using GCMS.Repository;
 using GCMS.Repository.Interfaces;
 using GCMS.Services;
 using GCMS.Services.Interfaces;
-using GCMS.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ options =>
         builder.Configuration
         .GetConnectionString("RcsatOracle"));
 });
+
+
 
 
 
@@ -58,7 +61,18 @@ builder.Services.AddAuthentication(
         options.LoginPath = "/Account/Login";
     });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "RequestVerificationToken";
+    options.Cookie.SameSite = SameSiteMode.Strict; // or Lax
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 var app = builder.Build();
 

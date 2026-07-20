@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GCMS.Controllers
 {
+    [AutoValidateAntiforgeryTokenAttribute]
     public class MasterController : Controller
     {
         private readonly IStateService _service;
@@ -47,6 +48,7 @@ namespace GCMS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<JsonResult> SaveState(StateMaster model)
         {
             try
@@ -297,6 +299,7 @@ namespace GCMS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveTehsil(TehsilMaster model)
         {
             try
@@ -367,12 +370,30 @@ namespace GCMS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveSdo(SdoMaster model)
         {
+            var username =
+       HttpContext.Session.GetString("Username")
+       ?? "SYSTEM";
+
+            var userSSO =
+                HttpContext.Session.GetString("UserSSO");
+
+            var axUserID =
+                HttpContext.Session.GetString("AxUserID");
             if (model.SdoMastId == 0)
+            {
+                //model.CreatedBy = username;
+                //model.UserName = username;
                 await _sdoService.AddAsync(model);
+            }
+               
             else
+            {
+                //model. = username;
                 await _sdoService.UpdateAsync(model);
+            }
 
             return Json(new
             {

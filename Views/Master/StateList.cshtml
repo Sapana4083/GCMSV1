@@ -55,8 +55,8 @@
                     <td>@item.StateCode</td>
                     <td>@item.Capital</td>
                     <td>
+
                         
-                       
                         @if (item.InActive == "F")
                         {
                             <span class="badge bg-success">
@@ -106,54 +106,58 @@
                 <h5 class="modal-title">State Master</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+            <form method="post">
 
-            <!-- Modal Body -->
-            <div class="modal-body">
+                @Html.AntiForgeryToken()
+               
+                <!-- Modal Body -->
+                <div class="modal-body">
 
-                <input type="hidden" id="StateMastId" />
+                    <input type="hidden" id="StateMastId" />
 
-                <div class="mb-3">
-                    <label class="form-label">State Name<span class="text-danger">*</span></label>
-                    <input type="text" id="StateName" class="form-control" />
-                    <span class="text-danger" id="errStateName"></span>
+                    <div class="mb-3">
+                        <label class="form-label">State Name<span class="text-danger">*</span></label>
+                        <input type="text" id="StateName" class="form-control" />
+                        <span class="text-danger" id="errStateName"></span>
 
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">State Name (In Hindi)<span class="text-danger">*</span></label>
-                    <input type="text" id="StateNameHindi" class="form-control" />
-                    <span class="text-danger" id="errStateName"></span>
-
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">State Code<span class="text-danger">*</span></label>
-                    <input type="text" id="StateCode" maxlength="2" class="form-control" />
-                    <span class="text-danger" id="errStateCode"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">State Capital<span class="text-danger">*</span></label>
-                    <input type="text" id="Capital" class="form-control" />
-                    <span class="text-danger" id="errCapital"></span>
-                </div>
-                <div class="mb-3">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="InActive">
-                        <label class="form-check-label">Disable</label>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">State Name (In Hindi)<span class="text-danger">*</span></label>
+                        <input type="text" id="StateNameHindi" class="form-control" />
+                        <span class="text-danger" id="errStateName"></span>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">State Code<span class="text-danger">*</span></label>
+                        <input type="text" id="StateCode" maxlength="2" class="form-control" />
+                        <span class="text-danger" id="errStateCode"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">State Capital<span class="text-danger">*</span></label>
+                        <input type="text" id="Capital" class="form-control" />
+                        <span class="text-danger" id="errCapital"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                            <label class="form-check-label">Disable</label>
+                        </div>
+                    </div>
+
                 </div>
 
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Close
-                </button>
-                <button type="button" class="btn btn-success" id="btnSave">
-                    Save
-                </button>
-            </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnSave">
+                        Save
+                    </button>
+                </div>
+            </form>
 
         </div>
     </div>
@@ -164,51 +168,51 @@
 @section Scripts {
     <script>
 
-                  // ── Init ─────────────────────────────────────────────
-            $(document).ready(function() {
+        // ── Init ─────────────────────────────────────────────
+        $(document).ready(function() {
 
-                $('#tblState').DataTable({
+            $('#tblState').DataTable({
 
-                    dom: 'lBfrtip',
+                dom: 'lBfrtip',
 
-                    responsive: true,
-                    autoWidth: false,
+                responsive: true,
+                autoWidth: false,
 
-                    pageLength: 10,
+                pageLength: 10,
 
-                    lengthMenu: [
-                        [10, 25, 50, 100],
-                        [10, 25, 50, 100]
-                    ],
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
 
-                    paging: true,
-                    searching: true,
-                    ordering: true,
-                    info: true,
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
 
-                    columnDefs: [{
-                            responsivePriority: 1,
-                            targets: 7
-                        },
-                        {
-                            responsivePriority: 2,
-                            targets: 0
-                        }
-                    ],
+                columnDefs: [{
+                    responsivePriority: 1,
+                    targets: 7
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 0
+                }
+                ],
 
-                    buttons: [{
-                            extend: 'print',
-                            title: 'State Master'
-                        },
-                        {
-                            extend: 'excelHtml5',
-                            title: 'State Master'
-                        }
-                    ]
-                });
-
-                $('.dt-buttons').hide();
+                buttons: [{
+                    extend: 'print',
+                    title: 'State Master'
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: 'State Master'
+                }
+                ]
             });
+
+            $('.dt-buttons').hide();
+        });
         $("#btnPrint").click(function() {
 
             window.print();
@@ -275,10 +279,10 @@
                     $("#StateNameHindi").val(data.stateNameHindi);
                     $("#StateCode").val(data.stateCode);
                     $("#Capital").val(data.capital);
-                         $("#InActive").prop(
-                          "checked",
-                          data.inActive === "T"
-                     );
+                    $("#InActive").prop(
+                        "checked",
+                        data.inActive === "T"
+                    );
                     $("#errStateName").text('');
                     $("#errStateCode").text('');
                     $("#errCapital").text('');
@@ -288,30 +292,32 @@
         });
 
         // ── Save State ────────────────────────────────────────
-        $("#btnSave").click(function() {
-                let isValid = true;
+        $("#btnSave").click(function() {debugger
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            console.log(token);
+            let isValid = true;
 
-        $("#errStateName").text('');
-        $("#errStateCode").text('');
-        $("#errCapital").text('');
+            $("#errStateName").text('');
+            $("#errStateCode").text('');
+            $("#errCapital").text('');
 
-        if ($("#StateName").val().trim() === "") {
-            $("#errStateName").text("State Name is required");
-            isValid = false;
-        }
+            if ($("#StateName").val().trim() === "") {
+                $("#errStateName").text("State Name is required");
+                isValid = false;
+            }
 
-        if ($("#StateCode").val().trim() === "") {
-            $("#errStateCode").text("State Code is required");
-            isValid = false;
-        }
+            if ($("#StateCode").val().trim() === "") {
+                $("#errStateCode").text("State Code is required");
+                isValid = false;
+            }
 
-        if ($("#Capital").val().trim() === "") {
-            $("#errCapital").text("Capital is required");
-            isValid = false;
-        }
+            if ($("#Capital").val().trim() === "") {
+                $("#errCapital").text("Capital is required");
+                isValid = false;
+            }
 
-        if (!isValid)
-            return;
+            if (!isValid)
+                return;
 
             
             $.ajax({
@@ -323,7 +329,10 @@
                     StateNameHindi: $("#StateNameHindi").val(),
                     StateCode: $("#StateCode").val(),
                     Capital: $("#Capital").val(),
-                     InActive: $("#InActive").is(":checked") ? "T" : "F"
+                    InActive: $("#InActive").is(":checked") ? "T" : "F"
+                },
+                headers: {
+                    RequestVerificationToken: token
                 },
                 success: function(r) {
                     if (r.success) {

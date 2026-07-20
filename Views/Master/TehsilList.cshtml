@@ -124,202 +124,205 @@
                 </button>
 
             </div>
+            <form>
+                @Html.AntiForgeryToken()
 
-            <div class="modal-body">
+                <div class="modal-body">
 
-                <input type="hidden"
-                       id="TehsilMastId" />
+                    <input type="hidden"
+                           id="TehsilMastId" />
 
-                <div class="row">
+                    <div class="row">
 
-                    <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3">
 
-                        <label class="form-label fw-bold">
-                            State
-                        </label>
+                            <label class="form-label fw-bold">
+                                State
+                            </label>
 
-                        <select id="StateId"
-                                class="form-select">
+                            <select id="StateId"
+                                    class="form-select">
 
-                            <option value="">
-                                Select State
-                            </option>
+                                <option value="">
+                                    Select State
+                                </option>
 
-                        </select>
+                            </select>
 
-                    </div>
+                        </div>
 
-                    <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3">
 
-                        <label class="form-label fw-bold">
-                            District
-                        </label>
+                            <label class="form-label fw-bold">
+                                District
+                            </label>
 
-                        <select id="DistrictId"
-                                class="form-select">
+                            <select id="DistrictId"
+                                    class="form-select">
 
-                            <option value="">
-                                Select District
-                            </option>
+                                <option value="">
+                                    Select District
+                                </option>
 
-                        </select>
+                            </select>
 
-                    </div>
+                        </div>
 
-                    <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3">
 
-                        <label class="form-label fw-bold">
-                            SDO
-                        </label>
+                            <label class="form-label fw-bold">
+                                SDO
+                            </label>
 
-                        <select id="SdoId"
-                                class="form-select">
+                            <select id="SdoId"
+                                    class="form-select">
 
-                            <option value="">
-                                Select SDO
-                            </option>
+                                <option value="">
+                                    Select SDO
+                                </option>
 
-                        </select>
+                            </select>
 
-                    </div>
-
-                </div>
-
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label fw-bold">
-
-                            Tehsil Name (Hindi)
-
-                        </label>
-
-                        <input type="text"
-                               id="TehsilName"
-                               class="form-control" />
+                        </div>
 
                     </div>
 
-                    <div class="col-md-6 mb-3">
 
-                        <label class="form-label fw-bold">
+                    <div class="row">
 
-                            Tehsil Name (English)
+                        <div class="col-md-6 mb-3">
 
-                        </label>
+                            <label class="form-label fw-bold">
 
-                        <input type="text"
-                               id="TehsilEng"
-                               class="form-control" />
+                                Tehsil Name (Hindi)
 
-                    </div>
+                            </label>
 
-                </div>
+                            <input type="text"
+                                   id="TehsilName"
+                                   class="form-control" />
 
+                        </div>
 
-                <div class="row">
+                        <div class="col-md-6 mb-3">
 
-                    <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">
 
-                        <label class="form-label fw-bold">
+                                Tehsil Name (English)
 
-                            Tehsil Code
+                            </label>
 
-                        </label>
+                            <input type="text"
+                                   id="TehsilEng"
+                                   class="form-control" />
 
-                        <input type="text"
-                               id="TehsilCode"
-                               class="form-control" />
-
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-
-                        <label class="form-label fw-bold">
-
-                            GIS Tehsil Id
-
-                        </label>
-
-                        <input type="number"
-                               id="GisTehsilId"
-                               class="form-control" />
+                        </div>
 
                     </div>
 
-                    <div class="col-md-4 mb-3">
 
-                        <label class="form-label fw-bold">
+                    <div class="row">
 
-                            Apna Khata Id
+                        <div class="col-md-4 mb-3">
 
-                        </label>
+                            <label class="form-label fw-bold">
 
-                        <input type="text"
-                               id="ApnaKhataId"
-                               class="form-control" />
+                                Tehsil Code
+
+                            </label>
+
+                            <input type="text"
+                                   id="TehsilCode"
+                                   class="form-control" />
+
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+
+                            <label class="form-label fw-bold">
+
+                                GIS Tehsil Id
+
+                            </label>
+
+                            <input type="number"
+                                   id="GisTehsilId"
+                                   class="form-control" />
+
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+
+                            <label class="form-label fw-bold">
+
+                                Apna Khata Id
+
+                            </label>
+
+                            <input type="text"
+                                   id="ApnaKhataId"
+                                   class="form-control" />
+
+                        </div>
 
                     </div>
 
-                </div>
 
+                    <div class="row">
 
-                <div class="row">
+                        <div class="col-md-4">
 
-                    <div class="col-md-4">
-
-                        <label class="form-label fw-bold">
-
-                            Inactive
-
-                        </label>
-
-                        <select id="Inactive"
-                                class="form-select">
-
-                            <option value="F">
-
-                                Active
-
-                            </option>
-
-                            <option value="T">
+                            <label class="form-label fw-bold">
 
                                 Inactive
 
-                            </option>
+                            </label>
 
-                        </select>
+                            <select id="Inactive"
+                                    class="form-select">
+
+                                <option value="F">
+
+                                    Active
+
+                                </option>
+
+                                <option value="T">
+
+                                    Inactive
+
+                                </option>
+
+                            </select>
+
+                        </div>
 
                     </div>
 
                 </div>
 
-            </div>
+                <div class="modal-footer">
 
-            <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-success"
+                            id="btnSave">
 
-                <button type="button"
-                        class="btn btn-success"
-                        id="btnSave">
+                        <i class="bi bi-check-circle"></i>
 
-                    <i class="bi bi-check-circle"></i>
+                        Save
 
-                    Save
+                    </button>
 
-                </button>
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
 
-                <button type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
+                        Close
 
-                    Close
+                    </button>
 
-                </button>
-
-            </div>
+                </div>
+            </form>
 
         </div>
 
@@ -330,7 +333,7 @@
 @section Scripts {
     <script>
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             loadTehsil();
             loadStates();
@@ -339,7 +342,7 @@
             //==========================
             // Add New
             //==========================
-            $("#btnAdd").click(function () {
+            $("#btnAdd").click(function() {
                 clearForm();
                 $("#hdnTehsilId").val(0);
                 $("#tehsilModalLabel").text("Add Tehsil");
@@ -349,7 +352,8 @@
             //==========================
             // Save
             //==========================
-            $("#btnSave").click(function () {
+            $("#btnSave").click(function() {
+                var token = $('input[name="__RequestVerificationToken"]').val();
 
                 if ($("#StateId").val() == "") {
                     alert("Select State");
@@ -368,22 +372,25 @@
 
                 var model = {
                     TehsilMastId: $("#hdnTehsilId").val(),
-                    StateId:      $("#StateId").val(),
-                    DistIdOld:    $("#DistrictId").val(),
-                    SdoNameId:    $("#SdoId").val(),
-                    TehsilName:   $("#TehsilName").val().trim(),
-                    TehsilCode:   $("#TehsilCode").val(),
-                    TehsilEng:    $("#TehsilEng").val(),
-                    GisTehsilId:  $("#GisTehsilId").val(),
-                    ApnaKhataId:  $("#ApnaKhataId").val(),
-                    Inactive:     $("#Inactive").is(":checked") ? "T" : "F"
+                    StateId: $("#StateId").val(),
+                    DistIdOld: $("#DistrictId").val(),
+                    SdoNameId: $("#SdoId").val(),
+                    TehsilName: $("#TehsilName").val().trim(),
+                    TehsilCode: $("#TehsilCode").val(),
+                    TehsilEng: $("#TehsilEng").val(),
+                    GisTehsilId: $("#GisTehsilId").val(),
+                    ApnaKhataId: $("#ApnaKhataId").val(),
+                    Inactive: $("#Inactive").is(":checked") ? "T" : "F"
                 };
 
                 $.ajax({
-                    url:  "/Master/SaveTehsil",
+                    url: "/Master/SaveTehsil",
                     type: "POST",
+                    headers: {
+                        RequestVerificationToken: token
+                    },
                     data: model,
-                    success: function (r) {
+                    success: function(r) {
                         if (r.success) {
                             $("#tehsilModal").modal("hide");
                             loadTehsil();
@@ -392,7 +399,7 @@
                             alert(r.message);
                         }
                     },
-                    error: function () {
+                    error: function() {
                         alert("Error while saving.");
                     }
                 });
@@ -402,7 +409,7 @@
             // Load Districts By State
             // ✅ moved inside document.ready so the event binds correctly
             //==============================
-            $("#StateId").change(function () {
+            $("#StateId").change(function() {
 
                 var stateId = $(this).val();
 
@@ -412,11 +419,11 @@
                 if (stateId == "") return;
 
                 $.ajax({
-                    url:  "/Master/GetDistricts",
+                    url: "/Master/GetDistricts",
                     type: "GET",
                     data: { stateId: stateId },
-                    success: function (data) {
-                        $.each(data, function (i, item) {
+                    success: function(data) {
+                        $.each(data, function(i, item) {
                             $("#DistrictId").append(
                                 '<option value="' + item.districtMastId + '">' +
                                 item.districtName +
@@ -436,10 +443,10 @@
         function loadTehsil(page = 1) {
 
             $.ajax({
-                url:  "/Master/GetTehsilList",
+                url: "/Master/GetTehsilList",
                 type: "GET",
                 data: { pageNo: page },
-                success: function (result) {
+                success: function(result) {
 
                     $("#tblTehsil tbody").html("");
 
@@ -450,7 +457,7 @@
                         return;
                     }
 
-                    $.each(result, function (i, item) {
+                    $.each(result, function(i, item) {
 
                         var inactive = item.inactive == "T"
                             ? "<span class='badge bg-danger'>Inactive</span>"
@@ -458,19 +465,19 @@
 
                         var row = "<tr>" +
                             "<td>" + (item.tehsilMastId ?? "") + "</td>" +
-                            "<td>" + (item.stateName    ?? "") + "</td>" +
+                            "<td>" + (item.stateName ?? "") + "</td>" +
                             "<td>" + (item.districtName ?? "") + "</td>" +
-                            "<td>" + (item.tehsilName   ?? "") + "</td>" +
-                            "<td>" + (item.tehsilCode   ?? "") + "</td>" +
-                            "<td>" + (item.tehsilEng    ?? "") + "</td>" +
+                            "<td>" + (item.tehsilName ?? "") + "</td>" +
+                            "<td>" + (item.tehsilCode ?? "") + "</td>" +
+                            "<td>" + (item.tehsilEng ?? "") + "</td>" +
                             "<td>" + inactive + "</td>" +
                             "<td>" +
-                                "<button class='btn btn-warning btn-sm me-1' onclick='editTehsil(" + item.tehsilMastId + ")'>" +
-                                    "<i class='bi bi-pencil'></i>" +
-                                "</button>" +
-                                "<button class='btn btn-danger btn-sm' onclick='deleteTehsil(" + item.tehsilMastId + ")'>" +
-                                    "<i class='bi bi-trash'></i>" +
-                                "</button>" +
+                            "<button class='btn btn-warning btn-sm me-1' onclick='editTehsil(" + item.tehsilMastId + ")'>" +
+                            "<i class='bi bi-pencil'></i>" +
+                            "</button>" +
+                            "<button class='btn btn-danger btn-sm' onclick='deleteTehsil(" + item.tehsilMastId + ")'>" +
+                            "<i class='bi bi-trash'></i>" +
+                            "</button>" +
                             "</td>" +
                             "</tr>";
 
@@ -487,10 +494,10 @@
         function editTehsil(id) {
 
             $.ajax({
-                url:  "/Master/GetTehsil",
+                url: "/Master/GetTehsil",
                 type: "GET",
                 data: { id: id },
-                success: function (r) {
+                success: function(r) {
 
                     $("#hdnTehsilId").val(r.tehsilMastId);
                     $("#StateId").val(r.stateId).trigger("change"); // ✅ trigger to load districts
@@ -503,7 +510,7 @@
                     $("#tehsilModalLabel").text("Edit Tehsil");
 
                     // ✅ wait for districts to load before setting district value
-                    setTimeout(function () {
+                    setTimeout(function() {
                         $("#DistrictId").val(r.distIdOld);
                         $("#SdoId").val(r.sdoNameId);
                         $("#tehsilModal").modal("show");
@@ -522,10 +529,10 @@
                 return;
 
             $.ajax({
-                url:  "/Master/DeleteTehsil",
+                url: "/Master/DeleteTehsil",
                 type: "POST",
                 data: { id: id },
-                success: function (r) {
+                success: function(r) {
                     if (r.success) {
                         loadTehsil();
                         alert(r.message);
@@ -533,7 +540,7 @@
                         alert(r.message);
                     }
                 },
-                error: function () {
+                error: function() {
                     alert("Error while deleting.");
                 }
             });
@@ -562,12 +569,12 @@
         //==============================
         function loadStates() {
             $.ajax({
-                url:  "/Master/GetStates",
+                url: "/Master/GetStates",
                 type: "GET",
-                success: function (data) {
+                success: function(data) {
                     $("#StateId").empty();
                     $("#StateId").append('<option value="">Select State</option>');
-                    $.each(data, function (i, item) {
+                    $.each(data, function(i, item) {
                         $("#StateId").append(
                             '<option value="' + item.stateMastId + '">' +
                             item.stateName +
@@ -584,12 +591,12 @@
         //==============================
         function loadDivisions() {
             $.ajax({
-                url:  "/Master/GetDivisions",
+                url: "/Master/GetDivisions",
                 type: "GET",
-                success: function (data) {
+                success: function(data) {
                     $("#DivisionId").empty();
                     $("#DivisionId").append('<option value="">Select Division</option>');
-                    $.each(data, function (i, item) {
+                    $.each(data, function(i, item) {
                         $("#DivisionId").append(
                             '<option value="' + item.divisionMastId + '">' +
                             item.divisionName +

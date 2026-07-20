@@ -22,7 +22,7 @@
         var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
     }
 
-    
+    <a href="#mainContent" class="skip-to-content">Skip to main content</a>
 
     <div class="accessibility-bar" role="region" aria-label="Accessibility options">
         <div class="container-fluid d-flex justify-content-end align-items-center gap-2 py-1">
@@ -32,7 +32,7 @@
             <button type="button" class="a11y-btn" id="fontIncrease" aria-label="Increase text size">A+</button>
 
             <span class="accessibility-divider" aria-hidden="true">|</span>
-            <a href="#mainContent" class="a11y-btn skip-to-content">Skip to main content</a>
+
             <button type="button" class="a11y-btn" id="contrastToggle" aria-pressed="false">
                 High Contrast
             </button>
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="d-flex" id="wrapper" >
+    <div class="d-flex" id="wrapper">
 
         <!-- ===========================
              SIDEBAR

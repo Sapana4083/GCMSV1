@@ -1,256 +1,193 @@
-/* ===========================
-   Variables
-=========================== */
-:root {
-    --sidebar-width: 260px;
-    --sidebar-collapsed-width: 70px;
-    --topbar-height: 60px;
+@font-face {
+    font-family: 'poppins-regular';
+    src: url('../lib/font/poppins/poppins-regular.ttf') format('truetype');
 }
 
-#mainContent{
-    margin-top: 4rem;
+*, *::after, *::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
-/* ===========================
-   Sidebar shell
-=========================== */
-.sidebar {
+
+.dataTables_filter {
+    margin-bottom: 16px;
+}
+
+#loader {
     position: fixed;
-    top: 2rem;
-    left: 0;
-    height: calc(100vh - 2rem);
-    width: var(--sidebar-width);
-    background: #fff;
-    border-right: 1px solid #e9ecef;
-    z-index: 1030;
-    transition: width .25s ease, transform .25s ease;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.sidebar-header {
-    height: var(--topbar-height);
-    display: flex;
+    inset: 0;
+    background: rgba(0,0,0,.2);
+    z-index: 99999;
+    display: none;
+    justify-content: center;
     align-items: center;
-    padding: 0 1rem;
-    border-bottom: 1px solid #e9ecef;
-    white-space: nowrap;
 }
 
-    .sidebar-header .brand-text {
-        font-weight: 600;
-        margin-left: .5rem;
-    }
-
-.sidebar .nav-link {
-    display: flex;
-    align-items: center;
-    gap: .65rem;
-    padding: .7rem 1rem;
-    color: #495057;
-    white-space: nowrap;
+.d-none {
+    display: none !important;
 }
 
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-        background: #eef3ff;
-        color: #0d6efd;
-    }
-
-    .sidebar .nav-link i {
-        font-size: 14px;
-        width: 1.25rem;
-        text-align: center;
-        flex-shrink: 0;
-    }
-
-.sidebar .link-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
+p {
+    overflow-wrap: break-word;
 }
 
-/* ===========================
-   Content area / topbar
-=========================== */
-.content-area {
-    margin-left: var(--sidebar-width);
-    transition: margin-left .25s ease, width .25s ease;
-    width: calc(100% - var(--sidebar-width));
-    max-width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
+html {
+    position: relative;
+    min-height: 100%;
 }
 
-.sidebar.collapsed ~ .content-area {
-    margin-left: var(--sidebar-collapsed-width);
-    width: calc(100% - var(--sidebar-collapsed-width));
+body {
+    margin: 0;
+    font-family: 'poppins-regular', sans-serif;
+    font-size: clamp(14px, 2vw, 17px);
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    -webkit-text-size-adjust: 100%;
+    background-image: url('../images/white_background-01.jpg');
+    background-repeat: repeat;
 }
 
-.topbar {
-    height: var(--topbar-height);
-    width:100%;
-    background: #fff;
-    border-bottom: 1px solid #e9ecef;
-    display: flex;
-    align-items: center;
-    padding: 0 1rem;
-    gap: 1rem;
-    position: fixed;
-    top: 2rem;
-    z-index: 1010;
+p, a {
+    font-size: clamp(14px, 2vw, 17px);
 }
 
-    .topbar button {
-        background: transparent;
-        border: 1px solid #dee2e6;
-        border-radius: .375rem;
-        padding: .35rem .6rem;
-        color: #495057;
-    }
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
 
-        .topbar button:hover {
-            background: #f1f3f5;
-        }
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
 
-.topbar-title {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.btn-font-size {
+    font-size: 12px;
+}
+
+.carousal-img-size {
+    height: 80vh;
+}
+
+.container-footer {
+    height: 0;
+}
+
+.btn-custom-color {
+    background-color: #c5c5c5;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.top-bar {
+    background-color: #4967f8;
+}
+
+.nav-link:hover {
+    background-color: #c5c5c5;
+    border-radius: 5px;
     font-weight: 600;
 }
 
-/* ===========================
-   Dropdown toggle caret (generic, works at every depth)
-=========================== */
-.sidebar .dropdown-toggle {
-    position: relative;
+.raj-sarkar-name {
+    font-size: 12px;
+    font-weight: 700;
 }
 
-    .sidebar .dropdown-toggle > .caret {
-        margin-left: auto;
-        transition: transform .2s ease;
-        font-size: 14px;
-        flex-shrink: 0;
-    }
-
-/* Level 1 caret: chevron-down, rotates 180deg when open */
-.sidebar .dd-parent.show > .dropdown-toggle > .caret {
-    transform: rotate(180deg);
+.btn-custum-color {
+    background-color: #c0c3f6;
 }
 
-/* Nested submenu carets (level 2+) point right, rotate down when open */
-.sidebar .dropdown-submenu > .dropdown-toggle > .caret {
-    transform: rotate(-90deg);
+.btn-skip-button:hover {
+    background-color: #c0c3f6;
 }
 
-.sidebar .dropdown-submenu.show > .dropdown-toggle > .caret {
-    transform: rotate(0deg);
+.btn-skip-button:focus {
+    outline: none;
+    background-color: #c0c3f6;
 }
 
-/* ===========================
-   Dropdown menus - generic, works at any depth
-=========================== */
-.sidebar .dropdown-menu {
-    position: static;
-    float: none;
-    width: 100%;
-    border: 0;
-    box-shadow: none;
-    padding: 0;
+.logo-size-header {
+    width: auto;
+    height: 60px;
+}
+
+.minister-img-header {
+    width: auto;
+    height: 100px;
+}
+
+.court-logos {
+    width: 200px;
+    height: 200px;
+}
+
+/* ── Owl Carousel ────────────────────────────────────────── */
+img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.owl-nav button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.38) !important;
+    color: #fff;
     margin: 0;
-    display: none; /* controlled via JS by toggling .show on the owning <li> */
+    transition: all 0.3s ease-in-out;
 }
 
-/* One rule handles every nesting level */
-.sidebar .dd-parent.show > .dropdown-menu {
-    display: block;
+    .owl-nav button.owl-prev {
+        left: 0;
+    }
+
+    .owl-nav button.owl-next {
+        right: 0;
+    }
+
+    .owl-nav button:focus {
+        outline: none;
+    }
+
+.owl-dots {
+    text-align: center;
+    padding-top: 15px;
 }
 
-/* Depth-based visual styling */
-.sidebar .dropdown-menu .dropdown-item {
-    padding: .6rem 1rem .6rem 2.75rem;
-    font-size: 14px;
-    color: #495057;
+    .owl-dots button.owl-dot {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        display: inline-block;
+        background: #ccc;
+        margin: 0 3px;
+    }
+
+        .owl-dots button.owl-dot.active {
+            background-color: #000;
+        }
+
+        .owl-dots button.owl-dot:focus {
+            outline: none;
+        }
+
+.owl-item {
+    height: 80px !important;
     display: flex;
-    align-items: center;
-    gap: .5rem;
 }
 
-.sidebar .dropdown-menu {
-    background: #f8f9fa;
-}
-
-    .sidebar .dropdown-menu .dropdown-menu {
-        background: #ffffff;
-    }
-
-        .sidebar .dropdown-menu .dropdown-menu .dropdown-item {
-            padding-left: 3.5rem;
-        }
-
-        .sidebar .dropdown-menu .dropdown-menu .dropdown-menu {
-            background: #f4f6f9;
-        }
-
-            .sidebar .dropdown-menu .dropdown-menu .dropdown-menu .dropdown-item {
-                padding-left: 4.25rem;
-                font-size: 13px;
-            }
-
-.sidebar .dropdown-item:hover {
-    background: #e9ecef;
-    color: #0d6efd;
-}
-
-/* ===========================
-   Sidebar collapsed (desktop, icon-only)
-=========================== */
-.sidebar.collapsed {
-    width: var(--sidebar-collapsed-width);
-}
-
-    .sidebar.collapsed .link-text,
-    .sidebar.collapsed .brand-text,
-    .sidebar.collapsed .caret {
-        display: none;
-    }
-
-    .sidebar.collapsed .dropdown-menu {
-        display: none !important;
-    }
-
-/* ===========================
-   Backdrop (mobile)
-=========================== */
-.sidebar-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, .4);
-    z-index: 1020;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .25s ease;
-}
-
-    .sidebar-backdrop.show {
-        opacity: 1;
-        visibility: visible;
-    }
-
-/* ===========================
-   Responsive breakpoint (< 992px = mobile behavior)
-=========================== */
-@media (max-width: 991.98px) {
-    .sidebar {
-        transform: translateX(-100%);
-        width: var(--sidebar-width) !important;
-    }
-
-        .sidebar.show {
-            transform: translateX(0);
-        }
-
-    .content-area {
-        margin-left: 0 !important;
-        width: 100% !important;
+/* ── Page / card / form components ──────────────────────── */
 .page-title h2 {
     font-weight: 600;
 }
@@ -270,6 +207,7 @@
 
 .form-label {
     font-weight: 500;
+    margin-bottom: 4px;
 }
 
 .form-actions {
@@ -302,8 +240,7 @@
             font-weight: bold;
         }
 
-/* ── Media Queries ───────────────────────────────────────── */
-
+/* ── Media queries (legacy site.css) ───────────────────── */
 @media (max-width: 767.9px) {
     .middle-bar {
         display: none;
@@ -321,8 +258,7 @@
     }
 }
 
-/*Board Of Revenue CSS*/
-
+/* ── Board Of Revenue CSS ──────────────────────────────── */
 .borLogoPage {
     width: auto;
     height: 100px;
@@ -404,11 +340,6 @@
     color: #dc3545;
 }
 
-.form-label {
-    font-weight: 500;
-    margin-bottom: 4px;
-}
-
 .sub-panel-header {
     background: linear-gradient(to right, #f7f9fb, #cfe9fb);
     border: 1px solid #dee2e6;
@@ -486,7 +417,8 @@
     color: #fff;
     border: none;
 }
-/* ---------- Multi-level dropdown ---------- */
+
+/* ---------- Multi-level dropdown (top navbar, hover-driven) ---------- */
 .dropdown-submenu {
     position: relative;
 }
@@ -505,7 +437,6 @@
         margin-left: 0.5rem;
     }
 
-/* Desktop: flyout to the side, hover-driven */
 @media (min-width: 992px) {
     .dropdown-submenu > .dropdown-menu {
         position: absolute;
@@ -517,14 +448,12 @@
         display: block;
     }
 
-    /* flip to the left edge if it would overflow the viewport */
     .dropdown-submenu.dropdown-menu-end > .dropdown-menu {
         left: auto;
         right: 100%;
     }
 }
 
-/* Mobile / collapsed navbar: stacked, indented, tap-driven */
 @media (max-width: 991.98px) {
     .dropdown-submenu > .dropdown-toggle::after {
         transform: rotate(0deg);
@@ -549,273 +478,243 @@
         box-shadow: none;
     }
 }
-@font-face {
-    font-family: 'poppins-regular';
-    src: url('../lib/font/poppins/poppins-regular.ttf') format('truetype');
+
+/* ============================================================
+   SIDEBAR LAYOUT (this app's admin shell — separate from the
+   top-navbar dropdown system above, which uses .dropdown-submenu;
+   the sidebar uses .dd-parent so the two never collide)
+============================================================ */
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 70px;
+    --topbar-height: 60px;
 }
 
-*, *::after, *::before {
+#mainContent {
+    margin-top: 4rem;
+}
+
+.sidebar {
+    position: fixed;
+    top: 2rem;
+    left: 0;
+    height: calc(100vh - 2rem);
+    width: var(--sidebar-width);
+    background: #fff;
+    border-right: 1px solid #e9ecef;
+    z-index: 1030;
+    transition: width .25s ease, transform .25s ease;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    height: var(--topbar-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+}
+
+    .sidebar-header .brand-text {
+        font-weight: 600;
+        margin-left: .5rem;
+    }
+
+.sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .7rem 1rem;
+    color: #495057;
+    white-space: nowrap;
+}
+
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+        background: #eef3ff;
+        color: #0d6efd;
+    }
+
+    .sidebar .nav-link i {
+        font-size: 14px;
+        width: 1.25rem;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+.sidebar .link-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.content-area {
+    margin-left: var(--sidebar-width);
+    transition: margin-left .25s ease, width .25s ease;
+    width: calc(100% - var(--sidebar-width));
+    max-width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.sidebar.collapsed ~ .content-area {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+.topbar {
+    height: var(--topbar-height);
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    gap: 1rem;
+    position: fixed;
+    top: 2rem;
+    z-index: 1010;
+}
+
+    .topbar button {
+        background: transparent;
+        border: 1px solid #dee2e6;
+        border-radius: .375rem;
+        padding: .35rem .6rem;
+        color: #495057;
+    }
+
+        .topbar button:hover {
+            background: #f1f3f5;
+        }
+
+.topbar-title {
+    font-weight: 600;
+}
+
+/* Sidebar dropdown toggle caret (generic, works at every depth) */
+.sidebar .dropdown-toggle {
+    position: relative;
+}
+
+    .sidebar .dropdown-toggle > .caret {
+        margin-left: auto;
+        transition: transform .2s ease;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+.sidebar .dd-parent.show > .dropdown-toggle > .caret {
+    transform: rotate(180deg);
+}
+
+.sidebar .dropdown-submenu > .dropdown-toggle > .caret {
+    transform: rotate(-90deg);
+}
+
+.sidebar .dropdown-submenu.show > .dropdown-toggle > .caret {
+    transform: rotate(0deg);
+}
+
+/* Sidebar dropdown menus - generic, works at any depth */
+.sidebar .dropdown-menu {
+    position: static;
+    float: none;
+    width: 100%;
+    border: 0;
+    box-shadow: none;
     padding: 0;
     margin: 0;
-    box-sizing: border-box;
+    display: none;
 }
 
-.dataTables_filter {
-    margin-bottom: 16px;
+.sidebar .dd-parent.show > .dropdown-menu {
+    display: block;
 }
 
-#loader {
+.sidebar .dropdown-menu .dropdown-item {
+    padding: .6rem 1rem .6rem 2.75rem;
+    font-size: 14px;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.sidebar .dropdown-menu {
+    background: #f8f9fa;
+}
+
+    .sidebar .dropdown-menu .dropdown-menu {
+        background: #ffffff;
+    }
+
+        .sidebar .dropdown-menu .dropdown-menu .dropdown-item {
+            padding-left: 3.5rem;
+        }
+
+        .sidebar .dropdown-menu .dropdown-menu .dropdown-menu {
+            background: #f4f6f9;
+        }
+
+            .sidebar .dropdown-menu .dropdown-menu .dropdown-menu .dropdown-item {
+                padding-left: 4.25rem;
+                font-size: 13px;
+            }
+
+.sidebar .dropdown-item:hover {
+    background: #e9ecef;
+    color: #0d6efd;
+}
+
+/* Sidebar collapsed (desktop, icon-only) */
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+    .sidebar.collapsed .link-text,
+    .sidebar.collapsed .brand-text,
+    .sidebar.collapsed .caret {
+        display: none;
+    }
+
+    .sidebar.collapsed .dropdown-menu {
+        display: none !important;
+    }
+
+/* Backdrop (mobile) */
+.sidebar-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.2);
-    z-index: 99999;
-    display: none;
-    justify-content: center;
-    align-items: center;
+    background: rgba(0, 0, 0, .4);
+    z-index: 1020;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease;
 }
 
-.d-none {
-    display: none !important;
-}
-
-p {
-    overflow-wrap: break-word;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-.footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    white-space: nowrap;
-    line-height: 60px;
-}
-
-body {
-    margin: 0;
-    font-family: 'poppins-regular', sans-serif; /* Added fallback font */
-    font-size: clamp(14px, 2vw, 17px);
-    font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
-    margin-bottom: 60px;
-    background-color: #fff;
-    -webkit-text-size-adjust: 100%;
-    background-image: url('../images/white_background-01.jpg');
-    background-repeat: repeat;
-}
-
-p, a {
-    font-size: clamp(14px, 2vw, 17px);
-}
-
-
-
-.form-floating > .form-control-plaintext::placeholder,
-.form-floating > .form-control::placeholder { /* Split selectors onto separate lines */
-    color: var(--bs-secondary-color);
-    text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder,
-.form-floating > .form-control:focus::placeholder { /* Split selectors onto separate lines */
-    text-align: start;
-}
-
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus { /* Split selectors onto separate lines */
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-.btn-font-size {
-    font-size: 12px;
-}
-
-.carousal-img-size { /* Consider fixing typo: 'carousal' → 'carousel' */
-    height: 80vh;
-}
-
-.container-footer {
-    height: 0; /* Removed invalid unit: '0vh' → '0' (units unnecessary on zero values) */
-}
-
-.btn-custom-color {
-    background-color: #c5c5c5;
-}
-/* ── Header ─────────────────────────────────────────────── */
-/* Top Bar */
-.top-bar {
-    background-color: #4967f8;
-}
-
-/*.nav-link {
-    font-size: 1.1rem;
-    font-weight:500;
-}*/
-
-.nav-link:hover { /* Removed incorrect nesting — plain CSS doesn't support '&' nesting here */
-    background-color: #c5c5c5;
-    border-radius: 5px;
-    font-weight: 600;
-}
-
-.raj-sarkar-name {
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.btn-custum-color { /* Consider fixing typo: 'custum' → 'custom' */
-    background-color: #c0c3f6; /* Added missing semicolon */
-}
-
-.btn-skip-button:hover {
-    background-color: #c0c3f6; /* Added missing semicolon */
-}
-
-.btn-skip-button:focus {
-    outline: none;
-    background-color: #c0c3f6; /* Added missing semicolon */
-}
-
-.logo-size-header {
-    width: auto;
-    height: 60px;
-}
-
-.minister-img-header {
-    width: auto;
-    height: 100px;
-}
-
-.court-logos {
-    width: 200px;
-    height: 200px;
-}
-/* ── Owl Carousel ────────────────────────────────────────── */
-
-img {
-    height: 100%;
-    object-fit: contain;
-}
-
-.owl-nav button {
-    position: absolute;
-    top: 50%;
-    background-color: #000;
-    color: #fff;
-    margin: 0;
-    transition: all 0.3s ease-in-out;
-}
-
-    .owl-nav button.owl-prev { /* Removed incorrect nesting */
-        left: 0;
+    .sidebar-backdrop.show {
+        opacity: 1;
+        visibility: visible;
     }
 
-    .owl-nav button.owl-next { /* Removed incorrect nesting */
-        right: 0;
+/* Responsive breakpoint (< 992px = mobile behavior) */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: var(--sidebar-width) !important;
     }
 
-.owl-dots {
-    text-align: center;
-    padding-top: 15px;
-}
-
-    .owl-dots button.owl-dot { /* Removed incorrect nesting */
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        display: inline-block;
-        background: #ccc;
-        margin: 0 3px;
-    }
-
-        .owl-dots button.owl-dot.active { /* Removed incorrect nesting */
-            background-color: #000;
+        .sidebar.show {
+            transform: translateX(0);
         }
 
-        .owl-dots button.owl-dot:focus { /* Removed incorrect nesting */
-            outline: none;
-        }
-
-.owl-nav button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.38) !important;
-}
-
-    .owl-nav button:focus {
-        outline: none;
-    }
-
-.owl-item {
-    height: 80px !important;
-    display: flex;
-}
-
-.page-title h2 {
-    font-weight: 600;
-}
-
-.card {
-    border-radius: 10px;
-}
-
-.card-body {
-    background: #fff;
-    padding: 30px;
-}
-
-.content-panel {
-    background: white;
-}
-
-.form-label {
-    font-weight: 500;
-}
-
-.form-actions {
-    margin-top: 25px;
-    text-align: right;
-}
-
-    .form-actions .btn {
-        min-width: 120px;
-    }
-
-.wizard {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-    .wizard span {
-        flex: 1;
-        text-align: center;
-        padding: 12px;
-        border: 1px solid #d6d6d6;
-        background: #f5f5f5;
-        border-radius: 6px;
-    }
-
-        .wizard span.active {
-            background: #1f4e79;
-            color: white;
-            font-weight: bold;
-        }
-
-/* ── Media Queries ───────────────────────────────────────── */
-
-@media (max-width: 767.9px) {
-    .middle-bar {
-        display: none;
+    .content-area {
+        margin-left: 0 !important;
+        width: 100% !important;
     }
 
     .sidebar-toggle-desktop {
@@ -829,9 +728,7 @@ img {
     }
 }
 
-/* ===========================
-   Global overflow safety net
-=========================== */
+/* Global overflow safety net */
 html, body {
     max-width: 100%;
     overflow-x: hidden;
@@ -843,21 +740,14 @@ html, body {
     overflow-x: hidden;
 }
 
-/* Prevent wide tables/cards from forcing page-level horizontal scroll;
-   any overflow should scroll inside the table itself, not the whole page */
 .table-responsive {
     overflow-x: auto;
 }
 
-/* ===========================
-   Footer override
-   site.css positions .footer with position:absolute/bottom:0, which was
-   built for the old full-width layout with no sidebar. Inside .content-area
-   (a flex column) that math breaks whenever content height changes.
-   Use a flexbox sticky-footer instead: main grows to fill space, footer
-   sits right after it — pinned to the bottom on short pages, and simply
-   below the content (scrolls with the page) on tall pages. Never overlaps.
-=========================== */
+/* Footer override — see comment history: site.css's .footer uses
+   position:absolute/bottom:0 which only worked in the old full-width
+   layout. Inside .content-area (a flex column) that breaks whenever
+   content height changes, so this pins it via flexbox instead. */
 .content-area main {
     flex: 1 1 auto;
 }
@@ -874,11 +764,17 @@ body {
     margin-bottom: 0;
 }
 
-
+/* DataTables clearfix — .dataTables_info / .dataTables_paginate float,
+   which collapses .dataTables_wrapper's height unless cleared, causing
+   whatever follows (the footer) to render into that collapsed space. */
+.dataTables_wrapper::after {
+    content: "";
+    display: table;
+    clear: both;
+}
 
 /* ============================================================
    WCAG 2.1 — Accessibility toolbar + global overrides
-   Success criteria addressed directly in this file:
    - 2.4.1 Bypass Blocks        (skip link)
    - 2.4.7 Focus Visible        (focus outline)
    - 1.4.11 Non-text Contrast   (focus outline contrast)
@@ -887,11 +783,6 @@ body {
    - 1.4.12 Text Spacing        (exact SC minimums, toggle-based)
      https://www.w3.org/TR/WCAG21/#text-spacing
 ============================================================ */
-
-/* ------------------------------------------------------------
-   Skip to content — 2.4.1 Bypass Blocks
-   Hidden off-screen until it receives keyboard focus.
------------------------------------------------------------- */
 .skip-to-content {
     position: absolute;
     left: -9999px;
@@ -909,11 +800,6 @@ body {
         left: 0;
     }
 
-/* ------------------------------------------------------------
-   Visible focus indicator everywhere — 2.4.7 / 1.4.11
-   3px outline with a color that holds 3:1 contrast against both
-   light and dark backgrounds used on this site.
------------------------------------------------------------- */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -924,17 +810,14 @@ textarea:focus-visible,
     outline-offset: 2px;
 }
 
-/* ------------------------------------------------------------
-   Accessibility bar
------------------------------------------------------------- */
 .accessibility-bar {
-    width:100%;
-    height:2rem;
+    width: 100%;
+    height: 2rem;
     background: #1f2937;
     color: #fff;
     font-size: 14px;
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
     position: fixed;
     z-index: 1040;
 }
@@ -973,34 +856,32 @@ textarea:focus-visible,
         font-weight: 600;
     }
 
-/* ------------------------------------------------------------
-   Font size scaling — 1.4.4 Resize Text (up to 200% with no loss)
-   Scales the root font-size; every rem/em-based measurement on
-   the site scales with it. Fixed pixel heights (topbar, sidebar
-   header) are relaxed to min-height below so nothing gets clipped.
------------------------------------------------------------- */
-html[data-fontsize="1"] {
-    font-size: 100%;
+/* Font size scaling — 1.4.4 Resize Text (up to 200% with no loss).
+   Uses zoom, not root font-size: the site's base typography is px/vw
+   (see body/p/a rules above), which doesn't inherit from rem, so
+   scaling html's root font-size has no visible effect on it. */
+html[data-fontsize="1"] body {
+    zoom: 100%;
 }
 
-html[data-fontsize="2"] {
-    font-size: 112.5%;
+html[data-fontsize="2"] body {
+    zoom: 112.5%;
 }
 
-html[data-fontsize="3"] {
-    font-size: 125%;
+html[data-fontsize="3"] body {
+    zoom: 125%;
 }
 
-html[data-fontsize="4"] {
-    font-size: 150%;
+html[data-fontsize="4"] body {
+    zoom: 150%;
 }
 
-html[data-fontsize="5"] {
-    font-size: 175%;
+html[data-fontsize="5"] body {
+    zoom: 175%;
 }
 
-html[data-fontsize="6"] {
-    font-size: 200%;
+html[data-fontsize="6"] body {
+    zoom: 200%;
 }
 
 .topbar,
@@ -1009,18 +890,7 @@ html[data-fontsize="6"] {
     min-height: var(--topbar-height);
 }
 
-/* ------------------------------------------------------------
-   Text spacing mode — 1.4.12 Text Spacing
-   Applies the exact SC-required minimums on demand:
-     line height  >= 1.5x font size
-     paragraph spacing >= 2x font size
-     letter spacing >= 0.12x font size
-     word spacing >= 0.16x font size
-   No container here may clip this — avoid overflow:hidden or a
-   fixed height anywhere text can appear (checked in this file:
-   .content-area / html / body only use overflow-x:hidden, never
-   overflow-y or overflow shorthand, so vertical growth is safe).
------------------------------------------------------------- */
+/* Text spacing mode — 1.4.12 Text Spacing */
 html.text-spacing-mode body,
 html.text-spacing-mode p,
 html.text-spacing-mode li,
@@ -1041,9 +911,7 @@ html.text-spacing-mode p {
     margin-bottom: 2em !important;
 }
 
-/* ------------------------------------------------------------
-   High contrast mode — 1.4.3 Contrast (Minimum) / 1.4.6 (Enhanced)
------------------------------------------------------------- */
+/* High contrast mode — 1.4.3 / 1.4.6 Contrast */
 html.high-contrast body {
     background: #000 !important;
     color: #fff !important;
@@ -1079,4 +947,3 @@ html.high-contrast .btn-primary {
 html.high-contrast img {
     filter: grayscale(100%) contrast(120%);
 }
-

@@ -1,0 +1,41 @@
+﻿@model int
+
+<div class="container">
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body">
+
+            <ul class="nav nav-pills nav-fill">
+
+                <li class="nav-item">
+                    <span class="nav-link @(Model==1?"active":"")">
+                        1 Basic
+                    </span>
+                </li>
+
+                <li class="nav-item">
+                    <span class="nav-link @(Model==2?"active":"")">
+                        2 Appellant
+                    </span>
+                </li>
+
+                <li class="nav-item">
+                    <span class="nav-link @(Model==3?"active":"")">
+                        3 Respondent
+                    </span>
+                </li>
+
+                <li class="nav-item">
+                    <span class="nav-link @(Model==4?"active":"")">
+                        4 Private Party
+                    </span>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>

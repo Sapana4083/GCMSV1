@@ -1,90 +1,162 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GCMS.Models.Entities
 {
-    [Table("TRN_CASE_REGISTRATION")]
+    [Table("TRN_RCSAT_CASEREG")]
     public class CaseRegistration
     {
         [Key]
-        [Column("CASE_ID")]
+        [Column("TRN_RCSAT_CASEREGID")]
         public long CaseId { get; set; }
 
-        [Required]
-        [Column("CASE_NUMBER")]
-        [StringLength(50)]
-        public string CaseNumber { get; set; } = string.Empty;
+        //========================
+        // System Columns
+        //========================
 
-        [Required]
-        [Column("INSTITUTION_DATE")]
-        public DateTime InstitutionDate { get; set; }
+        [Column("CANCEL")]
+        public string? Cancel { get; set; }
 
-        [Column("ORDER_ISSUED_BY_ID")]
-        public long? OrderIssuedById { get; set; }
+        [Column("SOURCEID")]
+        public long? SourceId { get; set; }
 
-        [Required]
-        [Column("CASE_TYPE_ID")]
-        public long CaseTypeId { get; set; }
+        [Column("MAPNAME")]
+        public string? MapName { get; set; }
 
-        [Required]
-        [Column("CASE_PURPOSE_ID")]
-        public long CasePurposeId { get; set; }
+        [Column("USERNAME")]
+        public string? UserName { get; set; }
 
-        [Required]
-        [Column("CASE_SUBJECT_ID")]
-        public long CaseSubjectId { get; set; }
+        [Column("CREATEDBY")]
+        public string? CreatedBy { get; set; }
 
-        [Required]
-        [Column("BENCH_TYPE_ID")]
-        public long BenchTypeId { get; set; }
+        [Column("CREATEDON")]
+        public DateTime? CreatedOn { get; set; }
 
-        [Column("HEARING_DATE")]
-        public DateTime? HearingDate { get; set; }
+        [Column("MODIFIEDON")]
+        public DateTime? ModifiedOn { get; set; }
 
-        [Column("IMPUGNED_FLAG")]
-        [StringLength(1)]
+        [Column("WKID")]
+        public string? WorkFlowId { get; set; }
+
+        [Column("APP_LEVEL")]
+        public int? AppLevel { get; set; }
+
+        [Column("APP_DESC")]
+        public int? AppDesc { get; set; }
+
+        [Column("APP_SLEVEL")]
+        public int? AppSubLevel { get; set; }
+
+        //========================
+        // Step 1 : Basic Details
+        //========================
+
+        [Column("INSTITUTIONDATE")]
+        public DateTime? InstitutionDate { get; set; }
+
+        [Column("CASE_NO")]
+        public string? CaseNo { get; set; }
+
+        [Column("MCASE_NOO")]
+        public string? ManualCaseNo { get; set; }
+
+        [Column("ORDER_NO")]
+        public string? OrderNo { get; set; }
+        [Column("Impugned_Flag")]
         public string? ImpugnedFlag { get; set; }
-
-        [Column("IMPUGNED_DATE")]
+        [Column("Impugned_Date")]
         public DateTime? ImpugnedDate { get; set; }
 
-        [Column("OLD_CASE_NUMBER")]
-        [StringLength(50)]
-        public string? OldCaseNumber { get; set; }
+        [Column("DATE_OF_ORDER")]
+        public DateTime? DateOfOrder { get; set; }
 
-        [Column("LINKED_CASE_NUMBER")]
-        [StringLength(50)]
-        public string? LinkedCaseNumber { get; set; }
+        [Column("DESIOFFORDER")]
+        public long? OrderIssuedById { get; set; }
 
-        [Column("STATUS")]
-        [StringLength(20)]
-        public string Status { get; set; } = "Draft";
+        [Column("COURT_CODE")]
+        public string? CourtCode { get; set; }
 
-        [Column("CREATED_BY")]
-        public long CreatedBy { get; set; }
+        [Column("CASETYPE")]
+        public long? CaseTypeId { get; set; }
 
-        [Column("CREATED_DATE")]
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        [Column("CASESUBJECT")]
+        public long? CaseSubjectId { get; set; }
 
-        [Column("UPDATED_BY")]
-        public long? UpdatedBy { get; set; }
+        [Column("CASE_TYPE_CODE")]
+        public string? CaseTypeCode { get; set; }
 
-        [Column("UPDATED_DATE")]
-        public DateTime? UpdatedDate { get; set; }
+        [Column("CASE_PURPOSE_NAME")]
+        public long? CasePurposeId { get; set; }
 
+        [Column("CASE_PURPOSE_CODE")]
+        public string? CasePurposeCode { get; set; }
+
+        [Column("CASE_PRESENTBY")]
+        public string? CasePresentedBy { get; set; }
+
+        [Column("HEARINGDATE")]
+        public DateTime? HearingDate { get; set; }
+
+        [Column("BENCH_TYPE")]
+        public long? BenchTypeId { get; set; }
+
+        [Column("LINKED_CASE")]
+        public string? LinkedCase { get; set; }
+
+        [Column("OLDCASNO")]
+        public string? OldCaseNo { get; set; }
+
+        //========================
+        // Decision
+        //========================
+
+        [Column("CASE_DECISION_DATE")]
+        public DateTime? DecisionDate { get; set; }
+
+        [Column("DECISION_TYPE")]
+        public long? DecisionTypeId { get; set; }
+
+        //========================
+        // Duplicate Check
+        //========================
+
+        [Column("DUPALLOW")]
+        public string? DuplicateAllowed { get; set; }
+
+        [Column("CNT_P")]
+        public int? DuplicateCount { get; set; }
+
+        //========================
+        // Previous Case
+        //========================
+
+        [Column("PRVCASENO")]
+        public string? PreviousCaseNo { get; set; }
+
+        [Column("LCASNO")]
+        public string? LowerCourtCaseNo { get; set; }
+
+        [Column("PRECASENOCHK")]
+        public string? PreviousCaseCheck { get; set; }
+
+        //========================
+        // UI Only
+        //========================
+
+        [NotMapped]
+        public int CurrentStep { get; set; }
+
+        [NotMapped]
+        public bool IsDraft { get; set; }
+
+        //========================
         // Navigation Properties
-        public virtual ICollection<CaseAppellant> Appellants { get; set; }
-            = new List<CaseAppellant>();
+        //========================
 
-        public virtual ICollection<CaseRespondent> Respondents { get; set; }
-            = new List<CaseRespondent>();
+        public virtual ICollection<CaseAppellant>? Appellants { get; set; }
 
-        public virtual ICollection<CasePrivateParty> PrivateParties { get; set; }
-            = new List<CasePrivateParty>();
+        public virtual ICollection<CaseRespondent>? Respondents { get; set; }
 
-        public virtual CaseType? CaseType { get; set; }
-        public virtual CaseSubject? CaseSubject { get; set; }
-        public virtual CasePurpose? CasePurpose { get; set; }
-        public virtual BenchType? BenchType { get; set; }
+        public virtual ICollection<CasePrivateParty>? PrivateParties { get; set; }
     }
 }

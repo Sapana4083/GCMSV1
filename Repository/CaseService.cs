@@ -1,41 +1,45 @@
 ﻿using GCMS.Models.Entities;
 using GCMS.Repository.Interfaces;
-using GCMS.Services.Interfaces;
 
 namespace GCMS.Repository
 {
     public class CaseService : ICaseService
     {
-        private readonly ICaseRepository _repo;
+        private readonly ICaseRepository _repository;
 
-        public CaseService(ICaseRepository repo)
+        public CaseService(ICaseRepository repository)
         {
-            _repo = repo;
+            _repository = repository;
         }
 
-        public async Task<List<CaseRegistration>> GetAllAsync()
+        public async Task<long> SaveCaseAsync(CaseRegistration model)
         {
-            return await _repo.GetAllAsync();
+            return await _repository.SaveCaseAsync(model);
         }
 
-        public async Task<CaseRegistration?> GetByIdAsync(long caseId)
+        public async Task<CaseRegistration?> GetCaseAsync(long caseId)
         {
-            return await _repo.GetByIdAsync(caseId);
+            return await _repository.GetCaseAsync(caseId);
         }
 
-        public async Task<long> AddAsync(CaseRegistration model)
+        public async Task SaveAppellantAsync(CaseAppellant model)
         {
-            return await _repo.AddAsync(model);
+            await _repository.SaveAppellantAsync(model);
         }
 
-        public async Task UpdateAsync(CaseRegistration model)
+        public async Task SaveRespondentAsync(CaseRespondent model)
         {
-            await _repo.UpdateAsync(model);
+            await _repository.SaveRespondentAsync(model);
         }
 
-        public async Task DeleteAsync(long caseId)
+        public async Task SavePrivatePartyAsync(CasePrivateParty model)
         {
-            await _repo.DeleteAsync(caseId);
+            await _repository.SavePrivatePartyAsync(model);
+        }
+
+        public async Task DeleteCaseAsync(long caseId)
+        {
+            await _repository.DeleteCaseAsync(caseId);
         }
     }
 }

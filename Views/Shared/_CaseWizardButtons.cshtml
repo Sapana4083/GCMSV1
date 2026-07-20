@@ -1,0 +1,61 @@
+﻿@model int
+
+<div class="container">
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    @if (Model > 1)
+                    {
+                        <button type="submit"
+                                class="btn btn-secondary"
+                                name="navigation"
+                                value="Back"
+                                formnovalidate>
+
+                            Previous
+
+                        </button>
+                    }
+
+                </div>
+
+                <div>
+
+                    @if (Model < 4)
+                    {
+                        <button type="submit"
+                                class="btn btn-primary"
+                                name="navigation"
+                                value="Next">
+
+                            Next
+
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit"
+                                class="btn btn-success"
+                                name="navigation"
+                                value="Save">
+
+                            Save Registration
+
+                        </button>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

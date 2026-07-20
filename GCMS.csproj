@@ -7,12 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.28" />
-    <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.23.26200" />
+    <Compile Remove="Repository\CaseService.cs" />
+    <Compile Remove="Repository\Interfaces\ICaseService.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\CaseRegistration\" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.28" />
+    <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.23.26200" />
   </ItemGroup>
 
 </Project>

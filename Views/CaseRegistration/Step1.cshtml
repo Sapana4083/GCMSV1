@@ -1,17 +1,21 @@
-﻿@using GCMS.Models.ViewModels
-@model CaseRegistrationWizardViewModel
+﻿@model CaseRegistrationWizardViewModel
 @{
     ViewData["Title"] = Model.Id == 0 ? "Register Case" : "Edit Case";
 }
-<div class="page-title"><h1>Case Basic Details</h1><p>Step 1 of 4</p></div>
-<div class="wizard"><span class="active">1 Basic</span><span>2 Appellant</span><span>3 Respondent</span><span>4 Private Party</span></div>
-<form asp-action="Step1" method="post" class="content-panel">
+
+<div class="container mt-4">
+<div class="page-title mb-3">
+<h1>Case Basic Details</h1><p>Step 1 of 4</p></div>
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div class="wizard mb-4"><span class="active">1 Basic</span><span>2 Appellant</span><span>3 Respondent</span><span>4 Private Party</span></div>
+            <form asp-action="Step1" method="post" class="content-panel">
     @Html.AntiForgeryToken()<input asp-for="Id" type="hidden" />
     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
     <div class="row g-3">
         <div class="col-md-3"><label asp-for="InstitutionDate" class="form-label"></label><input asp-for="InstitutionDate" class="form-control" /><span asp-validation-for="InstitutionDate" class="text-danger"></span></div>
         <div class="col-md-3"><label asp-for="CaseNumber" class="form-label"></label><input asp-for="CaseNumber" class="form-control" /><span asp-validation-for="CaseNumber" class="text-danger"></span></div>
-        <div class="col-md-3"><label asp-for="ImpugnedFlag" class="form-label"></label><select asp-for="ImpugnedFlag" class="form-select"><option value="">Select</option><option>Yes</option><option>No</option></select><span asp-validation-for="ImpugnedFlag" class="text-danger"></span></div>
+                    @*  <div class="col-md-3"><label asp-for="ImpugnedFlag" class="form-label"></label><select asp-for="ImpugnedFlag" class="form-select"><option value="">Select</option><option>Yes</option><option>No</option></select><span asp-validation-for="ImpugnedFlag" class="text-danger"></span></div>*@ 
         <div class="col-md-3"><label asp-for="ImpugnedDate" class="form-label"></label><input asp-for="ImpugnedDate" class="form-control" /><span asp-validation-for="ImpugnedDate" class="text-danger"></span></div>
         <div class="col-md-3"><label asp-for="OrderIssuedById" class="form-label"></label><input asp-for="OrderIssuedById" class="form-control" /><span asp-validation-for="OrderIssuedById" class="text-danger"></span></div>
         <div class="col-md-3"><label asp-for="CaseTypeId" class="form-label"></label><select asp-for="CaseTypeId" asp-items="Model.CaseTypes" class="form-select select2"><option value="">Select</option></select><span asp-validation-for="CaseTypeId" class="text-danger"></span></div>
@@ -22,6 +26,9 @@
         <div class="col-md-3"><label asp-for="BenchTypeId" class="form-label"></label><select asp-for="BenchTypeId" asp-items="Model.BenchTypes" class="form-select select2"><option value="">Select</option></select><span asp-validation-for="BenchTypeId" class="text-danger"></span></div>
         <div class="col-md-3"><label asp-for="LinkedCaseNumber" class="form-label"></label><input asp-for="LinkedCaseNumber" class="form-control" /><span asp-validation-for="LinkedCaseNumber" class="text-danger"></span></div>
     </div>
-    <div class="form-actions"><a asp-action="Index" class="btn btn-outline-secondary">Cancel</a><button type="submit" class="btn btn-primary">Next</button></div>
+    <div class="form-actions"><button type="submit" class="btn btn-primary">Next</button></div>
 </form>
+</div>
+</div>
+</div>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

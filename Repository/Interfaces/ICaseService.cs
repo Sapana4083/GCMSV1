@@ -4,14 +4,36 @@ namespace GCMS.Repository.Interfaces
 {
     public interface ICaseService
     {
-        Task<List<CaseRegistration>> GetAllAsync();
+        //==========================
+        // Master
+        //==========================
 
-        Task<CaseRegistration?> GetByIdAsync(long caseId);
+        Task<long> SaveCaseAsync(CaseRegistration model);
 
-        Task<long> AddAsync(CaseRegistration model);
+        Task<CaseRegistration?> GetCaseAsync(long caseId);
 
-        Task UpdateAsync(CaseRegistration model);
+        //==========================
+        // Appellant
+        //==========================
 
-        Task DeleteAsync(long caseId);
+        Task SaveAppellantAsync(CaseAppellant model);
+
+        //==========================
+        // Respondent
+        //==========================
+
+        Task SaveRespondentAsync(CaseRespondent model);
+
+        //==========================
+        // Private Party
+        //==========================
+
+        Task SavePrivatePartyAsync(CasePrivateParty model);
+
+        //==========================
+        // Delete
+        //==========================
+
+        Task DeleteCaseAsync(long caseId);
     }
 }

@@ -38,5 +38,16 @@ namespace GCMS.Data
         public DbSet<RoleMaster> RoleMasters { get; set; }
 
         public DbSet<MenuMaster> MenuMasters { get; set; }
+        public DbSet<AdvocateMaster> AdvocateMaster { get; set; }
+
+
+        public DbSet<CaseTypeMaster> CaseTypes { get; set; }
+
+        public DbSet<CaseSubjectMaster> CaseSubjects { get; set; }
+
+        public DbSet<CasePurposeMaster> CasePurposes { get; set; }
+
+        public DbSet<BenchTypeMaster> BenchTypes { get; set; }
+
     }
 }

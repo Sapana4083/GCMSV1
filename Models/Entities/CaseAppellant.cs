@@ -1,35 +1,40 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GCMS.Models.Entities
 {
-    [Table("TRN_CASE_APPELLANT")]
+    [Table("TRN_RCSAT_APPELLANT")]
     public class CaseAppellant
     {
         [Key]
-        [Column("APPELLANT_ID")]
+        [Column("TRN_RCSAT_APPELLANTID")]
         public long AppellantId { get; set; }
 
-        [Column("CASE_ID")]
+        [Column("TRN_RCSAT_CASEREGID")]
         public long CaseId { get; set; }
 
-        [Required]
         [Column("APPELLANT_NAME")]
-        public string AppellantName { get; set; } = string.Empty;
+        public string? AppellantName { get; set; }
 
         [Column("DESIGNATION")]
         public string? Designation { get; set; }
 
-        [Column("DISTRICT_ID")]
-        public long? DistrictId { get; set; }
+        [Column("ADISTRICT_NAME")]
+        public string? District { get; set; }
 
-        [Column("MOBILE_NO")]
-        public string? MobileNo { get; set; }
+        [Column("MOBILENO")]
+        public long? MobileNo { get; set; }
 
-        [Column("ADVOCATE_ID")]
+        [Column("APP_ADVOCATE")]
         public long? AdvocateId { get; set; }
 
-        [ForeignKey(nameof(CaseId))]
-        public virtual CaseRegistration? CaseRegistration { get; set; }
+        [Column("APPADV_EMAIL")]
+        public string? AdvocateEmail { get; set; }
+
+        [Column("APP_ADVMOBILE")]
+        public string? AdvocateMobile { get; set; }
+
+        [Column("EMPLOYEEID")]
+        public string? EmployeeId { get; set; }
     }
 }

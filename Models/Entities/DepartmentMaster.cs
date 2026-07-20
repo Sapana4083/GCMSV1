@@ -12,5 +12,8 @@ namespace GCMS.Models.Entities
 
         [Column("DEPTNAMEEN")]
         public string? DeptNameEn { get; set; }
+        
+        [Column("ISACTIVE")]
+        public string? IsActive { get; set; }
     }
 }

@@ -65,10 +65,22 @@
         color: red;
     }
 
+    
+
 </style>
 <form id="frmCaseRegistration">
 
     @Html.AntiForgeryToken()
+
+    <div class="card">
+
+        <div class="card-header">
+
+            Case Registration
+
+        </div>
+        </div>
+
 
     <input asp-for="Id" id="CaseId" type="hidden"/>
     <div class="wizard">

@@ -1016,3 +1016,36 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     -ms-transition: 0.2s ease-out;
     transition: 0.2s ease-out;
 }
+.px-3 {
+    padding-right: 2rem !important;
+    padding-left: 1rem !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    box-sizing: border-box;
+    display: inline-block;
+    min-width: 1.5em;
+    padding: .5em 1em;
+    margin-left: 2px;
+    text-align: center;
+    text-decoration: none !important;
+    cursor: pointer;
+    color: inherit !important;
+    border: 1px solid #0000001a !important;
+    border-radius: 2px;
+    background: transparent;
+    font-size: 14px !important;
+}
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: white !important;
+        border: 1px solid #111;
+        background-color: #111;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));
+        background: -webkit-linear-gradient(top, #585858 0%, #111 100%);
+        background: -moz-linear-gradient(top, #585858 0%, #111 100%);
+        background: -ms-linear-gradient(top, #585858 0%, #111 100%);
+        background: -o-linear-gradient(top, #585858 0%, #111 100%);
+        background: linear-gradient(to bottom, #4bbcf7 0%, #4bbcf7 100%);
+    }

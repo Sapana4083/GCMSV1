@@ -4,14 +4,13 @@ using GCMS.Models;
 using GCMS.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-
 namespace GCMS.Repository
 {
-    public class UsersRepository : IUsersRepository
+    public class UserRepository : IUsersRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public UsersRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -22,6 +21,17 @@ namespace GCMS.Repository
                 .FirstOrDefaultAsync(x =>
                     x.UserName == username &&
                     x.Active == "T");
+        }
+        public async Task UpdatePasswordHashAsync(long userId, string passwordHash)
+        {
+            var user = await _context.AxUsers
+                .FirstOrDefaultAsync(x => x.AxUsersId == userId);
+
+            if (user == null)
+                return;
+
+            user.Password = passwordHash;
+            await _context.SaveChangesAsync();
         }
 
         public async Task<UserDepartmentInfoDTO?> GetDepartmentAndCourtAsync(string username)
@@ -37,18 +47,19 @@ namespace GCMS.Repository
         SELECT
             m.DEPTNAMEEN,
             c.COURT_NAME,
-            c.COURT_CODE,
-            u.SSOID,
-            u.AXUSERSID
+            c.COURT_CODE
         FROM department_mast m,
              axcourts ax,
-             court_name_mast c,
-             axusers u
+             court_name_mast c
         WHERE ax.DEPTNAME = m.DEPARTMENT_MASTID
-        AND ax.COURT_NAME = c.COURT_NAME_MASTID
-        AND ax.AXUSERSID = u.AXUSERSID
-        AND ax.ISDEFAULT = 'Yes'
-        AND UPPER(u.USERNAME) = UPPER(:username)";
+          AND ax.COURT_NAME = c.COURT_NAME_MASTID
+          AND ax.ISDEFAULT = 'Yes'
+          AND ax.AXUSERSID =
+          (
+              SELECT AXUSERSID
+              FROM AXUSERS
+              WHERE UPPER(USERNAME)=UPPER(:username)
+          )";
 
             var parameter = command.CreateParameter();
             parameter.ParameterName = "username";
@@ -62,8 +73,6 @@ namespace GCMS.Repository
 
             return new UserDepartmentInfoDTO
             {
-                UserSSO = reader["SSOID"]?.ToString(),
-                AxUserID = reader["AXUSERSID"]?.ToString(),
                 DepartmentName = reader["DEPTNAMEEN"]?.ToString(),
                 CourtName = reader["COURT_NAME"]?.ToString(),
                 CourtCode = reader["COURT_CODE"]?.ToString()

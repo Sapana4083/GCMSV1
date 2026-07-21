@@ -3,7 +3,7 @@ using System.Text;
 
 namespace GCMS.Services
 {
-    public static class PasswordHasher
+    public static class LegacyPasswordHasher
     {
         public static string ComputeSha256(string input)
         {

@@ -4,6 +4,7 @@ using GCMS.Services.Interfaces;
 using GCMS.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -32,6 +33,7 @@ namespace GCMS.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
@@ -39,6 +41,7 @@ namespace GCMS.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)

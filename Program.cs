@@ -3,9 +3,12 @@ using GCMS.Repository;
 using GCMS.Repository.Interfaces;
 using GCMS.Services;
 using GCMS.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using GCMS.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +38,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<OracleConnectionFactory>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddOptions<PasswordHasherOptions>();
+builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStateRepository, StateRepository>();
 builder.Services.AddScoped<IStateService, StateService>();
@@ -57,6 +62,17 @@ builder.Services.AddScoped<ISdoService, SdoService>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ICaseService, CaseService>();
 
+builder.Services.AddAuthentication(
+    CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+    });
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
 
 builder.Services.AddAuthentication(
     CookieAuthenticationDefaults.AuthenticationScheme)
@@ -64,6 +80,13 @@ builder.Services.AddAuthentication(
     {
         options.LoginPath = "/Account/Login";
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 builder.Services.AddControllersWithViews(options =>
 {
@@ -79,7 +102,12 @@ builder.Services.AddAntiforgery(options =>
 });
 
 var app = builder.Build();
-
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Account/Error");
+    app.UseHsts();
+}
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseAuthentication();

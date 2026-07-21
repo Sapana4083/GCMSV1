@@ -12,11 +12,14 @@ namespace GCMS.Controllers
 {
     public class CaseRegistrationController : Controller
     {
+        private const string SaveErrorMessage = "Unable to save case registration details. Please try again or contact support.";
         private readonly ICaseService _caseService;
+        private readonly ILogger<CaseRegistrationController> _logger;
 
-        public CaseRegistrationController(ICaseService caseService)
+        public CaseRegistrationController(ICaseService caseService, ILogger<CaseRegistrationController> logger)
         {
             _caseService = caseService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -93,10 +96,11 @@ namespace GCMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error saving case registration step 1.");
                 return Json(new AjaxResponse
                 {
                     Success = false,
-                    Message = ex.Message
+                    Message = SaveErrorMessage
                 });
             }
         }
@@ -141,10 +145,11 @@ namespace GCMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error saving case registration step 1.");
                 return Json(new AjaxResponse
                 {
                     Success = false,
-                    Message = ex.Message
+                    Message = SaveErrorMessage
                 });
             }
         }
@@ -155,6 +160,15 @@ namespace GCMS.Controllers
             try
             {
                 long caseId = SessionHelper.GetCaseId(HttpContext);
+
+                if (caseId == 0)
+                {
+                    return Json(new AjaxResponse
+                    {
+                        Success = false,
+                        Message = "Session Expired"
+                    });
+                }
 
                 var entity = new CaseRespondent
                 {
@@ -177,10 +191,11 @@ namespace GCMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error saving case registration step 1.");
                 return Json(new AjaxResponse
                 {
                     Success = false,
-                    Message = ex.Message
+                    Message = SaveErrorMessage
                 });
             }
         }
@@ -214,10 +229,11 @@ namespace GCMS.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error saving case registration step 1.");
                 return Json(new AjaxResponse
                 {
                     Success = false,
-                    Message = ex.Message
+                    Message = SaveErrorMessage
                 });
             }
         }

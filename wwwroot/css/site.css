@@ -518,7 +518,8 @@ img {
     padding: 0 0.5rem;
     border-bottom: 1px solid #e9ecef;
     white-space: nowrap;
-    background: #ddf8fb;
+    /*background: #ddf8fb;*/
+    background: #ceeaed;
 }
 
     .sidebar-header .brand-text {

@@ -32,7 +32,7 @@
 
         <thead>
             <tr>
-                <td width="20">S. No.</td>
+                <td width="50">S. No.</td>
                 <th>State Name</th>
                 <th>State Name (In Hindi)</th>
                 <th>State Code</th>
@@ -75,8 +75,11 @@
                     <td>@item.ModifiedOn</td>
 
                     <td>
-                        <button type="button"
+                        @* <button type="button"
                                 class="btn btn-warning btn-sm edit"
+                                data-id="@item.StateMastId"> *@
+                        <button type="button"
+                                class="btn btn-default waves-effect waves-light edit"
                                 data-id="@item.StateMastId">
                             Edit
                         </button>

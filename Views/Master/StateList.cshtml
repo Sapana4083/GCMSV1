@@ -14,13 +14,13 @@
         <h4>State Master</h4>
 
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary" id="btnAddState">
+            <button type="button" class="btn btn-primary" id="btnAddState" title="Click to add new record.">
                 Add State
             </button>
-            <button type="button" class="btn btn-secondary" id="btnPrint">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
                 <i class="bi bi-printer-fill"></i>
             </button>
-            <button type="button" class="btn btn-success" id="btnExcel">
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
                 <i class="bi bi-file-earmark-excel"></i>
             </button>
         </div>
@@ -80,7 +80,7 @@
                                 data-id="@item.StateMastId"> *@
                         <button type="button"
                                 class="btn btn-default waves-effect waves-light edit"
-                                data-id="@item.StateMastId">
+                                    data-id="@item.StateMastId" title="Click to edit record.">
                             Edit
                         </button>
                         @* <button type="button"

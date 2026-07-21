@@ -199,6 +199,7 @@ img {
 .card-body {
     background: #fff;
     padding: 30px;
+    border-radius: 0rem 0rem 10rem 10rem;
 }
 
 .content-panel {
@@ -608,7 +609,8 @@ img {
 
 .topbar-title {
     /*font-weight: 600;*/
-    font-size: 18px;
+    font-size: 22px;
+    margin-left: 26%;
 }
 
 /* Sidebar dropdown toggle caret (generic, works at every depth) */
@@ -1049,3 +1051,23 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
         background: -o-linear-gradient(top, #585858 0%, #111 100%);
         background: linear-gradient(to bottom, #4bbcf7 0%, #4bbcf7 100%);
     }
+.bg-success {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
+    height: 26px;
+    align-content: center !important;
+    font-size: 12px !important;
+}
+.bg-danger {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+    height: 26px;
+    align-content: center !important;
+    font-size: 12px !important;
+}
+
+.modal-header {
+   
+    background: #25669f !important;
+    color: #fff !important;
+}

@@ -15,13 +15,13 @@
         <h4>Division Master</h4>
 
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary" id="btnAddDivision">
+            <button type="button" class="btn btn-primary" id="btnAddDivision" title="Click to add new record.">
                 Add Division
             </button>
-            <button type="button" class="btn btn-secondary" id="btnPrint">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
                 <i class="bi bi-printer-fill"></i>
             </button>
-            <button type="button" class="btn btn-success" id="btnExcel">
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
                 <i class="bi bi-file-earmark-excel"></i>
             </button>
         </div>
@@ -82,7 +82,7 @@
                         <td>
                             <button type="button"
                                     class="btn btn-default waves-effect waves-light edit"
-                                    data-id="@item.DivisionMastId">
+                                    data-id="@item.DivisionMastId" title="Click to edit record.">
                                 Edit
                             </button>
                             @* <button type="button"

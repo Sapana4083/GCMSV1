@@ -6,33 +6,33 @@
 }
 
 <!-- ========== PAGE CONTAINER ========== -->
-<div class="container-fluid bg-light rounded-4 shadow m-3 py-4 px-3">
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3">
 
     <!-- Header -->
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
 
-        <h3>State Master</h3>
+        <h4>State Master</h4>
 
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary" id="btnAddState">
+            <button type="button" class="btn btn-primary" id="btnAddState" title="Click to add new record.">
                 Add State
             </button>
-            <button type="button" class="btn btn-secondary" id="btnPrint">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
                 <i class="bi bi-printer-fill"></i>
             </button>
-            <button type="button" class="btn btn-success" id="btnExcel">
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
                 <i class="bi bi-file-earmark-excel"></i>
             </button>
         </div>
 
     </div>
-
-    <!-- Data Table -->
-    <table id="tblState" class="table table-bordered table-striped">
+    <div class="table-responsive">
+        <!-- Data Table -->
+        <table id="tblState" class="table table-bordered table-striped">
 
         <thead>
             <tr>
-                <td width="20">S. No.</td>
+                <td width="50">S. No.</td>
                 <th>State Name</th>
                 <th>State Name (In Hindi)</th>
                 <th>State Code</th>
@@ -41,43 +41,46 @@
                 <th>Created By</th>
                 <th>Modified Date</th>
 
-                <th width="180">Action</th>
-            </tr>
-        </thead>
+                    <th width="180">Action</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@srNo</td>
-                    <td>@item.StateName</td>
-                    <td>@item.StateNameHindi</td>
-                    <td>@item.StateCode</td>
-                    <td>@item.Capital</td>
-                    <td>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.StateName</td>
+                        <td>@item.StateNameHindi</td>
+                        <td>@item.StateCode</td>
+                        <td>@item.Capital</td>
+                        <td>
 
                         
-                        @if (item.InActive == "F")
-                        {
-                            <span class="badge bg-success">
-                                Active
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">
-                                Inactive
-                            </span>
-                        }
+                            @if (item.InActive == "F")
+                            {
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+                            }
 
-                    </td>
-                    <td>@item.CreatedBy</td>
-                    <td>@item.ModifiedOn</td>
+                        </td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ModifiedOn</td>
 
                     <td>
-                        <button type="button"
+                        @* <button type="button"
                                 class="btn btn-warning btn-sm edit"
-                                data-id="@item.StateMastId">
+                                data-id="@item.StateMastId"> *@
+                        <button type="button"
+                                class="btn btn-default waves-effect waves-light edit"
+                                    data-id="@item.StateMastId" title="Click to edit record.">
                             Edit
                         </button>
                         @* <button type="button"
@@ -85,14 +88,14 @@
                                 data-id="@item.StateMastId">
                             Delete
                         </button> *@
-                    </td>
-                </tr>
-                srNo++;
-            }
-        </tbody>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
 
-    </table>
-
+        </table>
+    </div>
 </div>
 
 
@@ -109,7 +112,7 @@
             <form method="post">
 
                 @Html.AntiForgeryToken()
-               
+
                 <!-- Modal Body -->
                 <div class="modal-body">
 
@@ -255,10 +258,12 @@
             stateModal.show();
         });
 
+        
+
         // ── Edit State ────────────────────────────────────────
         $(document).on("click", ".edit", function() {
             var id = $(this).data("id");
-
+            
             $.ajax({
                 url: '/Master/GetState',
                 type: 'GET',
@@ -293,6 +298,7 @@
 
         // ── Save State ────────────────────────────────────────
         $("#btnSave").click(function() {debugger
+            
             var token = $('input[name="__RequestVerificationToken"]').val();
             console.log(token);
             let isValid = true;
@@ -323,6 +329,9 @@
             $.ajax({
                 url: '/Master/SaveState',
                 type: 'POST',
+                headers: {
+                    RequestVerificationToken: token
+                },
                 data: {
                     StateMastId: $("#StateMastId").val(),
                     StateName: $("#StateName").val(),
@@ -331,9 +340,7 @@
                     Capital: $("#Capital").val(),
                     InActive: $("#InActive").is(":checked") ? "T" : "F"
                 },
-                headers: {
-                    RequestVerificationToken: token
-                },
+              
                 success: function(r) {
                     if (r.success) {
                         stateModal.hide();

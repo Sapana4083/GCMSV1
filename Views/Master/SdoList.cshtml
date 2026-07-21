@@ -8,24 +8,24 @@
     <!-- Header -->
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
 
-        <h3>SDO Master</h3>
+        <h4>SDO Master</h4>
 
         <div class="d-flex gap-2">
             <button type="button"
                     class="btn btn-primary"
-                    id="btnAddSDO">
+                    id="btnAddSDO" title="Click to add new record.">
                 Add SDO
             </button>
 
             <button type="button"
                     class="btn btn-secondary"
-                    id="btnPrint">
+                    id="btnPrint" title="Click to print.">
                 <i class="bi bi-printer-fill"></i>
             </button>
 
             <button type="button"
                     class="btn btn-success"
-                    id="btnExcel">
+                    id="btnExcel" title="Click to download excel.">
                 <i class="bi bi-file-earmark-excel"></i>
             </button>
         </div>
@@ -92,8 +92,8 @@
                     <td>
 
                         <button type="button"
-                                class="btn btn-warning btn-sm edit"
-                                data-id="@item.SdoMastId">
+                                class="btn btn-default waves-effect waves-light edit"
+                                data-id="@item.SdoMastId" title="Click to edit record.">
                             Edit
                         </button>
 
@@ -389,12 +389,15 @@
         // Load District Dropdown
         //─────────────────────────────────────────────
         function loadDistricts() {
-
+            var token = $('input[name="__RequestVerificationToken"]').val();
             $.ajax({
-
                 url: '/Master/GetDistricts',
 
                 type: 'GET',
+
+                headers: {
+                    RequestVerificationToken: token
+                },
 
                 success: function(data) {
 
@@ -416,6 +419,9 @@
 
                     });
 
+                },
+                error: function() {
+                    alert("Save Failed");
                 }
 
             });

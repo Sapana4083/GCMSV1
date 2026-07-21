@@ -12,16 +12,16 @@
     <!-- Header -->
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
 
-        <h3>Division Master</h3>
+        <h4>Division Master</h4>
 
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary" id="btnAddDivision">
+            <button type="button" class="btn btn-primary" id="btnAddDivision" title="Click to add new record.">
                 Add Division
             </button>
-            <button type="button" class="btn btn-secondary" id="btnPrint">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
                 <i class="bi bi-printer-fill"></i>
             </button>
-            <button type="button" class="btn btn-success" id="btnExcel">
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
                 <i class="bi bi-file-earmark-excel"></i>
             </button>
         </div>
@@ -34,7 +34,7 @@
 
             <thead>
                 <tr>
-                    <td width="20">S. No.</td>
+                    <td width="50">S. No.</td>
                     <th>Division Name</th>
                     <th>Division Name (In Hindi)</th>
                     <th>State</th>
@@ -81,8 +81,8 @@
 
                         <td>
                             <button type="button"
-                                    class="btn btn-warning btn-sm edit"
-                                    data-id="@item.DivisionMastId">
+                                    class="btn btn-default waves-effect waves-light edit"
+                                    data-id="@item.DivisionMastId" title="Click to edit record.">
                                 Edit
                             </button>
                             @* <button type="button"
@@ -112,66 +112,68 @@
                 <h5 class="modal-title">Division Master</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+            <form method="post">
 
-            <!-- Modal Body -->
-            <div class="modal-body">
+                @Html.AntiForgeryToken()
+                <!-- Modal Body -->
+                <div class="modal-body">
 
-                <input type="hidden" id="DivisionMastId" />
+                    <input type="hidden" id="DivisionMastId" />
 
-                <div class="mb-3">
-                    <label class="form-label">Division Name<span class="text-danger">*</span></label>
-                    <input type="text" id="DivisionName" class="form-control" />
-                    <span class="text-danger" id="errDivisionName"></span>
+                    <div class="mb-3">
+                        <label class="form-label">Division Name<span class="text-danger">*</span></label>
+                        <input type="text" id="DivisionName" class="form-control" />
+                        <span class="text-danger" id="errDivisionName"></span>
 
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Division Name (In Hindi)<span class="text-danger">*</span></label>
-                    <input type="text" id="DivisionNameHindi" class="form-control" />
-                    <span class="text-danger" id="errDivisionName"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Division Name (In Hindi)<span class="text-danger">*</span></label>
+                        <input type="text" id="DivisionNameHindi" class="form-control" />
+                        <span class="text-danger" id="errDivisionName"></span>
 
-                </div>
+                    </div>
 
-                <div class="mb-3">
-                    <label>State</label>
+                    <div class="mb-3">
+                        <label>State</label>
 
-                    <select id="StateName"
-                            class="form-select">
+                        <select id="StateName"
+                                class="form-select">
 
-                        <option value="">
-                            Select State
-                        </option>
-
-                        @foreach (var state in ViewBag.StateList)
-                        {
-                            <option value="@state.StateMastId">
-                                @state.StateName
+                            <option value="">
+                                Select State
                             </option>
-                        }
 
-                    </select>
-                    <span id="errState" class="text-danger"></span>
-                </div>
+                            @foreach (var state in ViewBag.StateList)
+                            {
+                                <option value="@state.StateMastId">
+                                    @state.StateName
+                                </option>
+                            }
+
+                        </select>
+                        <span id="errState" class="text-danger"></span>
+                    </div>
 
                 
-                <div class="mb-3">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="InActive">
-                        <label class="form-check-label">Disable</label>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                            <label class="form-check-label">Disable</label>
+                        </div>
                     </div>
+
                 </div>
 
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Close
-                </button>
-                <button type="button" class="btn btn-success" id="btnSave">
-                    Save
-                </button>
-            </div>
-
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnSave">
+                        Save
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -182,7 +184,7 @@
     <script>
 
         // ── Init ─────────────────────────────────────────────
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $('#tblDivision').DataTable({
 
@@ -226,13 +228,13 @@
 
             $('.dt-buttons').hide();
         });
-        $("#btnPrint").click(function () {
+        $("#btnPrint").click(function() {
 
             window.print();
 
         });
 
-        $("#btnExcel").click(function () {
+        $("#btnExcel").click(function() {
 
             let table = document.getElementById("tblDivision");
 
@@ -255,7 +257,7 @@
         );
 
         // ── Add Division ─────────────────────────────────────────
-        $("#btnAddDivision").click(function () {
+        $("#btnAddDivision").click(function() {
             $("#DivisionMastId").val('');
             $("#DivisionName").val('');
             $("#DivisionNameHindi").val('');
@@ -267,7 +269,7 @@
         });
 
         // ── Edit Division ────────────────────────────────────────
-        $(document).on("click", ".edit", function () {
+        $(document).on("click", ".edit", function() {
             var id = $(this).data("id");
 
             $.ajax({
@@ -276,7 +278,7 @@
                 data: {
                     id: id
                 },
-                success: function (data) {
+                success: function(data) {
 
                     console.log(data);
 
@@ -300,7 +302,8 @@
         });
 
         // ── Save Division ────────────────────────────────────────
-        $("#btnSave").click(function () {
+        $("#btnSave").click(function() {
+            var token = $('input[name="__RequestVerificationToken"]').val();
             let isValid = true;
 
             $("#errDivisionName").text('');
@@ -318,6 +321,9 @@
             $.ajax({
                 url: '/Master/SaveDivision',
                 type: 'POST',
+                headers: {
+                    RequestVerificationToken: token
+                },
                 data: {
                     DivisionMastId: $("#DivisionMastId").val(),
                     DivisionName: $("#DivisionName").val(),
@@ -327,7 +333,7 @@
                     Capital: $("#Capital").val(),
                     InActive: $("#InActive").is(":checked") ? "T" : "F"
                 },
-                success: function (r) {
+                success: function(r) {
                     if (r.success) {
                         DivisionModal.hide();
                         location.reload();
@@ -335,14 +341,14 @@
                         alert(r.message);
                     }
                 },
-                error: function () {
+                error: function() {
                     alert("Save Failed");
                 }
             });
         });
 
         // ── Delete Division ──────────────────────────────────────
-        $(document).on("click", ".delete", function () {
+        $(document).on("click", ".delete", function() {
             if (!confirm("Are you sure want to delete?")) return;
 
             var id = $(this).data("id");
@@ -353,12 +359,12 @@
                 data: {
                     id: id
                 },
-                success: function (r) {
+                success: function(r) {
                     if (r.success) {
                         location.reload();
                     }
                 },
-                error: function () {
+                error: function() {
                     alert("Delete Failed");
                 }
             });

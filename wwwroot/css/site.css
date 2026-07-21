@@ -39,7 +39,7 @@ html {
 body {
     margin: 0;
     font-family: 'poppins-regular', sans-serif;
-    font-size: clamp(14px, 2vw, 17px);
+    font-size: clamp(14px, 2vw, 14px);
     font-weight: 400;
     line-height: 1.5;
     color: #212529;
@@ -199,6 +199,7 @@ img {
 .card-body {
     background: #fff;
     padding: 30px;
+    border-radius: 0rem 0rem 10rem 10rem;
 }
 
 .content-panel {
@@ -486,12 +487,13 @@ img {
 ============================================================ */
 :root {
     --sidebar-width: 260px;
-    --sidebar-collapsed-width: 70px;
-    --topbar-height: 60px;
+    --sidebar-collapsed-width: 60px;
+    --topbar-height: 75px;
 }
 
 #mainContent {
-    margin-top: 4rem;
+    margin-top: 5rem;
+    margin-left: 1rem;
 }
 
 .sidebar {
@@ -513,9 +515,10 @@ img {
     height: var(--topbar-height);
     display: flex;
     align-items: center;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     border-bottom: 1px solid #e9ecef;
     white-space: nowrap;
+    background: #ddf8fb;
 }
 
     .sidebar-header .brand-text {
@@ -527,7 +530,8 @@ img {
     display: flex;
     align-items: center;
     gap: .65rem;
-    padding: .7rem 1rem;
+    /*padding: .7rem 1rem;*/
+    padding: 0.7rem 0.5rem;
     color: #495057;
     white-space: nowrap;
 }
@@ -567,7 +571,7 @@ img {
 }
 
 .topbar {
-    height: var(--topbar-height);
+    /*height: var(--topbar-height);
     width: 100%;
     background: #fff;
     border-bottom: 1px solid #e9ecef;
@@ -576,16 +580,31 @@ img {
     padding: 0 1rem;
     gap: 1rem;
     position: fixed;
+    top: 2rem;*/
+    z-index: 1010;
+    height: var(--topbar-height);
+    width: 100%;
+    /*background: #004a81;*/
+    background-image: url('../images/headerimg.png');
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    gap: 1rem;
+    position: fixed;
     top: 2rem;
     z-index: 1010;
+    color: white;
+    background-size: cover;
 }
 
     .topbar button {
-        background: transparent;
+        /*background: transparent;*/
         border: 1px solid #dee2e6;
         border-radius: .375rem;
         padding: .35rem .6rem;
         color: #495057;
+        background: #f1f3f5;
     }
 
         .topbar button:hover {
@@ -593,7 +612,9 @@ img {
         }
 
 .topbar-title {
-    font-weight: 600;
+    /*font-weight: 600;*/
+    font-size: 22px;
+    margin-left: 26%;
 }
 
 /* Sidebar dropdown toggle caret (generic, works at every depth) */
@@ -814,7 +835,8 @@ textarea:focus-visible,
 .accessibility-bar {
     width: 100%;
     height: 2rem;
-    background: #1f2937;
+    /*background: #1f2937;*/
+    background: #2b66c1;
     color: #fff;
     font-size: 14px;
     top: 0;
@@ -947,4 +969,109 @@ html.high-contrast .btn-primary {
 
 html.high-contrast img {
     filter: grayscale(100%) contrast(120%);
+}
+
+table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting_asc_disabled, table.dataTable thead > tr > th.sorting_desc_disabled, table.dataTable thead > tr > td.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting_asc_disabled, table.dataTable thead > tr > td.sorting_desc_disabled {
+    cursor: pointer;
+    position: relative;
+    padding-right: 26px;
+    background: #1085b3 !important;
+    color: rgb(255, 255, 255) !important;
+}
+
+.waves-effect {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    vertical-align: middle;
+    z-index: 1;
+    will-change: opacity, transform;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.z-depth-1, .btn, .btn-floating {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.btn-default {
+    color: #fff;
+    background-color: #2BBBAD;
+}
+.btn {
+    line-height: 31px;
+    position: relative;
+    padding: 0px 22px;
+    border: 0;
+    margin: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    outline: none !important;
+    -webkit-transition: 0.2s ease-out;
+    -moz-transition: 0.2s ease-out;
+    -o-transition: 0.2s ease-out;
+    -ms-transition: 0.2s ease-out;
+    transition: 0.2s ease-out;
+}
+.px-3 {
+    padding-right: 2rem !important;
+    padding-left: 1rem !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    box-sizing: border-box;
+    display: inline-block;
+    min-width: 1.5em;
+    padding: .5em 1em;
+    margin-left: 2px;
+    text-align: center;
+    text-decoration: none !important;
+    cursor: pointer;
+    color: inherit !important;
+    border: 1px solid #0000001a !important;
+    border-radius: 2px;
+    background: transparent;
+    font-size: 14px !important;
+}
+
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: white !important;
+        border: 1px solid #111;
+        background-color: #111;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));
+        background: -webkit-linear-gradient(top, #585858 0%, #111 100%);
+        background: -moz-linear-gradient(top, #585858 0%, #111 100%);
+        background: -ms-linear-gradient(top, #585858 0%, #111 100%);
+        background: -o-linear-gradient(top, #585858 0%, #111 100%);
+        background: linear-gradient(to bottom, #4bbcf7 0%, #4bbcf7 100%);
+    }
+.bg-success {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
+    height: 26px;
+    align-content: center !important;
+    font-size: 12px !important;
+}
+.bg-danger {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+    height: 26px;
+    align-content: center !important;
+    font-size: 12px !important;
+}
+
+.modal-header {
+   
+    background: #25669f !important;
+    color: #fff !important;
 }

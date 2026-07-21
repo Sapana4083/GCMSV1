@@ -487,8 +487,8 @@ img {
 ============================================================ */
 :root {
     --sidebar-width: 260px;
-    --sidebar-collapsed-width: 70px;
-    --topbar-height: 60px;
+    --sidebar-collapsed-width: 60px;
+    --topbar-height: 75px;
 }
 
 #mainContent {
@@ -515,9 +515,10 @@ img {
     height: var(--topbar-height);
     display: flex;
     align-items: center;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     border-bottom: 1px solid #e9ecef;
     white-space: nowrap;
+    background: #ddf8fb;
 }
 
     .sidebar-header .brand-text {
@@ -529,7 +530,8 @@ img {
     display: flex;
     align-items: center;
     gap: .65rem;
-    padding: .7rem 1rem;
+    /*padding: .7rem 1rem;*/
+    padding: 0.7rem 0.5rem;
     color: #495057;
     white-space: nowrap;
 }
@@ -582,7 +584,8 @@ img {
     z-index: 1010;
     height: var(--topbar-height);
     width: 100%;
-    background: #0b3554;
+    /*background: #004a81;*/
+    background-image: url('../images/headerimg.png');
     border-bottom: 1px solid #e9ecef;
     display: flex;
     align-items: center;
@@ -592,6 +595,7 @@ img {
     top: 2rem;
     z-index: 1010;
     color: white;
+    background-size: cover;
 }
 
     .topbar button {

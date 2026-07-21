@@ -122,76 +122,80 @@
                 </button>
 
             </div>
+            <form method="post">
 
-            <div class="modal-body">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
 
-                <input type="hidden"
-                       id="RoleId" />
+                    <input type="hidden"
+                           id="RoleId" />
 
-                <div class="mb-3">
+                    <div class="mb-3">
 
-                    <label class="form-label">
-                        Role Name
-                    </label>
+                        <label class="form-label">
+                            Role Name
+                        </label>
 
-                    <input id="RoleName"
-                           class="form-control" />
+                        <input id="RoleName"
+                               class="form-control" />
 
-                    <div class="text-danger small" id="errRoleName"></div>
+                        <div class="text-danger small" id="errRoleName"></div>
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Role Type
+                        </label>
+
+                        <input id="RoleType"
+                               class="form-control" />
+                        <div class="text-danger small" id="errRoleType"></div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Order No
+                        </label>
+
+                        <input id="OrderNo"
+                               type="number"
+                               class="form-control" />
+                        <div class="text-danger small" id="errOrderNo"></div>
+
+                    </div>
+
+                    <div class="form-check form-switch">
+
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="IsActvFlag">
+
+                        <label class="form-check-label">
+                            Active
+                        </label>
+
+                    </div>
+
                 </div>
 
-                <div class="mb-3">
+                <div class="modal-footer">
 
-                    <label class="form-label">
-                        Role Type
-                    </label>
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
 
-                    <input id="RoleType"
-                           class="form-control" />
-                    <div class="text-danger small" id="errRoleType"></div>
-
-                </div>
-
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Order No
-                    </label>
-
-                    <input id="OrderNo"
-                           type="number"
-                           class="form-control" />
-                    <div class="text-danger small" id="errOrderNo"></div>
+                    <button class="btn btn-success"
+                            id="btnSave">
+                        Save
+                    </button>
 
                 </div>
 
-                <div class="form-check form-switch">
-
-                    <input class="form-check-input"
-                           type="checkbox"
-                           id="IsActvFlag">
-
-                    <label class="form-check-label">
-                        Active
-                    </label>
-
-                </div>
-
-            </div>
-
-            <div class="modal-footer">
-
-                <button class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-                    Close
-                </button>
-
-                <button class="btn btn-success"
-                        id="btnSave">
-                    Save
-                </button>
-
-            </div>
+            </form>
 
         </div>
 
@@ -204,54 +208,54 @@
     <script>
 
         var roleModal =
-        new bootstrap.Modal(
-        document.getElementById("roleModal"));
+            new bootstrap.Modal(
+                document.getElementById("roleModal"));
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $("#tblRole").DataTable({
-                dom:'lBfrtip',
-                buttons:[
-                {
-                    extend:'print',
-                    title:'Role Master'
-                },
-                {
-                    extend:'excelHtml5',
-                    title:'Role Master'
-                }]
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'print',
+                        title: 'Role Master'
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Role Master'
+                    }]
             });
 
             $(".dt-buttons").hide();
 
         });
 
-        $("#btnPrint").click(function(){
+        $("#btnPrint").click(function() {
 
             window.print();
 
         });
 
-        $("#btnExcel").click(function(){
+        $("#btnExcel").click(function() {
 
-            let table=document.getElementById("tblRole");
+            let table = document.getElementById("tblRole");
 
-            let html=table.outerHTML;
+            let html = table.outerHTML;
 
-            let url='data:application/vnd.ms-excel,'+
-            encodeURIComponent(html);
+            let url = 'data:application/vnd.ms-excel,' +
+                encodeURIComponent(html);
 
-            let a=document.createElement("a");
+            let a = document.createElement("a");
 
-            a.href=url;
+            a.href = url;
 
-            a.download="RoleMaster.xls";
+            a.download = "RoleMaster.xls";
 
             a.click();
 
         });
 
-        $("#btnAddRole").click(function(){
+        $("#btnAddRole").click(function() {
 
             $("#RoleId").val("");
 
@@ -261,97 +265,103 @@
 
             $("#OrderNo").val("");
 
-            $("#IsActvFlag").prop("checked",true);
+            $("#IsActvFlag").prop("checked", true);
 
             roleModal.show();
 
         });
 
-        $(document).on("click",".edit",function(){
+        $(document).on("click", ".edit", function() {
 
-            var id=$(this).data("id");
+            var id = $(this).data("id");
 
             $.get("/UserMaster/GetRole",
-            {id:id},
-            function(data){
+                { id: id },
+                function(data) {
 
-                $("#RoleId").val(data.roleId);
+                    $("#RoleId").val(data.roleId);
 
-                $("#RoleName").val(data.roleName);
+                    $("#RoleName").val(data.roleName);
 
-                $("#RoleType").val(data.roleType);
+                    $("#RoleType").val(data.roleType);
 
-                $("#OrderNo").val(data.orderNo);
+                    $("#OrderNo").val(data.orderNo);
 
-                $("#IsActvFlag").prop("checked",
-                data.isActvFlag==1);
+                    $("#IsActvFlag").prop("checked",
+                        data.isActvFlag == 1);
 
-                roleModal.show();
+                    roleModal.show();
 
-            });
+                });
 
         });
 
-        $("#btnSave").click(function(){
-                // Clear previous errors
-        $("#errRoleName").text("");
-        $("#errRoleType").text("");
-        $("#errOrderNo").text("");
+        $("#btnSave").click(function() {
 
-        let isValid = true;
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            // Clear previous errors
+            $("#errRoleName").text("");
+            $("#errRoleType").text("");
+            $("#errOrderNo").text("");
 
-        if (!$("#RoleName").val().trim()) {
-            $("#errRoleName").text("Role Name is required.");
-            isValid = false;
-        }
+            let isValid = true;
 
-        if (!$("#RoleType").val().trim()) {
-            $("#errRoleType").text("Role Type is required.");
-            isValid = false;
-        }
+            if (!$("#RoleName").val().trim()) {
+                $("#errRoleName").text("Role Name is required.");
+                isValid = false;
+            }
 
-                if (!$("#OrderNo").val() || isNaN($("#OrderNo").val())) {
-            $("#errOrderNo").text("Order No is required and must be a number.");
-            isValid = false;
-        } else if (parseInt($("#OrderNo").val()) <= 0) {
-            $("#errOrderNo").text("Order No must be greater than 0.");
-            isValid = false;
-        }
+            if (!$("#RoleType").val().trim()) {
+                $("#errRoleType").text("Role Type is required.");
+                isValid = false;
+            }
 
-        if (!isValid) return;
+            if (!$("#OrderNo").val() || isNaN($("#OrderNo").val())) {
+                $("#errOrderNo").text("Order No is required and must be a number.");
+                isValid = false;
+            } else if (parseInt($("#OrderNo").val()) <= 0) {
+                $("#errOrderNo").text("Order No must be greater than 0.");
+                isValid = false;
+            }
+
+            if (!isValid) return;
             var isActive = $("#IsActvFlag").is(":checked") ? 1 : 0;
             $.ajax({
 
-                url:"/UserMaster/SaveRole",
+                url: "/UserMaster/SaveRole",
 
-                type:"POST",
+                type: "POST",
 
-                data:{
+                headers: {
+                    RequestVerificationToken: token
+                },
 
-                    RoleId:$("#RoleId").val(),
+                data: {
 
-                    RoleName:$("#RoleName").val(),
+                    RoleId: $("#RoleId").val(),
 
-                    RoleType:$("#RoleType").val(),
+                    RoleName: $("#RoleName").val(),
 
-                    OrderNo:$("#OrderNo").val(),
+                    RoleType: $("#RoleType").val(),
 
-                   IsActvFlag: isActive,
+                    OrderNo: $("#OrderNo").val(),
 
-                    IsDelFlag:  isActive === 1 ? 0 : 1
+                    IsActvFlag: isActive,
+
+                    IsDelFlag: isActive === 1 ? 0 : 1
 
                 },
 
-                success:function(r){
+                success: function(r) {
 
-                    if(r.success){
+                    if (r.success) {
 
                         roleModal.hide();
 
                         location.reload();
 
                     }
-                    else{
+                    else {
 
                         alert(r.message);
 
@@ -359,7 +369,7 @@
 
                 },
 
-                error:function(){
+                error: function() {
 
                     alert("Save Failed");
 

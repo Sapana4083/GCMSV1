@@ -6,7 +6,7 @@
 }
 
 <!-- ========== PAGE CONTAINER ========== -->
-<div class="container-fluid bg-light rounded-4 shadow m-3 py-4 px-3">
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3">
 
     <!-- Header -->
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
@@ -26,9 +26,9 @@
         </div>
 
     </div>
-
-    <!-- Data Table -->
-    <table id="tblState" class="table table-bordered table-striped">
+    <div class="table-responsive">
+        <!-- Data Table -->
+        <table id="tblState" class="table table-bordered table-striped">
 
         <thead>
             <tr>
@@ -41,38 +41,38 @@
                 <th>Created By</th>
                 <th>Modified Date</th>
 
-                <th width="180">Action</th>
-            </tr>
-        </thead>
+                    <th width="180">Action</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@srNo</td>
-                    <td>@item.StateName</td>
-                    <td>@item.StateNameHindi</td>
-                    <td>@item.StateCode</td>
-                    <td>@item.Capital</td>
-                    <td>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.StateName</td>
+                        <td>@item.StateNameHindi</td>
+                        <td>@item.StateCode</td>
+                        <td>@item.Capital</td>
+                        <td>
 
                         
-                        @if (item.InActive == "F")
-                        {
-                            <span class="badge bg-success">
-                                Active
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger">
-                                Inactive
-                            </span>
-                        }
+                            @if (item.InActive == "F")
+                            {
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+                            }
 
-                    </td>
-                    <td>@item.CreatedBy</td>
-                    <td>@item.ModifiedOn</td>
+                        </td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ModifiedOn</td>
 
                     <td>
                         @* <button type="button"
@@ -88,14 +88,14 @@
                                 data-id="@item.StateMastId">
                             Delete
                         </button> *@
-                    </td>
-                </tr>
-                srNo++;
-            }
-        </tbody>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
 
-    </table>
-
+        </table>
+    </div>
 </div>
 
 
@@ -112,7 +112,7 @@
             <form method="post">
 
                 @Html.AntiForgeryToken()
-               
+
                 <!-- Modal Body -->
                 <div class="modal-body">
 
@@ -258,10 +258,12 @@
             stateModal.show();
         });
 
+        
+
         // ── Edit State ────────────────────────────────────────
         $(document).on("click", ".edit", function() {
             var id = $(this).data("id");
-
+            
             $.ajax({
                 url: '/Master/GetState',
                 type: 'GET',
@@ -296,6 +298,7 @@
 
         // ── Save State ────────────────────────────────────────
         $("#btnSave").click(function() {debugger
+            
             var token = $('input[name="__RequestVerificationToken"]').val();
             console.log(token);
             let isValid = true;
@@ -326,6 +329,9 @@
             $.ajax({
                 url: '/Master/SaveState',
                 type: 'POST',
+                headers: {
+                    RequestVerificationToken: token
+                },
                 data: {
                     StateMastId: $("#StateMastId").val(),
                     StateName: $("#StateName").val(),
@@ -334,9 +340,7 @@
                     Capital: $("#Capital").val(),
                     InActive: $("#InActive").is(":checked") ? "T" : "F"
                 },
-                headers: {
-                    RequestVerificationToken: token
-                },
+              
                 success: function(r) {
                     if (r.success) {
                         stateModal.hide();

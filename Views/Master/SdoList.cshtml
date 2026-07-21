@@ -389,12 +389,15 @@
         // Load District Dropdown
         //─────────────────────────────────────────────
         function loadDistricts() {
-
+            var token = $('input[name="__RequestVerificationToken"]').val();
             $.ajax({
-
                 url: '/Master/GetDistricts',
 
                 type: 'GET',
+
+                headers: {
+                    RequestVerificationToken: token
+                },
 
                 success: function(data) {
 
@@ -416,6 +419,9 @@
 
                     });
 
+                },
+                error: function() {
+                    alert("Save Failed");
                 }
 
             });

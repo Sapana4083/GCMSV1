@@ -10,167 +10,169 @@
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">Role Menu Mapping</h4>
         </div>
+        <form method="post">
 
-        <div class="card-body">
+            @Html.AntiForgeryToken()
+            <div class="card-body">
 
-            <div class="row mb-4">
+                <div class="row mb-4">
 
-                <div class="col-md-4">
+                    <div class="col-md-4">
 
-                    <label class="form-label fw-bold">
-                        Select Role
-                    </label>
+                        <label class="form-label fw-bold">
+                            Select Role
+                        </label>
 
-                    <select id="RoleId" class="form-select">
+                        <select id="RoleId" class="form-select">
 
-                        <option value="">Select Role</option>
+                            <option value="">Select Role</option>
 
-                        @foreach (var role in ViewBag.RoleList)
-                        {
-                            <option value="@role.RoleId">
-                                @role.RoleName
-                            </option>
-                        }
+                            @foreach (var role in ViewBag.RoleList)
+                            {
+                                <option value="@role.RoleId">
+                                    @role.RoleName
+                                </option>
+                            }
 
-                    </select>
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <hr />
+
+                <div id="menuContainer">
+
+                    @foreach (var parent in ViewBag.ParentMenus)
+                    {
+                        <div class="card mb-3 border-primary">
+
+                            <div class="card-header bg-light">
+
+                                <div class="form-check">
+
+                                    <input type="checkbox"
+                                           class="form-check-input menu-check"
+                                           id="menu_@parent.MenuId"
+                                           value="@parent.MenuId" />
+
+                                    <label class="form-check-label fw-bold"
+                                           for="menu_@parent.MenuId">
+
+                                        @parent.MenuName
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                @{
+                                    var children = ((List<GCMS.Models.MenuMaster>)ViewBag.MenuList)
+                                        .Where(x => x.ParentId == parent.MenuId)
+                                        .ToList();
+                                }
+
+                                @foreach (var child in children)
+                                {
+                                    <div class="ms-4 mb-3">
+
+                                        <div class="form-check">
+
+                                            <input type="checkbox"
+                                                   class="form-check-input menu-check"
+                                                   id="menu_@child.MenuId"
+                                                   value="@child.MenuId" />
+
+                                            <label class="form-check-label fw-semibold"
+                                                   for="menu_@child.MenuId">
+
+                                                @child.MenuName
+
+                                            </label>
+
+                                        </div>
+
+                                        @{
+                                            var subChildren = ((List<GCMS.Models.MenuMaster>)ViewBag.MenuList)
+                                                .Where(x => x.ParentId == child.MenuId)
+                                                .ToList();
+                                        }
+
+                                        @foreach (var sub in subChildren)
+                                        {
+                                            <div class="ms-5 mt-2">
+
+                                                <div class="form-check">
+
+                                                    <input type="checkbox"
+                                                           class="form-check-input menu-check"
+                                                           id="menu_@sub.MenuId"
+                                                           value="@sub.MenuId" />
+
+                                                    <label class="form-check-label"
+                                                           for="menu_@sub.MenuId">
+
+                                                        @sub.MenuName
+
+                                                    </label>
+
+                                                </div>
+
+                                            </div>
+                                        }
+
+                                    </div>
+                                }
+
+                            </div>
+
+                        </div>
+                    }
 
                 </div>
 
             </div>
 
-            <hr />
+            <div class="card-footer text-end">
 
-            <div id="menuContainer">
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnSave">
 
-                @foreach (var parent in ViewBag.ParentMenus)
-                {
-                    <div class="card mb-3 border-primary">
+                    <i class="bi bi-check-circle"></i>
 
-                        <div class="card-header bg-light">
+                    Save Permission
 
-                            <div class="form-check">
+                </button>
 
-                                <input type="checkbox"
-                                       class="form-check-input menu-check"
-                                       id="menu_@parent.MenuId"
-                                       value="@parent.MenuId" />
+                <button type="button"
+                        class="btn btn-secondary ms-2"
+                        id="btnReset">
 
-                                <label class="form-check-label fw-bold"
-                                       for="menu_@parent.MenuId">
+                    <i class="bi bi-arrow-clockwise"></i>
 
-                                    @parent.MenuName
+                    Reset
 
-                                </label>
-
-                            </div>
-
-                        </div>
-
-                        <div class="card-body">
-
-                            @{
-                                var children = ((List<GCMS.Models.MenuMaster>)ViewBag.MenuList)
-                                    .Where(x => x.ParentId == parent.MenuId)
-                                    .ToList();
-                            }
-
-                            @foreach (var child in children)
-                            {
-                                <div class="ms-4 mb-3">
-
-                                    <div class="form-check">
-
-                                        <input type="checkbox"
-                                               class="form-check-input menu-check"
-                                               id="menu_@child.MenuId"
-                                               value="@child.MenuId" />
-
-                                        <label class="form-check-label fw-semibold"
-                                               for="menu_@child.MenuId">
-
-                                            @child.MenuName
-
-                                        </label>
-
-                                    </div>
-
-                                    @{
-                                        var subChildren = ((List<GCMS.Models.MenuMaster>)ViewBag.MenuList)
-                                            .Where(x => x.ParentId == child.MenuId)
-                                            .ToList();
-                                    }
-
-                                    @foreach (var sub in subChildren)
-                                    {
-                                        <div class="ms-5 mt-2">
-
-                                            <div class="form-check">
-
-                                                <input type="checkbox"
-                                                       class="form-check-input menu-check"
-                                                       id="menu_@sub.MenuId"
-                                                       value="@sub.MenuId" />
-
-                                                <label class="form-check-label"
-                                                       for="menu_@sub.MenuId">
-
-                                                    @sub.MenuName
-
-                                                </label>
-
-                                            </div>
-
-                                        </div>
-                                    }
-
-                                </div>
-                            }
-
-                        </div>
-
-                    </div>
-                }
+                </button>
 
             </div>
-
-        </div>
-
-        <div class="card-footer text-end">
-
-            <button type="button"
-                    class="btn btn-success"
-                    id="btnSave">
-
-                <i class="bi bi-check-circle"></i>
-
-                Save Permission
-
-            </button>
-
-            <button type="button"
-                    class="btn btn-secondary ms-2"
-                    id="btnReset">
-
-                <i class="bi bi-arrow-clockwise"></i>
-
-                Reset
-
-            </button>
-
-        </div>
-
+        </form>
     </div>
 </div>
 @section Scripts
 {
     <script>
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             //-----------------------------------------
             // Role Change
             //-----------------------------------------
-            $("#RoleId").change(function () {
+            $("#RoleId").change(function() {
 
                 let roleId = $(this).val();
 
@@ -187,9 +189,9 @@
 
                     data: { roleId: roleId },
 
-                    success: function (result) {
+                    success: function(result) {
 
-                        $.each(result, function (i, item) {
+                        $.each(result, function(i, item) {
 
                             $("#menu_" + item.menuId).prop("checked", true);
 
@@ -197,7 +199,7 @@
 
                     },
 
-                    error: function () {
+                    error: function() {
 
                         alert("Unable to load permissions.");
 
@@ -211,7 +213,9 @@
             //-----------------------------------------
             // Save
             //-----------------------------------------
-            $("#btnSave").click(function () {
+            $("#btnSave").click(function() {
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
 
                 let roleId = $("#RoleId").val();
 
@@ -225,7 +229,7 @@
 
                 let permissions = [];
 
-                $(".menu-check").each(function () {
+                $(".menu-check").each(function() {
 
                     permissions.push({
 
@@ -245,6 +249,10 @@
 
                     type: "POST",
 
+                    headers: {
+                        RequestVerificationToken: token
+                    },
+
                     contentType: "application/json",
 
                     data: JSON.stringify({
@@ -255,7 +263,7 @@
 
                     }),
 
-                    success: function (response) {
+                    success: function(response) {
 
                         if (response.success) {
 
@@ -270,7 +278,7 @@
 
                     },
 
-                    error: function () {
+                    error: function() {
 
                         alert("Error while saving.");
 
@@ -280,29 +288,29 @@
 
             });
 
-            $(".parent-check").change(function () {
+            $(".parent-check").change(function() {
 
-            $(this)
-                .closest(".card")
-                .find(".child-check,.subchild-check")
-                .prop("checked", $(this).is(":checked"));
+                $(this)
+                    .closest(".card")
+                    .find(".child-check,.subchild-check")
+                    .prop("checked", $(this).is(":checked"));
 
-        });
+            });
 
-        $(".child-check").change(function () {
+            $(".child-check").change(function() {
 
-            $(this)
-                .closest(".ms-4")
-                .find(".subchild-check")
-                .prop("checked", $(this).is(":checked"));
+                $(this)
+                    .closest(".ms-4")
+                    .find(".subchild-check")
+                    .prop("checked", $(this).is(":checked"));
 
-        });
+            });
 
 
             //-----------------------------------------
             // Reset
             //-----------------------------------------
-            $("#btnReset").click(function () {
+            $("#btnReset").click(function() {
 
                 $("#RoleId").val("");
 

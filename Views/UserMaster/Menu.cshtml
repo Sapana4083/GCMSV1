@@ -13,171 +13,175 @@
                 Menu Master
             </h4>
         </div>
+        <form method="post">
 
-        <div class="card-body">
+            @Html.AntiForgeryToken()
+            <div class="card-body">
 
-            <input type="hidden" id="MenuId" />
+                <input type="hidden" id="MenuId" />
 
-            <div class="row mb-4">
+                <div class="row mb-4">
 
-                <label class="form-label fw-bold">
-                    Menu Type
-                </label>
-
-                <div class="col-md-2">
-
-                    <div class="form-check">
-
-                        <input class="form-check-input"
-                               type="radio"
-                               name="MenuType"
-                               id="rbParent"
-                               value="Parent"
-                               checked>
-
-                        <label class="form-check-label">
-                            Parent
-                        </label>
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-2">
-
-                    <div class="form-check">
-
-                        <input class="form-check-input"
-                               type="radio"
-                               name="MenuType"
-                               id="rbChild"
-                               value="Child">
-
-                        <label class="form-check-label">
-                            Child
-                        </label>
-
-                    </div>
-
-                </div>
-
-                <div class="col-md-3">
-
-                    <div class="form-check">
-
-                        <input class="form-check-input"
-                               type="radio"
-                               name="MenuType"
-                               id="rbSubChild"
-                               value="SubChild">
-
-                        <label class="form-check-label">
-                            Sub Child
-                        </label>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-6 mb-3 d-none"
-                     id="divParent">
-
-                    <label class="form-label">
-                        Parent Menu
+                    <label class="form-label fw-bold">
+                        Menu Type
                     </label>
 
-                    <select id="ParentId"
-                            class="form-select">
+                    <div class="col-md-2">
 
-                        <option value="">
-                            Select Parent
-                        </option>
+                        <div class="form-check">
 
-                        @if (ViewBag.ParentMenus != null)
-                        {
-                            foreach (var item in ViewBag.ParentMenus)
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="MenuType"
+                                   id="rbParent"
+                                   value="Parent"
+                                   checked>
+
+                            <label class="form-check-label">
+                                Parent
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <div class="form-check">
+
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="MenuType"
+                                   id="rbChild"
+                                   value="Child">
+
+                            <label class="form-check-label">
+                                Child
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="form-check">
+
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="MenuType"
+                                   id="rbSubChild"
+                                   value="SubChild">
+
+                            <label class="form-check-label">
+                                Sub Child
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3 d-none"
+                         id="divParent">
+
+                        <label class="form-label">
+                            Parent Menu
+                        </label>
+
+                        <select id="ParentId"
+                                class="form-select">
+
+                            <option value="">
+                                Select Parent
+                            </option>
+
+                            @if (ViewBag.ParentMenus != null)
                             {
-                                <option value="@item.MenuId">
-                                    @item.MenuName
-                                </option>
+                                foreach (var item in ViewBag.ParentMenus)
+                                {
+                                    <option value="@item.MenuId">
+                                        @item.MenuName
+                                    </option>
+                                }
                             }
-                        }
 
-                    </select>
+                        </select>
 
-                </div>
+                    </div>
 
-                <div class="col-md-6 mb-3 d-none"
-                     id="divChild">
+                    <div class="col-md-6 mb-3 d-none"
+                         id="divChild">
 
-                    <label class="form-label">
-                        Child Menu
-                    </label>
+                        <label class="form-label">
+                            Child Menu
+                        </label>
 
-                    <select id="ChildId"
-                            class="form-select">
+                        <select id="ChildId"
+                                class="form-select">
 
-                        <option value="">
-                            Select Child Menu
-                        </option>
+                            <option value="">
+                                Select Child Menu
+                            </option>
 
-                    </select>
+                        </select>
 
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-6 mb-3">
-
-                    <label class="form-label"
-                           id="lblMenuName">
-
-                        Parent Menu Name
-
-                    </label>
-
-                    <input id="MenuName"
-                           class="form-control"
-                           placeholder="Enter Menu Name" />
+                    </div>
 
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="row">
 
-                    <label class="form-label">
-                        Menu URL
-                    </label>
+                    <div class="col-md-6 mb-3">
 
-                    <input id="MenuUrl"
-                           class="form-control"
-                           placeholder="/UserMaster/RoleList" />
+                        <label class="form-label"
+                               id="lblMenuName">
 
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <div class="form-check form-switch">
-
-                        <input class="form-check-input"
-                               type="checkbox"
-                               id="IsActive"
-                               checked>
-
-                        <label class="form-check-label">
-
-                            Active
+                            Parent Menu Name
 
                         </label>
+
+                        <input id="MenuName"
+                               class="form-control"
+                               placeholder="Enter Menu Name" />
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Menu URL
+                        </label>
+
+                        <input id="MenuUrl"
+                               class="form-control"
+                               placeholder="/UserMaster/RoleList" />
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <div class="form-check form-switch">
+
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="IsActive"
+                                   checked>
+
+                            <label class="form-check-label">
+
+                                Active
+
+                            </label>
+
+                        </div>
 
                     </div>
 
@@ -185,31 +189,29 @@
 
             </div>
 
-        </div>
+            <div class="card-footer text-end">
 
-        <div class="card-footer text-end">
+                <button class="btn btn-success"
+                        id="btnSubmit">
 
-            <button class="btn btn-success"
-                    id="btnSubmit">
+                    <i class="bi bi-check-circle"></i>
 
-                <i class="bi bi-check-circle"></i>
+                    Submit
 
-                Submit
+                </button>
 
-            </button>
+                <button class="btn btn-secondary"
+                        type="button"
+                        id="btnReset">
 
-            <button class="btn btn-secondary"
-                    type="button"
-                    id="btnReset">
+                    <i class="bi bi-arrow-clockwise"></i>
 
-                <i class="bi bi-arrow-clockwise"></i>
+                    Reset
 
-                Reset
+                </button>
 
-            </button>
-
-        </div>
-
+            </div>
+        </form>
     </div>
 
 
@@ -330,7 +332,7 @@
 
     <script>
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             //==========================
             // DataTable
@@ -349,7 +351,7 @@
             //==========================
             // Menu Type Change
             //==========================
-            $("input[name='MenuType']").change(function () {
+            $("input[name='MenuType']").change(function() {
 
                 showControls($(this).val());
 
@@ -358,7 +360,7 @@
             //==========================
             // Parent Change
             //==========================
-            $("#ParentId").change(function () {
+            $("#ParentId").change(function() {
 
                 loadChildMenus($(this).val());
 
@@ -367,7 +369,7 @@
             //==========================
             // Add
             //==========================
-            $("#btnAdd").click(function () {
+            $("#btnAdd").click(function() {
 
                 clearForm();
 
@@ -376,7 +378,9 @@
             //==========================
             // Save
             //==========================
-            $("#btnSubmit").click(function () {
+            $("#btnSubmit").click(function() {
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
 
                 if ($("#MenuName").val().trim() == "") {
 
@@ -425,9 +429,13 @@
 
                     type: "POST",
 
+                    headers: {
+                        RequestVerificationToken: token
+                    },
+
                     data: model,
 
-                    success: function (r) {
+                    success: function(r) {
 
                         if (r.success) {
 
@@ -443,7 +451,7 @@
 
                     },
 
-                    error: function () {
+                    error: function() {
 
                         alert("Save Failed");
 
@@ -456,13 +464,13 @@
             //==========================
             // Edit
             //==========================
-            $(document).on("click", ".edit", function () {
+            $(document).on("click", ".edit", function() {
 
                 var id = $(this).data("id");
 
                 $.get("/UserMaster/GetMenu",
                     { id: id },
-                    function (data) {
+                    function(data) {
 
                         $("#MenuId").val(data.menuId);
                         $("#MenuName").val(data.menuName);
@@ -483,7 +491,7 @@
                         // Get Parent Record
                         $.get("/UserMaster/GetMenu",
                             { id: data.parentId },
-                            function (parent) {
+                            function(parent) {
 
                                 // Child Menu
                                 if (parent.parentId == null || parent.parentId == 0) {
@@ -507,11 +515,11 @@
 
                                     loadChildMenus(parent.parentId);
 
-                                    setTimeout(function () {
+                                    setTimeout(function() {
 
                                         $("#ChildId").val(data.parentId);
 
-                                    },300);
+                                    }, 300);
 
                                 }
 
@@ -524,7 +532,7 @@
             //==========================
             // Delete
             //==========================
-            $(document).on("click", ".delete", function () {
+            $(document).on("click", ".delete", function() {
 
                 if (!confirm("Are you sure?"))
                     return;
@@ -533,7 +541,7 @@
                     {
                         id: $(this).data("id")
                     },
-                    function (r) {
+                    function(r) {
 
                         if (r.success) {
 
@@ -553,7 +561,7 @@
             //==========================
             // Reset
             //==========================
-            $("#btnReset").click(function () {
+            $("#btnReset").click(function() {
 
                 clearForm();
 
@@ -615,9 +623,9 @@
                 {
                     parentId: parentId
                 },
-                function (data) {
+                function(data) {
 
-                    $.each(data, function (i, item) {
+                    $.each(data, function(i, item) {
 
                         $("#ChildId").append(
                             '<option value="' + item.menuId + '">' +

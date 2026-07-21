@@ -30,16 +30,16 @@
         <!-- Data Table -->
         <table id="tblState" class="table table-bordered table-striped">
 
-            <thead>
-                <tr>
-                    <td width="20">S. No.</td>
-                    <th>State Name</th>
-                    <th>State Name (In Hindi)</th>
-                    <th>State Code</th>
-                    <th>Capital</th>
-                    <th>Active</th>
-                    <th>Created By</th>
-                    <th>Modified Date</th>
+        <thead>
+            <tr>
+                <td width="50">S. No.</td>
+                <th>State Name</th>
+                <th>State Name (In Hindi)</th>
+                <th>State Code</th>
+                <th>Capital</th>
+                <th>Active</th>
+                <th>Created By</th>
+                <th>Modified Date</th>
 
                     <th width="180">Action</th>
                 </tr>
@@ -74,13 +74,16 @@
                         <td>@item.CreatedBy</td>
                         <td>@item.ModifiedOn</td>
 
-                        <td>
-                            <button type="button"
-                                    class="btn btn-warning btn-sm edit"
-                                    data-id="@item.StateMastId">
-                                Edit
-                            </button>
-                            @* <button type="button"
+                    <td>
+                        @* <button type="button"
+                                class="btn btn-warning btn-sm edit"
+                                data-id="@item.StateMastId"> *@
+                        <button type="button"
+                                class="btn btn-default waves-effect waves-light edit"
+                                data-id="@item.StateMastId">
+                            Edit
+                        </button>
+                        @* <button type="button"
                                 class="btn btn-danger btn-sm delete"
                                 data-id="@item.StateMastId">
                             Delete

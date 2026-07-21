@@ -126,131 +126,133 @@
                 </button>
 
             </div>
+            <form method="post">
 
-            <div class="modal-body">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
 
-                <input type="hidden"
-                       id="DistrictMastId" />
+                    <input type="hidden"
+                           id="DistrictMastId" />
 
-                <div class="row">
+                    <div class="row">
 
-                    <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3">
 
-                        <label>District Name</label>
+                            <label>District Name</label>
 
-                        <input id="DistrictName"
-                               class="form-control" />
+                            <input id="DistrictName"
+                                   class="form-control" />
 
-                    </div>
+                        </div>
 
-                    <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3">
 
-                        <label>District Code</label>
+                            <label>District Code</label>
 
-                        <input id="DistrictCode"
-                               class="form-control" />
+                            <input id="DistrictCode"
+                                   class="form-control" />
 
-                    </div>
+                        </div>
 
-                    <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3">
 
-                        <label>State</label>
+                            <label>State</label>
 
-                        <select id="StateName"
-                                class="form-select">
+                            <select id="StateName"
+                                    class="form-select">
 
-                            <option value="">
-                                Select State
-                            </option>
-
-                            @foreach (var s in states)
-                            {
-                                <option value="@s.StateMastId">
-                                    @s.StateName
+                                <option value="">
+                                    Select State
                                 </option>
-                            }
 
-                        </select>
+                                @foreach (var s in states)
+                                {
+                                    <option value="@s.StateMastId">
+                                        @s.StateName
+                                    </option>
+                                }
 
-                    </div>
+                            </select>
 
-                    <div class="col-md-6 mb-3">
+                        </div>
 
-                        <label>Division</label>
+                        <div class="col-md-6 mb-3">
 
-                        <select id="DivisionName"
-                                class="form-select">
+                            <label>Division</label>
 
-                            <option value="">
-                                Select Division
-                            </option>
+                            <select id="DivisionName"
+                                    class="form-select">
 
-                            @foreach (var d in divisions)
-                            {
-                                <option value="@d.DivisionMastId">
-                                    @d.DivisionName
+                                <option value="">
+                                    Select Division
                                 </option>
-                            }
 
-                        </select>
+                                @foreach (var d in divisions)
+                                {
+                                    <option value="@d.DivisionMastId">
+                                        @d.DivisionName
+                                    </option>
+                                }
 
-                    </div>
+                            </select>
 
-                    <div class="col-md-6 mb-3">
+                        </div>
 
-                        <label>District English Name</label>
+                        <div class="col-md-6 mb-3">
 
-                        <input id="DistrictNameEng"
-                               class="form-control" />
+                            <label>District English Name</label>
 
-                    </div>
+                            <input id="DistrictNameEng"
+                                   class="form-control" />
 
-                    <div class="col-md-6 mb-3">
+                        </div>
 
-                        <label>District Abbreviation</label>
+                        <div class="col-md-6 mb-3">
 
-                        <input id="DistAbr"
-                               class="form-control" />
+                            <label>District Abbreviation</label>
 
-                    </div>
+                            <input id="DistAbr"
+                                   class="form-control" />
 
-                    <div class="col-md-6 mb-3">
+                        </div>
 
-                        <label>English - Hindi Name</label>
+                        <div class="col-md-6 mb-3">
 
-                        <input id="DistNameHinEng"
-                               class="form-control" />
+                            <label>English - Hindi Name</label>
 
-                    </div>
-                    <div class="col-md-6 mb-3">
+                            <input id="DistNameHinEng"
+                                   class="form-control" />
 
-                        <label>In Active</label>
+                        </div>
+                        <div class="col-md-6 mb-3">
 
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="InActive">
-                            <label class="form-check-label">Disable</label>
+                            <label>In Active</label>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                                <label class="form-check-label">Disable</label>
+                            </div>
+
                         </div>
 
                     </div>
 
                 </div>
 
-            </div>
+                <div class="modal-footer">
 
-            <div class="modal-footer">
+                    <button class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
 
-                <button class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-                    Close
-                </button>
+                    <button class="btn btn-success"
+                            id="btnSave">
+                        Save
+                    </button>
 
-                <button class="btn btn-success"
-                        id="btnSave">
-                    Save
-                </button>
-
-            </div>
-
+                </div>
+            </form>
         </div>
 
     </div>
@@ -260,10 +262,10 @@
 @section Scripts {
     <script>
 
-        $(function () {
+        $(function() {
 
             // ── Init ─────────────────────────────────────────────
-            $(document).ready(function () {
+            $(document).ready(function() {
 
                 $('#tblDistrict').DataTable({
 
@@ -307,13 +309,13 @@
 
                 $('.dt-buttons').hide();
             });
-            $("#btnPrint").click(function () {
+            $("#btnPrint").click(function() {
 
                 window.print();
 
             });
 
-            $("#btnExcel").click(function () {
+            $("#btnExcel").click(function() {
 
                 let table = document.getElementById("tblState");
 
@@ -335,7 +337,7 @@
                 new bootstrap.Modal(
                     document.getElementById("districtModal"));
 
-            $("#btnAddDistrict").click(function () {
+            $("#btnAddDistrict").click(function() {
 
                 $("#DistrictMastId").val("");
                 $("#DistrictName").val("");
@@ -351,7 +353,7 @@
 
             });
 
-            $(document).on("click", ".edit", function () {
+            $(document).on("click", ".edit", function() {
 
                 var id = $(this).data("id");
 
@@ -362,7 +364,7 @@
                     type: "GET",
                     data: { id: id },
 
-                    success: function (data) {
+                    success: function(data) {
 
                         console.log(data);
 
@@ -384,7 +386,7 @@
                         modal.show();
                     },
 
-                    error: function (xhr) {
+                    error: function(xhr) {
                         console.log(xhr.responseText);
                         alert("Error loading district.");
                     }
@@ -392,13 +394,18 @@
 
             });
 
-            $("#btnSave").click(function () {
+            $("#btnSave").click(function() {
+                var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
 
                     url: '/Master/SaveDistrict',
 
                     type: 'POST',
+
+                    headers: {
+                        RequestVerificationToken: token
+                    },
 
                     data: {
 
@@ -422,7 +429,7 @@
 
                     },
 
-                    success: function (r) {
+                    success: function(r) {
 
                         if (r.success) {
 
@@ -435,13 +442,16 @@
 
                         }
 
+                    },
+                    error: function() {
+                        alert("Save Failed");
                     }
 
                 });
 
             });
 
-            $(document).on("click", ".delete", function () {
+            $(document).on("click", ".delete", function() {
 
                 if (!confirm("Are you sure?"))
                     return;
@@ -450,7 +460,7 @@
 
                 $.post("/Master/DeleteDistrict",
                     { id: id },
-                    function () {
+                    function() {
 
                         location.reload();
 

@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using GCMS.Models;
+using GCMS.Repository.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace GCMS.Controllers
@@ -8,15 +9,15 @@ namespace GCMS.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        //public HomeController(ILogger<HomeController> logger)
+        //{
+        //    _logger = logger;
+        //}
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
 
         public IActionResult Privacy()
         {
@@ -27,6 +28,20 @@ namespace GCMS.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        private readonly ICourtDashboardRepository _dashboardRepository;
+
+        public HomeController(ICourtDashboardRepository dashboardRepository)
+        {
+            _dashboardRepository = dashboardRepository;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var dashboard = await _dashboardRepository.GetCourtDashboardDataAsync();
+            return View(dashboard);
         }
 
     }

@@ -1,8 +1,171 @@
-﻿@{
+﻿@* @{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+@model List<CourtDashboardViewModel>
+
+<style>
+    .rcsat-wrapper {
+        /* background: linear-gradient(135deg, #d7ecfa 0%, #a9d8f5 100%); */
+        padding: 40px 20px;
+        min-height: 100vh;
+    }
+
+    .rcsat-title {
+        text-align: center;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #333;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+    }
+
+    .rcsat-panel {
+        max-width: 1100px;
+        margin: 0 auto 30px auto;
+        background: #eef4f8;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        overflow: hidden;
+        padding-bottom: 20px;
+    }
+
+    .rcsat-panel-header {
+        background: linear-gradient(90deg, #2e8b7a, #4f8ef7);
+        color: #fff;
+        text-align: center;
+        padding: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 1.1rem;
+    }
+
+    .rcsat-cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 25px;
+    }
+
+    .rcsat-card {
+        background: #fff;
+        border-radius: 14px;
+        width: 200px;
+        text-align: center;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        overflow: hidden;
+    }
+
+    .rcsat-card-header {
+        padding: 14px 0;
+        color: #fff;
+        border-bottom-left-radius: 50% 20px;
+        border-bottom-right-radius: 50% 20px;
+    }
+
+        .rcsat-card-header i {
+            font-size: 1.4rem;
+        }
+
+    .bg-registration {
+        background: #3b6fd6;
+    }
+
+    .bg-pending {
+        background: #e0374a;
+    }
+
+    .bg-decided {
+        background: #17a879;
+    }
+
+    .bg-users {
+        background: #4fc3c9;
+    }
+
+    .rcsat-card-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-top: 14px;
+    }
+
+    .text-registration {
+        color: #3b6fd6;
+    }
+
+    .text-pending {
+        color: #e0374a;
+    }
+
+    .text-decided {
+        color: #17a879;
+    }
+
+    .text-users {
+        color: #4fc3c9;
+    }
+
+    .rcsat-card-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #444;
+        margin: 6px 0 16px 0;
+        letter-spacing: 0.5px;
+    }
+
+    .rcsat-panel-header:not(:first-child) {
+        margin-top: 20px;
+    }
+</style>
+
+<div class="rcsat-wrapper">
+    <h1 class="rcsat-title">WELCOME TO RCSAT</h1>
+
+    <div class="rcsat-panel">
+        @foreach (var court in Model)
+        {
+            <div class="rcsat-panel-header">@court.CourtName.ToUpper()</div>
+            <div class="rcsat-cards">
+
+                <div class="rcsat-card">
+                    <div class="rcsat-card-header bg-registration">
+                        <i class="fa fa-globe"></i>
+                    </div>
+                    <div class="rcsat-card-value text-registration">@court.RegisteredCases</div>
+                    <div class="rcsat-card-label">TOTAL REGISTRATION</div>
+                </div>
+
+                <div class="rcsat-card">
+                    <div class="rcsat-card-header bg-pending">
+                        <i class="fa fa-line-chart"></i>
+                    </div>
+                    <div class="rcsat-card-value text-pending">@court.PendingCases</div>
+                    <div class="rcsat-card-label">TOTAL PENDING CASES</div>
+                </div>
+
+                <div class="rcsat-card">
+                    <div class="rcsat-card-header bg-decided">
+                        <i class="fa fa-bar-chart"></i>
+                    </div>
+                    <div class="rcsat-card-value text-decided">@court.Decided</div>
+                    <div class="rcsat-card-label">TOTAL DECIDED CASES</div>
+                </div>
+
+                <div class="rcsat-card">
+                    <div class="rcsat-card-header bg-users">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div class="rcsat-card-value text-users">@court.Users</div>
+                    <div class="rcsat-card-label">TOTAL USERS</div>
+                </div>
+
+            </div>
+        }
+    </div>
 </div>

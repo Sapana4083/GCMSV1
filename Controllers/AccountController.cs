@@ -14,10 +14,10 @@ namespace GCMS.Controllers
     public class AccountController : Controller
     {
         private readonly IAuthService _authService;
-        private readonly IUsersRepository _repository;
+        private readonly IUserRepository _repository;
 
         public AccountController(
-            IAuthService authService, IUsersRepository repository)
+            IAuthService authService, IUserRepository repository)
         {
             _authService = authService;
             _repository = repository;

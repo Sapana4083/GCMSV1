@@ -3,7 +3,7 @@ using GCMS.Models;
 
 namespace GCMS.Repository.Interfaces
 {
-    public interface IUsersRepository
+    public interface IUserRepository
     {
         Task<Users?> GetUserAsync(string username);
         Task UpdatePasswordHashAsync(long userId, string passwordHash);

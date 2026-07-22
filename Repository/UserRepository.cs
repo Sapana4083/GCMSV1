@@ -7,11 +7,11 @@ using System.Data;
 
 namespace GCMS.Repository
 {
-    public class UsersRepository : IUsersRepository
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public UsersRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context)
         {
             _context = context;
         }

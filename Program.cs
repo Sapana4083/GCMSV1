@@ -37,9 +37,7 @@ builder.Services.AddSession(options =>
 
 
 builder.Services.AddScoped<OracleConnectionFactory>();
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-builder.Services.AddOptions<PasswordHasherOptions>();
-builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStateRepository, StateRepository>();
 builder.Services.AddScoped<IStateService, StateService>();
@@ -74,12 +72,6 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
-builder.Services.AddAuthentication(
-    CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Account/Login";
-    });
 
 builder.Services.AddAuthorization(options =>
 {
@@ -88,17 +80,14 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-});
+
 
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "RequestVerificationToken";
     options.Cookie.SameSite = SameSiteMode.Strict; // or Lax
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
 
 var app = builder.Build();

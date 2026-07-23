@@ -1,0 +1,18 @@
+﻿@model List<GCMS.Models.MenuMaster>
+
+<nav class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+        <img src="~/images/axAppLogo-nav.png" />
+    </div>
+
+    <ul class="nav flex-column py-2">
+
+        @foreach (var menu in Model)
+        {
+            <partial name="~/Views/Shared/Components/Sidebar/_MenuNode.cshtml" model="menu" />
+        }
+
+    </ul>
+
+</nav>

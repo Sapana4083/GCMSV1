@@ -1,0 +1,40 @@
+﻿@model GCMS.Models.MenuMaster
+@{
+    int depth = ViewData["Depth"] as int? ?? 0;
+    bool isTop = depth == 0;
+    bool hasChildren = Model.Children != null && Model.Children.Any();
+
+    string currentPath = Context.Request.Path.Value ?? "";
+    bool isActive = !string.IsNullOrEmpty(Model.MenuUrl)
+        && currentPath.Equals(Model.MenuUrl, StringComparison.OrdinalIgnoreCase);
+}
+
+@if (hasChildren)
+{
+    <li class="@(isTop ? "nav-item dd-parent" : "dropdown-submenu dd-parent")">
+        <a href="#" class="@(isTop ? "nav-link dropdown-toggle" : "dropdown-item dropdown-toggle")">
+            <i class="@Model.Icon"></i>
+            <span class="link-text">@Model.MenuName</span>
+            <i class="bi @(isTop ? "bi-chevron-down" : "bi-chevron-right") caret"></i>
+        </a>
+
+        <ul class="dropdown-menu">
+            @foreach (var child in Model.Children)
+            {
+                var childViewData = new ViewDataDictionary(ViewData);
+                childViewData["Depth"] = depth + 1;
+                <partial name="~/Views/Shared/Components/Sidebar/_MenuNode.cshtml" model="child" view-data="childViewData" />
+            }
+        </ul>
+    </li>
+}
+else
+{
+    <li class="@(isTop ? "nav-item" : "")">
+        <a class="@(isTop ? "nav-link" : "dropdown-item") @(isActive ? "active" : "")"
+           href="@Url.Content(Model.MenuUrl ?? "#")">
+            <i class="@(Model.Icon ?? "")"></i>
+            <span class="link-text">@Model.MenuName</span>
+        </a>
+    </li>
+}

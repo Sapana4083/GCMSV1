@@ -1,0 +1,45 @@
+﻿@model GCMS.Models.MenuMaster
+
+@if (Model.Children.Any())
+{
+    <li class="nav-item dd-parent">
+
+        <a href="#"
+           class="nav-link dropdown-toggle">
+
+            <i class="@Model.Icon"></i>
+
+            <span class="link-text">
+                @Model.MenuName
+            </span>
+
+            <i class="bi bi-chevron-down caret"></i>
+
+        </a>
+
+        <ul class="dropdown-menu">
+
+            @foreach (var child in Model.Children)
+            {
+                @await Html.PartialAsync("_SidebarMenu", child)
+            }
+
+        </ul>
+
+    </li>
+}
+else
+{
+    <li>
+
+        <a href="@Model.MenuUrl"
+           class="dropdown-item">
+
+            <i class="@Model.Icon"></i>
+
+            @Model.MenuName
+
+        </a>
+
+    </li>
+}

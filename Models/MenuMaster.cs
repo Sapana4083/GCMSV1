@@ -31,8 +31,27 @@ namespace GCMS.Models
         [Column("MODIFY_BY")]
         public string? ModifyBy { get; set; }
 
-        // Not mapped to database - used only for display
+        // Display only
         [NotMapped]
         public string? ParentName { get; set; }
+
+        // Bootstrap Icon
+        [Column("MENU_ICON")]
+        public string? Icon { get; set; }
+
+        [Column("SORT_ORDER")]
+        public int SortOrder { get; set; }
+
+        // Display Order
+        [NotMapped]
+        public int DisplayOrder { get; set; }
+
+        // Child Menus
+        [NotMapped]
+        public List<MenuMaster> Children { get; set; } = new();
+
+        // Indicates if this menu has children
+        [NotMapped]
+        public bool HasChildren => Children.Any();
     }
 }

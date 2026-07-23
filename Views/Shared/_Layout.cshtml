@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http
+@await Component.InvokeAsync("Sidebar")
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,179 +93,47 @@
 
     <div class="d-flex" id="wrapper">
 
-        <!-- ===========================
-             SIDEBAR
-        =========================== -->
-        <nav class="sidebar" id="sidebar">
+        <!-- Dynamic Sidebar -->
+        @await Component.InvokeAsync("Sidebar")
 
-            <div class="sidebar-header">
-              @*   <i class="bi bi-grid-1x2-fill fs-5 text-primary"></i>
-                <span class="brand-text">GCMS</span> *@
-                <img src="..\images\axapplogo-nav.png" class="bi bi-grid-1x2-fill fs-5 text-primary" />
-            </div>
-
-            <ul class="nav flex-column py-2">
-
-                <li class="nav-item">
-                    <a class="nav-link @(string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase) && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
-                       asp-area=""
-                       asp-controller="Home"
-                       asp-action="Index">
-                        <i class="bi bi-speedometer2"></i>
-                        <span class="link-text">Home</span>
-                    </a>
-                </li>
-
-                <!-- LEVEL 1: Masters -->
-                <li class="nav-item dd-parent">
-                    <a class="nav-link dropdown-toggle @(string.Equals(currentController, "Master", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
-                       href="#"
-                       id="sidebarMastersDropdown">
-                        <i class="bi bi-clipboard2-minus-fill"></i>
-                        <span class="link-text">Masters</span>
-                        <i class="bi bi-chevron-down caret"></i>
-                    </a>
-
-                    <ul class="dropdown-menu">
-
-                        <!-- LEVEL 2: Common Master -->
-                        <li class="dropdown-submenu dd-parent">
-                            <a href="#" class="dropdown-item dropdown-toggle">
-                                <i class="bi bi-folder"></i>
-                                <span class="link-text">Common Master</span>
-                                <i class="bi bi-chevron-right caret"></i>
-                            </a>
-
-                            <ul class="dropdown-menu">
-
-                                <!-- LEVEL 3: Location Master -->
-                                <li class="dropdown-submenu dd-parent">
-                                    <a href="#" class="dropdown-item dropdown-toggle">
-                                        <i class="bi bi-geo-alt"></i>
-                                        <span class="link-text">Location Master</span>
-                                        <i class="bi bi-chevron-right caret"></i>
-                                    </a>
-
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Master"
-                                               asp-action="StateList">
-                                                State
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Master"
-                                               asp-action="DivisionList">
-                                                Division
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Master"
-                                               asp-action="DistrictList">
-                                                District
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Master"
-                                               asp-action="SdoList">
-                                                SDO
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Master"
-                                               asp-action="TehsilList">
-                                                Tehsil
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <!-- end LEVEL 3 -->
-
-                            </ul>
-                        </li>
-                        <!-- end Common Master -->
-                        <!-- LEVEL 2: User Master -->
-                        <li class="dropdown-submenu dd-parent">
-                            <a href="#" class="dropdown-item dropdown-toggle">
-                                <i class="bi bi-person-gear"></i>
-                                <span class="link-text">User Master</span>
-                                <i class="bi bi-chevron-right caret"></i>
-                            </a>
-
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item"
-                                       asp-controller="UserMaster"
-                                       asp-action="UserLogin">
-                                        Login User
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul>
-                </li>
-                <!-- end Masters -->
-
-                <li class="nav-item">
-                    <a class="nav-link @(string.Equals(currentController, "CaseRegistration", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
-                       asp-controller="CaseRegistration"
-                       asp-action="index">
-                        <i class="bi bi-journal-plus"></i>
-                        <span class="link-text">Case Registration</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(string.Equals(currentController, "Connectedcaseupdate", StringComparison.OrdinalIgnoreCase) ? "active" : "")"
-                       asp-controller="Connectedcaseupdate"
-                       asp-action="index">
-                        <i class="bi bi-journal-plus"></i>
-                        <span class="link-text">Connected Case Update</span>
-                    </a>
-                </li>
-
-            </ul>
-        </nav>
-
+        <!-- Sidebar Overlay -->
         <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-        <!-- ===========================
-             CONTENT AREA
-        =========================== -->
+        <!-- Content Area -->
         <div class="content-area" id="contentArea">
 
             <header class="topbar">
-                <button class="sidebar-toggle-desktop" id="sidebarToggle" type="button" aria-label="Collapse sidebar">
+
+                <button class="sidebar-toggle-desktop"
+                        id="sidebarToggle"
+                        type="button">
                     <i class="bi bi-list"></i>
                 </button>
-                <button class="sidebar-toggle-mobile" id="sidebarToggleMobile" type="button" aria-label="Open sidebar">
+
+                <button class="sidebar-toggle-mobile"
+                        id="sidebarToggleMobile"
+                        type="button">
                     <i class="bi bi-list"></i>
                 </button>
-                @* <span class="topbar-title">@ViewData["Title"]</span> *@
+
                 <span class="topbar-title deepshadow">
                     @(Context.Session.GetString("CourtName") ?? "N/A")
                 </span>
+
             </header>
 
-            <main role="main" class="pb-3" id="mainContent" tabindex="-1">
-                @RenderBody()
-            </main>
+            <main id="mainContent"
+                  role="main"
+                  class="pb-3"
+                  tabindex="-1">
 
-            @* <footer class="border-top footer text-muted bg-light">
-                <div class="container-fluid">
-                    &copy; 2026 - GCMS.WEB - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                </div>
-            </footer> *@
+                @RenderBody()
+
+            </main>
 
         </div>
 
     </div>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/jquery.datatables.min.js" asp-append-version="true"></script>

@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - GCMS</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	@* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> *@
+    <link href="~/css/login.css" rel="stylesheet" asp-append-version="true" />
     <link rel="stylesheet" href="~/GCMS.styles.css" asp-append-version="true" />
     <link href="~/lib/bootstrap-icon/font/bootstrap-icons-new.css" rel="stylesheet" />
 </head>
 
 <body>
+  
     <header></header>
     <main role="main" class="pb-3">
         @RenderBody()
@@ -49,5 +51,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+   
 </body>
 </html>

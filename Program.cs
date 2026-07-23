@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GCMS.Models;
+using GCMS.Repository.Implementations;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +61,10 @@ builder.Services.AddScoped<ICourtDashboardRepository, CourtDashboardRepository>(
 
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<ILinkedCaseFamilyRepository, LinkedCaseFamilyRepository>();
+
+builder.Services.AddScoped<IRcsatCaseUpdateRepository, RcsatCaseUpdateRepository>();
+builder.Services.AddScoped<ILinkedCaseRepository, LinkedCaseRepository>();
 
 builder.Services.AddAuthentication(
     CookieAuthenticationDefaults.AuthenticationScheme)

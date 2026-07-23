@@ -54,6 +54,8 @@ namespace GCMS.Repository
                     MenuUrl = reader["MENU_URL"]?.ToString(),
                     IsActvFlag = Convert.ToInt32(reader["IS_ACTV_FLAG"]),
                     IsDelFlag = Convert.ToInt32(reader["IS_DEL_FLAG"]),
+                    SortOrder = Convert.ToInt32(reader["SORT_ORDER"]),
+                    Icon = reader["MENU_ICON"]?.ToString(),
                     CreateBy = reader["CREATE_BY"]?.ToString(),
                     ModifyBy = reader["MODIFY_BY"]?.ToString()
                 });
@@ -93,8 +95,10 @@ namespace GCMS.Repository
                         ? null
                         : Convert.ToInt64(reader["PARENT_ID"]),
                     MenuUrl = reader["MENU_URL"]?.ToString(),
+                    Icon = reader["MENU_ICON"]?.ToString(),
                     IsActvFlag = Convert.ToInt32(reader["IS_ACTV_FLAG"]),
                     IsDelFlag = Convert.ToInt32(reader["IS_DEL_FLAG"]),
+                    SortOrder = Convert.ToInt32(reader["SORT_ORDER"]),
                     CreateBy = reader["CREATE_BY"]?.ToString(),
                     ModifyBy = reader["MODIFY_BY"]?.ToString()
                 };
@@ -118,6 +122,12 @@ namespace GCMS.Repository
 
             cmd.Parameters.Add("p_menu_name", OracleDbType.Varchar2)
                 .Value = model.MenuName;
+
+            cmd.Parameters.Add("p_menu_icon", OracleDbType.Varchar2)
+                .Value = model.Icon;
+
+            cmd.Parameters.Add("p_sort_order", OracleDbType.Int32)
+                .Value = model.SortOrder;
 
             cmd.Parameters.Add("p_parent_id", OracleDbType.Int64)
                 .Value = model.ParentId ?? (object)DBNull.Value;
@@ -154,6 +164,12 @@ namespace GCMS.Repository
 
             cmd.Parameters.Add("p_menu_name", OracleDbType.Varchar2)
                 .Value = model.MenuName;
+
+            cmd.Parameters.Add("p_sort_order", OracleDbType.Int32)
+              .Value = model.SortOrder;
+
+            cmd.Parameters.Add("p_menu_icon", OracleDbType.Varchar2)
+               .Value = model.Icon;
 
             cmd.Parameters.Add("p_parent_id", OracleDbType.Int64)
                 .Value = model.ParentId ?? (object)DBNull.Value;

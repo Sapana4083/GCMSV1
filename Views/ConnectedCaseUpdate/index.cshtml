@@ -1,0 +1,590 @@
+﻿@model GCMS.Models.RcsatCaseUpdateViewModel
+@{
+    ViewData["Title"] = "Connected Case Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <title>Connected Case Update</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+       /*  body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(160deg, #eaf6ff 0%, #cfeaff 100%);
+            margin: 0;
+            padding: 24px;
+        } */
+
+        .page-wrapper {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            overflow: hidden;
+            margin-top:20px;
+        }
+
+        .page-header {
+            background: linear-gradient(90deg, #4aa8d8, #6fc3ef);
+            color: #fff;
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .page-header .header-icons i {
+                background: rgba(255,255,255,0.2);
+                padding: 8px;
+                border-radius: 6px;
+                margin-left: 8px;
+                cursor: pointer;
+            }
+
+        .form-body {
+            padding: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #222;
+            margin-bottom: 6px;
+        }
+
+            .form-group label .required {
+                color: #e0374a;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 9px 10px;
+            border: 1px solid #cfd8dc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: #fff;
+        }
+
+            .form-control[readonly] {
+                background: #eef1f3;
+                color: #444;
+            }
+
+            .form-control:focus {
+                outline: none;
+                border-color: #4aa8d8;
+                box-shadow: 0 0 0 2px rgba(74,168,216,0.2);
+            }
+
+        .alert-warning {
+            margin-top: 14px;
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            color: #8a6d00;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .linked-cases-panel {
+            margin: 24px;
+            border: 1px solid #dbe4ea;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .linked-cases-header {
+            background: linear-gradient(90deg, #2e8b7a, #4f8ef7);
+            color: #fff;
+            padding: 10px 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 6px;
+            padding: 10px 16px;
+            background: #f4f8fb;
+            border-bottom: 1px solid #dbe4ea;
+        }
+
+        .btn-icon {
+            background: #2f6f7a;
+            color: #fff;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+            .btn-icon:hover {
+                background: #245a63;
+            }
+
+            .btn-icon:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+
+        table.grid-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+            table.grid-table th {
+                background: #f4f8fb;
+                text-align: left;
+                padding: 10px 12px;
+                border-bottom: 1px solid #dbe4ea;
+                white-space: nowrap;
+                font-weight: 600;
+            }
+
+                table.grid-table th .required {
+                    color: #e0374a;
+                }
+
+            table.grid-table td {
+                padding: 6px 8px;
+                border-bottom: 1px solid #eef1f3;
+            }
+
+            table.grid-table input {
+                width: 100%;
+                padding: 6px 8px;
+                border: 1px solid #cfd8dc;
+                border-radius: 4px;
+                font-size: 0.85rem;
+            }
+
+                table.grid-table input[readonly] {
+                    background: #f4f6f7;
+                }
+
+        .row-new {
+            background: #fff9e6;
+        }
+
+        .row-linked {
+            background: #f1fbf4;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 20px 24px;
+        }
+
+        .btn-primary {
+            background: #2f6f7a;
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-primary:hover {
+                background: #245a63;
+            }
+
+            .btn-primary:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #2f6f7a;
+            z-index: 999;
+        }
+
+            .loading-overlay.active {
+                display: flex;
+            }
+    </style>
+
+<body>
+
+    <div class="loading-overlay" id="loadingOverlay">Loading…</div>
+
+    <div class="page-wrapper">
+        <div class="page-header">
+            <span>Connected Case Update</span>
+            <div class="header-icons">
+                <i class="fa-solid fa-list"></i>
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fa-solid fa-table-cells"></i>
+            </div>
+        </div>
+
+        <div class="form-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Case Type <span class="required">*</span></label>
+                    <select id="caseType" class="form-control">
+                        <option value="">Select an option</option>
+                        <option value="RCSAT">RCSAT</option>
+                        <option value="APPEAL">Appeal</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Linked Case (Main Case) <span class="required">*</span></label>
+                    <input type="text" id="linkedCaseNo" class="form-control" placeholder="Enter / select main case no." />
+                </div>
+
+                <div class="form-group">
+                    <label>Appellant Name</label>
+                    <input type="text" id="appellantName" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Respondent Name</label>
+                    <input type="text" id="respondentName" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Institution Date</label>
+                    <input type="date" id="institutionDate" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Hearing Date</label>
+                    <input type="date" id="hearingDate" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Connected Case No.</label>
+                    <input type="text" id="connectedCaseNo" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>District</label>
+                    <input type="text" id="district" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Purpose Name</label>
+                    <input type="text" id="purposeName" class="form-control" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label>Court Code</label>
+                    <input type="text" id="courtCode" class="form-control" />
+                </div>
+            </div>
+
+            <div id="notFoundMsg" class="alert-warning">
+                No existing case found for this number — you can still add linked cases below; the main case will be created on Submit.
+            </div>
+        </div>
+
+        <div class="linked-cases-panel">
+            <div class="linked-cases-header">
+                <i class="fa-solid fa-chevron-up"></i> Linked Cases
+            </div>
+            <div class="toolbar">
+                <button type="button" id="btnAddRow" class="btn-icon" title="Add new linked case"><i class="fa-solid fa-plus"></i></button>
+                <button type="button" id="btnDeleteRow" class="btn-icon" title="Delete selected rows"><i class="fa-solid fa-trash"></i></button>
+                <button type="button" id="btnRefresh" class="btn-icon" title="Reload from case family"><i class="fa-solid fa-rotate"></i></button>
+            </div>
+
+            <table class="grid-table" id="linkedCasesTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="chkAll" /></th>
+                        <th>S.no</th>
+                        <th>Case Type <span class="required">*</span></th>
+                        <th>Child Case <span class="required">*</span></th>
+                        <th>Parent Case <span class="required">*</span></th>
+                        <th>Hearing Date <span class="required">*</span></th>
+                        <th>Appellant Name <span class="required">*</span></th>
+                        <th>Respondent Name</th>
+                        <th>District</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody id="linkedCasesBody"></tbody>
+            </table>
+        </div>
+
+        <div class="footer-actions">
+            <button type="button" id="btnSubmit" class="btn-primary"><i class="fa-solid fa-floppy-disk"></i> SUBMIT</button>
+            <button type="button" id="btnNew" class="btn-primary"><i class="fa-solid fa-circle-plus"></i> NEW</button>
+        </div>
+    </div>
+
+    <script>
+        let rowCounter = 0;
+        let currentCaseUpdateId = null;
+
+        const el = id => document.getElementById(id);
+        const showLoading = () => el('loadingOverlay').classList.add('active');
+        const hideLoading = () => el('loadingOverlay').classList.remove('active');
+
+        // ---------- TAB 1: autofill on Linked Case (Main Case) selection ----------
+        el('linkedCaseNo').addEventListener('blur', async function () {
+            const linkCase = this.value.trim();
+            const courtCode = el('courtCode').value.trim();
+            if (!linkCase) return;
+
+            showLoading();
+            try {
+                const res = await fetch(`/RcsatCaseUpdate/GetCaseDetails?linkCase=${encodeURIComponent(linkCase)}`);
+                const data = await res.json();
+
+                el('notFoundMsg').style.display = data.found ? 'none' : 'block';
+
+                if (data.found) {
+                    el('caseType').value = data.caseType || '';
+                    el('appellantName').value = data.appellantName || '';
+                    el('respondentName').value = data.respondentName || '';
+                    el('institutionDate').value = data.institutionDate || '';
+                    el('hearingDate').value = data.hearingDate || '';
+                    el('district').value = data.district || '';
+                    el('purposeName').value = data.purposeName || '';
+                    el('courtCode').value = data.courtCode || courtCode || '';
+                    currentCaseUpdateId = data.caseUpdateId || null;
+                } else {
+                    ['appellantName','respondentName','institutionDate','hearingDate','district','purposeName','connectedCaseNo']
+                        .forEach(id => el(id).value = '');
+                    currentCaseUpdateId = null;
+                }
+
+                await loadLinkedCaseFamily(linkCase, linkCase, el('courtCode').value.trim());
+            } catch (err) {
+                console.error(err);
+                alert('Failed to load case details.');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        el('btnRefresh').addEventListener('click', () => {
+            const linkCase = el('linkedCaseNo').value.trim();
+            const courtCode = el('courtCode').value.trim();
+            if (linkCase && courtCode) loadLinkedCaseFamily(linkCase, linkCase, courtCode);
+        });
+
+        // ---------- TAB 2: load case family grid ----------
+        async function loadLinkedCaseFamily(linkCase, parentCaseNo, courtCode) {
+            if (!parentCaseNo || !courtCode) return;
+
+            showLoading();
+            try {
+                const res = await fetch(`/RcsatCaseUpdate/GetLinkedCaseFamily?linkCase=${encodeURIComponent(linkCase)}&parentCaseNo=${encodeURIComponent(parentCaseNo)}&courtCode=${encodeURIComponent(courtCode)}`);
+                const rows = await res.json();
+
+                el('linkedCasesBody').innerHTML = '';
+                rowCounter = 0;
+                rows.forEach(r => addRow({
+                    caseId: r.caseRegId,
+                    caseType: r.casePurposeName,
+                    childCase: r.caseNo,
+                    hearingDate: r.hearingDate ? r.hearingDate.substring(0, 10) : '',
+                    appellantName: r.primaryAppellant,
+                    respondentName: r.primaryRespondent,
+                    district: r.districtName,
+                    purpose: r.casePurposeName
+                }, false));
+            } catch (err) {
+                console.error(err);
+                alert('Failed to load linked cases.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // ---------- Add row ----------
+        function addRow(existing = null, isNew = true) {
+            rowCounter++;
+            const mainCaseNo = el('linkedCaseNo').value.trim();
+            const tbody = el('linkedCasesBody');
+
+            const tr = document.createElement('tr');
+            tr.className = isNew ? 'row-new' : 'row-linked';
+            if (existing?.caseId) tr.dataset.caseId = existing.caseId;
+
+            tr.innerHTML = `
+                <td><input type="checkbox" class="row-check" /></td>
+                <td>${rowCounter}</td>
+                <td><input type="text" class="row-caseType" value="${existing?.caseType ?? ''}" /></td>
+                <td><input type="text" class="row-childCase" value="${existing?.childCase ?? ''}" placeholder="Existing or new case no." /></td>
+                <td><input type="text" class="row-parentCase" value="${mainCaseNo}" readonly /></td>
+                <td><input type="date" class="row-hearingDate" value="${existing?.hearingDate ?? ''}" /></td>
+                <td><input type="text" class="row-appellantName" value="${existing?.appellantName ?? ''}" /></td>
+                <td><input type="text" class="row-respondentName" value="${existing?.respondentName ?? ''}" /></td>
+                <td><input type="text" class="row-district" value="${existing?.district ?? ''}" /></td>
+                <td><input type="text" class="row-purpose" value="${existing?.purpose ?? ''}" /></td>
+            `;
+            tbody.appendChild(tr);
+
+            const childCaseInput = tr.querySelector('.row-childCase');
+            childCaseInput.addEventListener('blur', async function () {
+                const childCaseNo = this.value.trim();
+                if (!childCaseNo) return;
+
+                try {
+                    const res = await fetch(`/RcsatCaseUpdate/CheckCaseExists?caseNo=${encodeURIComponent(childCaseNo)}`);
+                    const data = await res.json();
+
+                    if (data.exists) {
+                        tr.className = 'row-linked';
+                        const detailsRes = await fetch(`/RcsatCaseUpdate/GetCaseByNo?caseNo=${encodeURIComponent(childCaseNo)}`);
+                        const details = await detailsRes.json();
+                        if (details.found) {
+                            tr.querySelector('.row-caseType').value = details.data.caseTypee || tr.querySelector('.row-caseType').value;
+                            tr.querySelector('.row-hearingDate').value = details.data.hearingDate ? details.data.hearingDate.substring(0,10) : '';
+                            tr.querySelector('.row-appellantName').value = details.data.appellantName || '';
+                            tr.querySelector('.row-respondentName').value = details.data.respondentName || '';
+                            tr.querySelector('.row-district').value = details.data.districtName || '';
+                            tr.querySelector('.row-purpose').value = details.data.purpose || '';
+                        }
+                    } else {
+                        tr.className = 'row-new';
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        el('btnAddRow').addEventListener('click', () => {
+            if (!el('linkedCaseNo').value.trim()) {
+                alert('Please enter the Linked Case (Main Case) number first.');
+                return;
+            }
+            addRow(null, true);
+        });
+
+        el('btnDeleteRow').addEventListener('click', async () => {
+            const checked = [...document.querySelectorAll('.row-check:checked')];
+            if (checked.length === 0) {
+                alert('Select at least one row to delete.');
+                return;
+            }
+            if (!confirm(`Delete ${checked.length} selected row(s)?`)) return;
+
+            for (const chk of checked) {
+                const tr = chk.closest('tr');
+                const caseId = tr.dataset.caseId;
+                if (caseId) {
+                    await fetch(`/RcsatCaseUpdate/DeleteLinkedCase?caseId=${caseId}`, { method: 'POST' });
+                }
+                tr.remove();
+            }
+        });
+
+        el('chkAll').addEventListener('change', function () {
+            document.querySelectorAll('.row-check').forEach(cb => cb.checked = this.checked);
+        });
+
+        // ---------- SUBMIT ----------
+        el('btnSubmit').addEventListener('click', async () => {
+            const mainCaseNo = el('linkedCaseNo').value.trim();
+            if (!mainCaseNo) {
+                alert('Please enter the Linked Case (Main Case) number first.');
+                return;
+            }
+            if (!el('caseType').value) {
+                alert('Please select a Case Type.');
+                return;
+            }
+
+            const linkedCases = [...document.querySelectorAll('#linkedCasesBody tr')].map(tr => ({
+                caseId: tr.dataset.caseId ? parseInt(tr.dataset.caseId) : null,
+                caseTypee: tr.querySelector('.row-caseType').value,
+                caseNo: tr.querySelector('.row-childCase').value,
+                mainCase: mainCaseNo,
+                hearingDate: tr.querySelector('.row-hearingDate').value || null,
+                appellantName: tr.querySelector('.row-appellantName').value,
+                respondentName: tr.querySelector('.row-respondentName').value,
+                districtName: tr.querySelector('.row-district').value,
+                purpose: tr.querySelector('.row-purpose').value
+            })).filter(r => r.caseNo);
+
+            const model = {
+                caseUpdateId: currentCaseUpdateId,
+                courtName: el('courtCode').value,
+                courtCode: el('courtCode').value,
+                caseType: el('caseType').value,
+                linkCase: mainCaseNo,
+                appellantName: el('appellantName').value,
+                respondentName: el('respondentName').value,
+                institutionDate: el('institutionDate').value || null,
+                hearingDate: el('hearingDate').value || null,
+                connectedCaseNo: el('connectedCaseNo').value,
+                district: el('district').value,
+                purposeName: el('purposeName').value,
+                linkedCases: linkedCases
+            };
+
+            el('btnSubmit').disabled = true;
+            showLoading();
+            try {
+                const res = await fetch('/RcsatCaseUpdate/Save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(model)
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    currentCaseUpdateId = result.caseUpdateId;
+                    alert('Saved successfully.');
+                } else {
+                    alert('Save failed: ' + (result.message || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Save failed due to a network/server error.');
+            } finally {
+                el('btnSubmit').disabled = false;
+                hideLoading();
+            }
+        });
+
+        // ---------- NEW ----------
+        el('btnNew').addEventListener('click', () => {
+            document.querySelectorAll('.form-control').forEach(elm => elm.value = '');
+            el('linkedCasesBody').innerHTML = '';
+            el('notFoundMsg').style.display = 'none';
+            rowCounter = 0;
+            currentCaseUpdateId = null;
+        });
+    </script>
+
+</body>
+</html>

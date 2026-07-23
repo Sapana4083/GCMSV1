@@ -1141,3 +1141,41 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 }
 
 
+.user-menu-toggle {
+    display: flex;
+    flex-direction: row; /* force horizontal, not column */
+    align-items: center;
+    gap: 8px;
+    width: auto; /* don't let it stretch/collapse to a narrow column */
+    white-space: nowrap; /* prevent wrapping */
+    background: #fff;
+    border: 1px solid #dbe4ea;
+    border-radius: 24px;
+    padding: 5px 14px 5px 6px;
+    cursor: pointer;
+}
+
+.user-avatar-square {
+    flex-shrink: 0; /* prevent the icon from being squashed/resized */
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #eaf3fb;
+    color: #2f6f7a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d3e6f2;
+}
+
+.user-name {
+    flex-shrink: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #222;
+}
+
+.user-caret {
+    flex-shrink: 0;
+    color: #777;
+}

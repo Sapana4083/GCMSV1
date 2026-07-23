@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\LinkedCaseFamilyViewModel.cs" />
     <Compile Remove="Repository\CaseService.cs" />
     <Compile Remove="Repository\Interfaces\ICaseService.cs" />
     <Compile Remove="Repository\UsersRepository.cs" />

@@ -1,171 +1,345 @@
-﻿@* @{
-    ViewData["Title"] = "Home Page";
+﻿@model List<CourtDashboardViewModel>
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div> *@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-@model List<CourtDashboardViewModel>
-
+<link href="~\css\all.min.css" rel="stylesheet" />
 <style>
-    .rcsat-wrapper {
-        /* background: linear-gradient(135deg, #d7ecfa 0%, #a9d8f5 100%); */
-        padding: 40px 20px;
-        min-height: 100vh;
+
+    body {
+        /* background: #f5f7fb; */
+        font-family: 'Segoe UI',sans-serif;
     }
 
-    .rcsat-title {
+    .dashboard-wrapper {
+        max-width: 1400px;
+        margin: auto;
+        padding: 30px;
+    }
+
+    .page-title {
         text-align: center;
-        font-weight: 800;
+        font-size: 45px;
+        font-weight: 700;
+        color: #123b88;
+        margin-bottom: 50px;
         letter-spacing: 2px;
-        color: #333;
-        margin-bottom: 30px;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+        text-shadow: 0px 4px 3px rgb(0 0 0 / 28%), 0px 8px 13px rgba(0, 0, 0, 0.1), 0px 18px 23px rgba(0, 0, 0, 0.1);
     }
 
-    .rcsat-panel {
-        max-width: 1100px;
-        margin: 0 auto 30px auto;
-        background: #eef4f8;
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        overflow: hidden;
-        padding-bottom: 20px;
-    }
-
-    .rcsat-panel-header {
-        background: linear-gradient(90deg, #2e8b7a, #4f8ef7);
-        color: #fff;
-        text-align: center;
-        padding: 12px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        font-size: 1.1rem;
-    }
-
-    .rcsat-cards {
+    .section-title {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        padding: 25px;
+        align-items: center;
+        margin: 45px 0 25px;
     }
 
-    .rcsat-card {
-        background: #fff;
-        border-radius: 14px;
-        width: 200px;
-        text-align: center;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        overflow: hidden;
-    }
-
-    .rcsat-card-header {
-        padding: 14px 0;
-        color: #fff;
-        border-bottom-left-radius: 50% 20px;
-        border-bottom-right-radius: 50% 20px;
-    }
-
-        .rcsat-card-header i {
-            font-size: 1.4rem;
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: #d9d9d9;
         }
 
-    .bg-registration {
-        background: #3b6fd6;
+        .section-title span {
+            margin: 0 20px;
+            color: #12439b;
+            font-size: 34px;
+            font-weight: 700;
+        }
+
+    .dashboard-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 18px rgba(0,0,0,.12);
+        transition: .35s;
+        border-top: 5px solid;
     }
 
-    .bg-pending {
-        background: #e0374a;
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(0,0,0,.18);
+            cursor:pointer;
+        }
+
+    .blue {
+        border-color: #2563eb;
     }
 
-    .bg-decided {
-        background: #17a879;
+    .red {
+        border-color: #ef4444;
     }
 
-    .bg-users {
-        background: #4fc3c9;
+    .green {
+        border-color: #16a34a;
     }
 
-    .rcsat-card-value {
-        font-size: 1.8rem;
-        font-weight: 800;
-        margin-top: 14px;
+    .cyan {
+        border-color: #06b6d4;
     }
 
-    .text-registration {
-        color: #3b6fd6;
+    .card-body {
+        display: flex;
+        align-items: center;
+        padding: 28px 22px;
     }
 
-    .text-pending {
-        color: #e0374a;
+    .icon-box {
+        width: 82px;
+        height: 82px;
+        border-radius: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 18px;
+        font-size: 38px;
     }
 
-    .text-decided {
-        color: #17a879;
+    .blue .icon-box {
+        background: #edf3ff;
+        color: #2563eb;
     }
 
-    .text-users {
-        color: #4fc3c9;
+    .red .icon-box {
+        background: #fff1f1;
+        color: #ef4444;
     }
 
-    .rcsat-card-label {
-        font-size: 0.8rem;
+    .green .icon-box {
+        background: #eefcf4;
+        color: #16a34a;
+    }
+
+    .cyan .icon-box {
+        background: #eefcff;
+        color: #06b6d4;
+    }
+
+    .card-number {
+        font-size: 46px;
+        font-weight: 700;
+        line-height: 1;
+        text-shadow: 0px 4px 3px rgb(0 0 0 / 15%), 0px 8px 13px rgba(0, 0, 0, 0.1), 0px 18px 23px rgba(0, 0, 0, 0.1);
+    }
+
+    .blue .card-number {
+        color: #2563eb;
+    }
+
+    .red .card-number {
+        color: #ef4444;
+    }
+
+    .green .card-number {
+        color: #16a34a;
+    }
+
+    .cyan .card-number {
+        color: #06b6d4;
+    }
+
+    .card-text {
+        margin-top: 8px;
+        font-size: 18px;
         font-weight: 600;
-        color: #444;
-        margin: 6px 0 16px 0;
-        letter-spacing: 0.5px;
+        color: #333;
     }
 
-    .rcsat-panel-header:not(:first-child) {
-        margin-top: 20px;
+    .card-footer {
+        background: #fff;
+        border-top: 1px solid #ececec;
+        padding: 15px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
+
+        .card-footer a {
+            text-decoration: none;
+            color: #12439b;
+            font-weight: 600;
+        }
+
+        .card-footer i {
+            color: #12439b;
+        }
+
+    @@media(max-width:768px) {
+
+        .page-title {
+            font-size: 34px;
+        }
+
+        .section-title span {
+            font-size: 24px;
+        }
+
+        .card-number {
+            font-size: 34px;
+        }
+
+        .card-text {
+            font-size: 15px;
+        }
+    }
+
 </style>
 
-<div class="rcsat-wrapper">
-    <h1 class="rcsat-title">WELCOME TO RCSAT</h1>
+<div class="dashboard-wrapper">
 
-    <div class="rcsat-panel">
-        @foreach (var court in Model)
-        {
-            <div class="rcsat-panel-header">@court.CourtName.ToUpper()</div>
-            <div class="rcsat-cards">
+    <h1 class="page-title">
+        WELCOME TO RCSAT
+    </h1>
 
-                <div class="rcsat-card">
-                    <div class="rcsat-card-header bg-registration">
-                        <i class="fa fa-globe"></i>
+    @foreach (var court in Model)
+    {
+
+        <div class="section-title">
+            <span>@court.CourtName.ToUpper()</span>
+        </div>
+
+        <div class="row g-4 mb-5">
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card blue">
+
+                    <div class="card-body">
+
+                        <div class="icon-box">
+                            <i class="bi bi-reception-4"></i>
+                        </div>
+
+                        <div>
+                            <div class="card-number">
+                                @court.RegisteredCases
+                            </div>
+
+                            <div class="card-text">
+                                Total Registration
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="rcsat-card-value text-registration">@court.RegisteredCases</div>
-                    <div class="rcsat-card-label">TOTAL REGISTRATION</div>
-                </div>
 
-                <div class="rcsat-card">
-                    <div class="rcsat-card-header bg-pending">
-                        <i class="fa fa-line-chart"></i>
-                    </div>
-                    <div class="rcsat-card-value text-pending">@court.PendingCases</div>
-                    <div class="rcsat-card-label">TOTAL PENDING CASES</div>
-                </div>
+                    <div class="card-footer">
 
-                <div class="rcsat-card">
-                    <div class="rcsat-card-header bg-decided">
-                        <i class="fa fa-bar-chart"></i>
-                    </div>
-                    <div class="rcsat-card-value text-decided">@court.Decided</div>
-                    <div class="rcsat-card-label">TOTAL DECIDED CASES</div>
-                </div>
+                        <a href="#">View All</a>
 
-                <div class="rcsat-card">
-                    <div class="rcsat-card-header bg-users">
-                        <i class="fa fa-users"></i>
+                        <i class="fas fa-arrow-right"></i>
+
                     </div>
-                    <div class="rcsat-card-value text-users">@court.Users</div>
-                    <div class="rcsat-card-label">TOTAL USERS</div>
+
                 </div>
 
             </div>
-        }
-    </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card red">
+
+                    <div class="card-body">
+
+                        <div class="icon-box">
+                            <i class="bi bi-reception-3"></i>
+                        </div>
+
+                        <div>
+                            <div class="card-number">
+                                @court.PendingCases
+                            </div>
+
+                            <div class="card-text">
+                                Total Pending Cases
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer">
+
+                        <a href="#">View All</a>
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card green">
+
+                    <div class="card-body">
+
+                        <div class="icon-box">
+                            <i class="bi bi-reception-2"></i>
+                        </div>
+
+                        <div>
+                            <div class="card-number">
+                                @court.Decided
+                            </div>
+
+                            <div class="card-text">
+                                Total Decided Cases
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer">
+
+                        <a href="#">View All</a>
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="dashboard-card cyan">
+
+                    <div class="card-body">
+
+                        <div class="icon-box">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div>
+                            <div class="card-number">
+                                @court.Users
+                            </div>
+
+                            <div class="card-text">
+                                Total Users
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="card-footer">
+
+                        <a href="#">View All</a>
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+
 </div>

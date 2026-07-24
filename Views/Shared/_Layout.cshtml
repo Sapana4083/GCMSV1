@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Http
-@await Component.InvokeAsync("Sidebar")
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,10 +52,10 @@
                             <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.6-9.8 4.9v2.5h19.6v-2.5c0-3.3-6.5-4.9-9.8-4.9z" />
                         </svg>
                     </span>
-                    <span class="user-name">@ViewBag.UserName</span>
-                    <svg class="user-caret" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                    <span class="user-name">@(Context.Session.GetString("Username") ?? "N/A")</span>
+                  @*   <svg class="user-caret" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M7 10l5 5 5-5z" />
-                    </svg>
+                    </svg> *@
                 </button>
 
             <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" aria-labelledby="userMenuButton">

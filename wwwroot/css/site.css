@@ -1304,3 +1304,9 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     align-items: center;
     padding: 28px 22px;
 }
+
+.dropdown-toggle::after
+{
+    display: none !important;
+   
+}

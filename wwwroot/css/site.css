@@ -912,6 +912,7 @@ html[data-fontsize="6"] body {
 .sidebar-header {
     height: auto;
     min-height: var(--topbar-height);
+    box-shadow: 0 0 4px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* Text spacing mode — 1.4.12 Text Spacing */
@@ -1194,7 +1195,7 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 }
 
 .card-body {
-    display: flex;
+    /*display: flex;*/
     align-items: center;
     padding: 28px 22px;
 }
@@ -1296,4 +1297,10 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     .card-text {
         font-size: 15px;
     }
+}
+
+.card-body-dashboard {
+    display: flex;
+    align-items: center;
+    padding: 28px 22px;
 }

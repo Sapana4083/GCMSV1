@@ -63,8 +63,13 @@
                     <div class="dropdown-user-name">@ViewBag.UserName</div>
                     <div class="dropdown-user-role">@ViewBag.UserRole</div>
                 </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
+                @* <li><hr class="dropdown-divider"></li> *@
+                    <li>
+                        <a class="dropdown-item text-dark" href="https://sso.rajasthan.gov.in/signin">
+                            <i class="fa-solid fa-circle-arrow-left"></i> Back To SSO
+                        </a>
+                    </li>
+               @*  <li>
                     <a class="dropdown-item" href="/Account/Profile">
                         <i class="fa-solid fa-user-circle"></i> My Profile
                     </a>
@@ -78,7 +83,7 @@
                     <a class="dropdown-item" href="/Account/Settings">
                         <i class="fa-solid fa-gear"></i> Settings
                     </a>
-                </li>
+                </li> *@
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <a class="dropdown-item text-danger" href="/Account/Logout" id="logoutLink">

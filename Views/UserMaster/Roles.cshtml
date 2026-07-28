@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Role Master";
 }
-<div class="container bg-light rounded-4 shadow px-4 py-5">
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3 mt-3">
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
 
         <h3>Role Master</h3>
@@ -11,17 +11,17 @@
         <div class="d-flex gap-2">
 
             <button class="btn btn-primary"
-                    id="btnAddRole">
+                    id="btnAddRole" title="Click to add new record.">
                 Add Role
             </button>
 
             <button class="btn btn-secondary"
-                    id="btnPrint">
+                    id="btnPrint" title="Click to print.">
                 <i class="bi bi-printer-fill"></i>
             </button>
 
             <button class="btn btn-success"
-                    id="btnExcel">
+                    id="btnExcel" title="Click to download excel.">
                 <i class="bi bi-file-earmark-excel"></i>
             </button>
 
@@ -85,7 +85,7 @@
 
                         <td>
 
-                            <button class="btn btn-warning btn-sm edit"
+                            <button class="btn btn-default waves-effect waves-light edit"
                                     data-id="@item.RoleId">
                                 Edit
                             </button>

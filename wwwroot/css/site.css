@@ -69,7 +69,7 @@ p, a {
 .btn-link.nav-link:focus,
 .form-control:focus,
 .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #001e4a;
 }
 
 .btn-font-size {
@@ -539,9 +539,10 @@ img {
 
     .sidebar .nav-link:hover,
     .sidebar .nav-link.active {
-        background: #eef3ff;
-        color: #0d6efd;
-
+        /*background: #eef3ff;
+        color: #0d6efd;*/
+        background: #406083;
+        color: #ffffff;
     }
 
     .sidebar .nav-link i {
@@ -662,7 +663,7 @@ img {
 .sidebar .dropdown-menu .dropdown-item {
     padding: .6rem 1rem .6rem 2.75rem;
     font-size: 14px;
-    color: #495057;
+    color: #121314;
     display: flex;
     align-items: center;
     gap: .5rem;
@@ -690,8 +691,10 @@ img {
             }
 
 .sidebar .dropdown-item:hover {
-    background: #e9ecef;
-    color: #0d6efd;
+    /* background: #e9ecef;
+    color: #0d6efd;*/
+    background: #4a8bcb;
+    color: #ffffff;
 }
 
 /* Sidebar collapsed (desktop, icon-only) */
@@ -1262,6 +1265,8 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     color: #333;
 }
 
+
+
 .card-footer {
     background: #fff;
     border-top: 1px solid #ececec;
@@ -1278,7 +1283,7 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     }
 
     .card-footer i {
-        color: #12439b;
+        color: #ffffff;
     }
 
 @media(max-width:768px) {
@@ -1311,3 +1316,38 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     display: none !important;
    
 }
+.dropdown-item.active, .dropdown-item:active
+ {
+    color: var(--bs-dropdown-link-active-color);
+    text-decoration: none;
+    background-color: #c6cedb !important;
+}
+.bg-primary {
+    --bs-bg-opacity: 1;
+    background-color: #0878a5 !important;
+}
+
+.border-primary {
+    --bs-border-opacity: 1;
+    border-color: rgb(219 219 219) !important;
+}
+
+.rolemt-1 {
+    margin-top: .10rem !important;
+}
+
+#menuContainer {
+    height: 479px !important;
+    overflow-y: scroll !important;
+}
+
+.form-check-input:checked {
+    background-color: #001e4a !important;
+    border-color: #001e4a !important;
+}
+
+.form-check-input:focus {
+    border-color: #001e4a !important;
+    
+}
+

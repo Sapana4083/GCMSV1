@@ -4,8 +4,8 @@
     ViewData["Title"] = "Role Menu Mapping";
 }
 
-<div class="container">
-    <div class="card shadow">
+<div class="container-fluid">
+    <div class="card shadow mt-3">
 
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">Role Menu Mapping</h4>
@@ -46,9 +46,9 @@
 
                     @foreach (var parent in ViewBag.ParentMenus)
                     {
-                        <div class="card mb-3 border-primary">
+                        <div class="card mb-3 border-primary shadow-sm p-3 mb-5 bg-body rounded">
 
-                            <div class="card-header bg-light">
+                            <div class="card-header bg-light rolemt-1">
 
                                 <div class="form-check">
 
@@ -150,7 +150,7 @@
                 </button>
 
                 <button type="button"
-                        class="btn btn-secondary ms-2"
+                        class="btn btn-danger ms-2"
                         id="btnReset">
 
                     <i class="bi bi-arrow-clockwise"></i>
@@ -320,5 +320,54 @@
 
         });
 
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            $('.menu-check').on('change', function () {
+
+                let isChecked = $(this).prop('checked');
+
+                // ===== ROOT (Master) =====
+                if ($(this).closest('.card-header').length) {
+
+                    $(this)
+                        .closest('.card')
+                        .find('.card-body .menu-check')
+                        .prop('checked', isChecked);
+
+                    return;
+                }
+
+                // ===== CHILD (Comman Master / User Master) =====
+                let section = $(this).closest('.ms-4');
+
+                if (section.length && section.children('.form-check').find('.menu-check')[0] === this) {
+
+                    section.find('.ms-5 .menu-check').prop('checked', isChecked);
+                }
+
+                // ===== UPDATE CHILD PARENT =====
+                $('.ms-4').each(function () {
+
+                    let parent = $(this).children('.form-check').find('.menu-check');
+
+                    let children = $(this).find('.ms-5 .menu-check');
+
+                    parent.prop('checked', children.filter(':checked').length > 0);
+                });
+
+                // ===== UPDATE ROOT (Master) =====
+                $('.card').each(function () {
+
+                    let root = $(this).find('.card-header .menu-check');
+
+                    let allChildren = $(this).find('.card-body .menu-check');
+
+                    root.prop('checked', allChildren.filter(':checked').length > 0);
+                });
+            });
+
+        });
     </script>
 }

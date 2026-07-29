@@ -1102,6 +1102,7 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     border-radius: 24px;
     padding: 5px 14px 5px 6px;
     cursor: pointer;
+    min-width : 160px;
 }
 
 .user-avatar-square {

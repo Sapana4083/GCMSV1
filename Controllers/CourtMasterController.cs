@@ -1,4 +1,5 @@
-﻿using GCMS.Models.Entities;
+﻿using GCMS.Models;
+using GCMS.Models.Entities;
 using GCMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,10 +8,11 @@ namespace GCMS.Controllers
     public class CourtMasterController : Controller
     {
         private readonly IDepartmentService _service;
-
-        public CourtMasterController(IDepartmentService service)
+        private readonly ICourtGroupService _courtGroupService;
+        public CourtMasterController(IDepartmentService service , ICourtGroupService courtGroupService)
         {
             _service = service;
+            _courtGroupService = courtGroupService;
         }
 
         // List Page
@@ -82,5 +84,127 @@ namespace GCMS.Controllers
                 return Json(new { success = false, message = "Delete failed: " + ex.Message });
             }
         }
+
+        #region Court Group List
+
+        public async Task<IActionResult> CourtGroupList(
+            int pageNo = 1,
+            int rowCnt = 1000)
+        {
+            var list = await _courtGroupService.GetAllAsync(pageNo, rowCnt);
+
+            return View(list);
+        }
+
+        #endregion
+
+        #region Get Court Group By Id
+
+        [HttpGet]
+
+        public async Task<IActionResult> GetCourtGroup(long id)
+        {
+            var data = await _courtGroupService.GetByIdAsync(id);
+
+            if (data == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Record not found."
+                });
+            }
+
+            return Json(new
+            {
+                success = true,
+                courtGroupId = data.CourtGroupId,
+                courtGroup = data.CourtGroup,
+                courtGroupCode = data.CourtGroupCode,
+                inActive = data.InActive
+            });
+        }
+
+        #endregion
+
+        #region Save Court Group
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveCourtGroup(CourtGroupMaster model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Invalid Data"
+                });
+            }
+
+            if (model.CourtGroupId == 0)
+            {
+                model.CreatedBy = HttpContext.Session.GetString("Username");
+
+                await _courtGroupService.AddAsync(model);
+            }
+            else
+            {
+                model.ModifiedBy = HttpContext.Session.GetString("Username");
+
+                await _courtGroupService.UpdateAsync(model);
+            }
+
+            return Json(new
+            {
+                success = true,
+                message = "Court Group Saved Successfully."
+            });
+        }
+
+        #endregion
+
+        #region Delete Court Group
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCourtGroup(long id)
+        {
+            try
+            {
+                var model = await _courtGroupService.GetByIdAsync(id);
+
+                if (model == null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Record not found."
+                    });
+                }
+
+                model.ModifiedBy =
+                    HttpContext.Session.GetString("Username") ?? "Admin";
+
+                model.InActive = 1;
+
+                await _courtGroupService.UpdateAsync(model);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Deleted Successfully."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
     }
 }

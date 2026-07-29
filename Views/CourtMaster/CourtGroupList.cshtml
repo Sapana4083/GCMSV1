@@ -1,0 +1,554 @@
+﻿@model List<GCMS.Models.CourtGroupMaster>
+
+@{
+    ViewData["Title"] = "Court Group Master";
+    var sr = 1;
+}
+
+<div class="container-fluid">
+
+    <div class="card shadow-sm border-0">
+
+        <!-- Header -->
+        <div class="card-header bg-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h4 class="mb-0 fw-bold text-primary">
+                    <i class="bi bi-diagram-3-fill me-2"></i>
+                    Court Group Master
+                </h4>
+
+                <div>
+
+                    <button type="button"
+                            id="btnAddCourtGroup"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-plus-circle"></i>
+                        Add Court Group
+
+                    </button>
+
+                    <button type="button"
+                            id="btnPrint"
+                            class="btn btn-secondary ms-2">
+
+                        <i class="bi bi-printer-fill"></i>
+
+                    </button>
+
+                    <button type="button"
+                            id="btnExcel"
+                            class="btn btn-success ms-2">
+
+                        <i class="bi bi-file-earmark-excel-fill"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table id="tblCourtGroup"
+                       class="table table-striped table-hover table-bordered align-middle w-100">
+
+                    <thead class="table-primary">
+
+                        <tr>
+
+                            <th width="70">S.No.</th>
+
+                            <th>Court Group</th>
+
+                            <th width="180">Court Group Code</th>
+
+                            <th width="120">Status</th>
+
+                            <th width="180">Created By</th>
+
+                            <th width="180">Created On</th>
+
+                            <th width="180">Modified By</th>
+
+                            <th width="180">Modified On</th>
+
+                            <th width="120" class="text-center">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td class="text-center">
+                                        @sr
+                                    </td>
+
+                                    <td>
+                                        @item.CourtGroup
+                                    </td>
+
+                                    <td>
+                                        @item.CourtGroupCode
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        @if (item.InActive == 0)
+                                        {
+                                            <span class="badge bg-success px-3">
+                                                Active
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger px-3">
+                                                Inactive
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        @item.CreatedBy
+                                    </td>
+
+                                    <td>
+                                        @(item.CreatedOn?.ToString("dd/MM/yyyy hh:mm tt"))
+                                    </td>
+
+                                    <td>
+                                        @item.ModifiedBy
+                                    </td>
+
+                                    <td>
+                                        @(item.ModifiedOn?.ToString("dd/MM/yyyy hh:mm tt"))
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <button type="button"
+                                                class="btn btn-warning btn-sm edit"
+                                                data-id="@item.CourtGroupId"
+                                                title="Edit">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                                sr++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="9"
+                                    class="text-center text-danger">
+
+                                    No Record Found.
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================================================
+    Court Group Modal
+============================================================ -->
+
+<div class="modal fade"
+     id="courtGroupModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+
+        <div class="modal-content shadow">
+
+            <!-- Header -->
+
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title">
+
+                    <i class="bi bi-diagram-3-fill me-2"></i>
+
+                    Court Group Master
+
+                </h5>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- Body -->
+
+            <div class="modal-body">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       id="CourtGroupId" />
+
+                <div class="row">
+
+                    <!-- Court Group -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Court Group
+                            <span class="text-danger">*</span>
+
+                        </label>
+
+                        <input type="text"
+                               id="CourtGroup"
+                               class="form-control"
+                               maxlength="300"
+                               placeholder="Enter Court Group" />
+
+                        <small id="errCourtGroup"
+                               class="text-danger"></small>
+
+                    </div>
+
+                    <!-- Court Group Code -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Court Group Code
+                            <span class="text-danger">*</span>
+
+                        </label>
+
+                        <input type="text"
+                               id="CourtGroupCode"
+                               class="form-control text-uppercase"
+                               maxlength="10"
+                               placeholder="Enter Code" />
+
+                        <small id="errCourtGroupCode"
+                               class="text-danger"></small>
+
+                    </div>
+
+                    <!-- Status -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+
+                            Status
+
+                        </label>
+
+                        <div class="form-check form-switch fs-5">
+
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="InActive" />
+
+                            <label class="form-check-label fw-bold"
+                                   id="lblStatus"
+                                   for="InActive">
+
+                                Active
+
+                            </label>
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            OFF = Active &nbsp;&nbsp;|&nbsp;&nbsp;
+                            ON = Inactive
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    <i class="bi bi-x-circle"></i>
+
+                    Close
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnSave">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Save
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        //-------------------------------------------------------
+        // Bootstrap Modal
+        //-------------------------------------------------------
+
+        var courtGroupModal = new bootstrap.Modal(
+            document.getElementById("courtGroupModal")
+        );
+
+        //-------------------------------------------------------
+        // DataTable
+        //-------------------------------------------------------
+
+        $(document).ready(function() {
+
+            var table = $("#tblCourtGroup").DataTable({
+
+                responsive: true,
+                autoWidth: false,
+                pageLength: 10,
+
+                lengthMenu: [
+                    [10, 25, 50, 100, -1],
+                    [10, 25, 50, 100, "All"]
+                ],
+
+                dom: 'Bfrtip',
+
+                buttons: [
+                    { extend: 'print', className: 'd-none', title: 'Court Group Master' },
+                    { extend: 'excelHtml5', className: 'd-none', title: 'Court Group Master' }
+                ]
+
+            });
+
+            $("#btnPrint").click(function() {
+                table.button(0).trigger();
+            });
+
+            $("#btnExcel").click(function() {
+                table.button(1).trigger();
+            });
+
+        });
+
+        //-------------------------------------------------------
+        // Add New
+        //-------------------------------------------------------
+
+        $("#btnAddCourtGroup").click(function() {
+
+            $("#CourtGroupId").val("");
+            $("#CourtGroup").val("");
+            $("#CourtGroupCode").val("");
+            $("#InActive").prop("checked", false);
+            $("#lblStatus").text("Active");
+            $("#errCourtGroup").text("");
+            $("#errCourtGroupCode").text("");
+
+            courtGroupModal.show();
+
+        });
+
+        //-------------------------------------------------------
+        // Toggle Active / InActive
+        //-------------------------------------------------------
+
+        $("#InActive").change(function() {
+
+            if ($(this).is(":checked")) {
+                $("#lblStatus").text("Inactive");
+            } else {
+                $("#lblStatus").text("Active");
+            }
+
+        });
+
+        //-------------------------------------------------------
+        // Validate Form
+        //-------------------------------------------------------
+
+        function validateCourtGroup() {
+
+            var isValid = true;
+
+            $("#errCourtGroup").text("");
+            $("#errCourtGroupCode").text("");
+
+            if ($("#CourtGroup").val().trim() === "") {
+                $("#errCourtGroup").text("Court Group is required.");
+                isValid = false;
+            }
+
+            if ($("#CourtGroupCode").val().trim() === "") {
+                $("#errCourtGroupCode").text("Court Group Code is required.");
+                isValid = false;
+            }
+
+            return isValid;
+
+        }
+
+        //-------------------------------------------------------
+        // Save (Add / Update)  --- THIS WAS MISSING
+        //-------------------------------------------------------
+
+        $("#btnSave").click(function() {
+
+            if (!validateCourtGroup()) {
+                return;
+            }
+
+            var model = {
+                CourtGroupId: $("#CourtGroupId").val() || 0,
+                CourtGroup: $("#CourtGroup").val().trim(),
+                CourtGroupCode: $("#CourtGroupCode").val().trim().toUpperCase(),
+                InActive: $("#InActive").is(":checked") ? 1 : 0
+            };
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $("#btnSave").prop("disabled", true);
+
+            $.ajax({
+
+                url: "/CourtMaster/SaveCourtGroup",
+                type: "POST",
+                data: model,
+
+                headers: {
+                    "RequestVerificationToken": token
+                },
+
+                success: function(response) {
+
+                    if (response.success) {
+                        courtGroupModal.hide();
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+
+                },
+
+                error: function() {
+                    alert("Unable to save Court Group.");
+                },
+
+                complete: function() {
+                    $("#btnSave").prop("disabled", false);
+                }
+
+            });
+
+        });
+
+        //-------------------------------------------------------
+        // Edit Record
+        //-------------------------------------------------------
+
+        $(document).on("click", ".edit", function() {
+
+            var id = $(this).data("id");
+
+            $.ajax({
+
+                url: "/CourtMaster/GetCourtGroup",
+                type: "GET",
+                data: { id: id },
+
+                success: function(response) {
+
+                    if (response.success == false) {
+                        alert(response.message);
+                        return;
+                    }
+
+                    $("#CourtGroupId").val(response.courtGroupId);
+                    $("#CourtGroup").val(response.courtGroup);
+                    $("#CourtGroupCode").val(response.courtGroupCode);
+
+                    if (response.inActive == 1) {
+                        $("#InActive").prop("checked", true);
+                        $("#lblStatus").text("Inactive");
+                    } else {
+                        $("#InActive").prop("checked", false);
+                        $("#lblStatus").text("Active");
+                    }
+
+                    $("#errCourtGroup").text("");
+                    $("#errCourtGroupCode").text("");
+
+                    courtGroupModal.show();
+
+                },
+
+                error: function() {
+                    alert("Unable to load Court Group.");
+                }
+
+            });
+
+        });
+
+    </script>
+}

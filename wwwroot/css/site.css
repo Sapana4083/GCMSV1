@@ -50,7 +50,7 @@ body {
 }
 
 p, a {
-    font-size: clamp(14px, 2vw, 17px);
+    font-size: clamp(14px, 1vw, 14px);
 }
 
 .form-floating > .form-control-plaintext::placeholder,
@@ -589,6 +589,8 @@ img {
     width: 100%;
     /*background: #004a81;*/
     background-image: url('../images/headerimg.png');
+    /*background-image: url('../images/headerbanner.png');*/
+    /*background-image: url('../images/headbanner.png');*/
     border-bottom: 1px solid #e9ecef;
     display: flex;
     align-items: center;
@@ -833,7 +835,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-    outline: 3px solid #ffbf47;
+    outline: 3px solid #f8f9fa;
     outline-offset: 2px;
 }
 
@@ -1165,6 +1167,7 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
         color: #12439b;
         font-size: 34px;
         font-weight: 700;
+        text-shadow: 0px 4px 3px rgb(0 0 0 / 28%), 0px 8px 13px rgba(0, 0, 0, 0.1), 0px 18px 23px rgba(0, 0, 0, 0.1);
     }
 
 .dashboard-card {

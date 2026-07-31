@@ -9,7 +9,7 @@
     <link href="~/css/jquery.datatables.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/sidebarstylesheet.css" asp-append-version="true" />
-    
+
     <link rel="stylesheet" href="~/GCMS.styles.css" asp-append-version="true" />
     <link href="~/lib/bootstrap-icon/font/bootstrap-icons-new.css" rel="stylesheet" />
     <link rel="stylesheet"
@@ -17,6 +17,194 @@
     <link rel="stylesheet"
           href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --gcms-navy: #0f2447;
+            --gcms-navy2: #16345f;
+            --gcms-navy3: #1c3f6e;
+            --gcms-navy-deep: #0a1830;
+            --gcms-gold: #c99a3d;
+            --gcms-gold-light: #f0c977;
+        }
+
+        /* ---------- Accessibility bar ---------- */
+        .accessibility-bar {
+            /* background: linear-gradient(90deg, #2a4675, #4e6e9b); */
+            background: linear-gradient(90deg, #233e6d, #293c57);
+        }
+
+            .accessibility-bar .accessibility-label {
+                color: #cfe0f5;
+                font-size: 0.78rem;
+            }
+
+            .accessibility-bar .a11y-btn {
+                background: rgba(255,255,255,0.12);
+                border: 1px solid rgba(255,255,255,0.18);
+                color: #fff;
+                border-radius: 6px;
+                font-size: 0.76rem;
+                padding: 4px 10px;
+                transition: background 0.2s ease;
+            }
+
+                .accessibility-bar .a11y-btn:hover,
+                .accessibility-bar .a11y-btn[aria-pressed="true"] {
+                    background: rgba(255,255,255,0.24);
+                }
+
+            .accessibility-bar .accessibility-divider {
+                color: rgba(255,255,255,0.35);
+            }
+
+        /* User dropdown pill */
+        .user-menu-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            /* background: linear-gradient(135deg, var(--gcms-gold), var(--gcms-gold-light)); */
+            background: linear-gradient(135deg, #f3f8ff, #efede7);
+            border: none;
+            border-radius: 20px;
+            padding: 5px 14px 5px 6px;
+            cursor: pointer;
+            transition: filter 0.2s ease;
+            margin-top: 4px;
+        }
+
+            .user-menu-toggle:hover {
+                filter: brightness(1.06);
+            }
+
+            .user-menu-toggle::after {
+                display: none;
+            }
+
+        .user-avatar-square {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--gcms-navy);
+            /* color: var(--gcms-gold-light); */
+            color:#ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .user-avatar-square svg {
+                width: 15px;
+                height: 15px;
+            }
+
+        .user-name {
+            font-size: 0.99rem;
+            font-weight: 600;
+            color: var(--gcms-navy);
+        }
+
+        .user-dropdown-menu {
+            border: 1px solid #e7ebf0;
+            border-radius: 10px;
+            box-shadow: 0 12px 28px rgba(15,36,71,0.18);
+            padding: 6px 0;
+            margin-top: 8px !important;
+        }
+
+            .user-dropdown-menu .dropdown-header {
+                padding: 10px 16px 6px 16px;
+            }
+
+        .dropdown-user-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--gcms-navy);
+        }
+
+        .dropdown-user-role {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .user-dropdown-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            font-size: 0.87rem;
+        }
+
+            .user-dropdown-menu .dropdown-item:hover {
+                background: #f4f8fb;
+            }
+
+        /* ---------- Topbar ---------- */
+        .topbar
+         {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 22px;
+            /* background: linear-gradient(120deg, #8fa5c9 0%, #466ba1 55%, #68a5f7 100%); */
+            background: #f3f8ff;
+            overflow: hidden;
+        }
+
+            .topbar::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 40%;
+                background: linear-gradient(120deg, transparent, rgba(201,154,61,0.14));
+                pointer-events: none;
+            }
+
+            .topbar .sidebar-toggle-desktop, .topbar .sidebar-toggle-mobile {
+                background: rgb(255 247 247 / 12%);
+                border: 1px solid rgb #3f3c3c61 (63 60 60 / 38%);
+                color: #000000;
+                border-radius: 8px;
+                width: 36px;
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s ease;
+                z-index: 1;
+            }
+
+                .topbar .sidebar-toggle-desktop:hover,
+                .topbar .sidebar-toggle-mobile:hover {
+                    background: rgba(255,255,255,0.22);
+                }
+
+        /* .topbar-title.deepshadow {
+            flex: 1;
+            text-align: center;
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            z-index: 1;
+        } */
+
+        .topbar-title.deepshadow {
+            flex: 1;
+            text-align: center;
+            color: #123b88;
+            font-size: 1.65rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+            z-index: 1;
+        }
+    </style>
 </head>
 <body>
     @{
@@ -42,9 +230,9 @@
             <button type="button" class="a11y-btn" id="spacingToggle" aria-pressed="false">
                 Text Spacing
             </button>
-       
-        <!-- User dropdown - right corner -->
-        <div class="user-menu dropdown">
+
+            <!-- User dropdown - right corner -->
+            <div class="user-menu dropdown">
                 <button class="user-menu-toggle dropdown-toggle" type="button" id="userMenuButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="user-avatar-square">
@@ -53,45 +241,26 @@
                         </svg>
                     </span>
                     <span class="user-name">@(Context.Session.GetString("Username") ?? "N/A")</span>
-                  @*   <svg class="user-caret" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M7 10l5 5 5-5z" />
-                    </svg> *@
                 </button>
 
-            <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" aria-labelledby="userMenuButton">
-                <li class="dropdown-header">
-                    <div class="dropdown-user-name">@ViewBag.UserName</div>
-                    <div class="dropdown-user-role">@ViewBag.UserRole</div>
-                </li>
-                @* <li><hr class="dropdown-divider"></li> *@
+                <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" aria-labelledby="userMenuButton">
+                   @*  <li class="dropdown-header">
+                        <div class="dropdown-user-name">@ViewBag.UserName</div>
+                        <div class="dropdown-user-role">@ViewBag.UserRole</div>
+                    </li> *@
                     <li>
                         <a class="dropdown-item text-dark" href="https://sso.rajasthan.gov.in/signin">
                             <i class="fa-solid fa-circle-arrow-left"></i> Back To SSO
                         </a>
                     </li>
-               @*  <li>
-                    <a class="dropdown-item" href="/Account/Profile">
-                        <i class="fa-solid fa-user-circle"></i> My Profile
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="/Account/ChangePassword">
-                        <i class="fa-solid fa-key"></i> Change Password
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="/Account/Settings">
-                        <i class="fa-solid fa-gear"></i> Settings
-                    </a>
-                </li> *@
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <a class="dropdown-item text-danger" href="/Account/Logout" id="logoutLink">
-                        <i class="fa-solid fa-right-from-bracket"></i> Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item text-danger" href="/Account/Logout" id="logoutLink">
+                            <i class="fa-solid fa-right-from-bracket"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 

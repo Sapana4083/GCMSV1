@@ -14,16 +14,13 @@
 
             <div class="d-flex justify-content-between align-items-center">
 
-                <h4 class="mb-0 fw-bold text-primary">
-                    <i class="bi bi-diagram-3-fill me-2"></i>
-                    Court Group Master
-                </h4>
+                <h4> Court Group Master</h4>
 
                 <div>
 
                     <button type="button"
                             id="btnAddCourtGroup"
-                            class="btn btn-primary">
+                            class="btn btn-primary" title="Click to add new record.">
 
                         <i class="bi bi-plus-circle"></i>
                         Add Court Group
@@ -32,7 +29,7 @@
 
                     <button type="button"
                             id="btnPrint"
-                            class="btn btn-secondary ms-2">
+                            class="btn btn-secondary ms-2" title="Click to print." >
 
                         <i class="bi bi-printer-fill"></i>
 
@@ -40,7 +37,7 @@
 
                     <button type="button"
                             id="btnExcel"
-                            class="btn btn-success ms-2">
+                            class="btn btn-success ms-2" title="Click to download excel.">
 
                         <i class="bi bi-file-earmark-excel-fill"></i>
 
@@ -144,9 +141,9 @@
                                     <td class="text-center">
 
                                         <button type="button"
-                                                class="btn btn-warning btn-sm edit"
+                                                class="btn btn-default waves-effect waves-light edit"
                                                 data-id="@item.CourtGroupId"
-                                                title="Edit">
+                                                title="Edit" >
 
                                             <i class="bi bi-pencil-square"></i>
 

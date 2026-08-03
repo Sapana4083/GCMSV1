@@ -615,11 +615,11 @@ namespace GCMS.Repository
         {
             return await _context.DepartmentMasters
                .Where(x => x.IsActive == "T")
-               .OrderBy(x => x.DeptNameEn)
+               .OrderBy(x => x.DepartmentName)
                .Select(x => new SelectListItem
                {
-                   Value = x.DepartmentMastId.ToString(),
-                   Text = x.DeptNameEn
+                   Value = x.DepartmentId.ToString(),
+                   Text = x.DepartmentName
                })
                .ToListAsync();
         }

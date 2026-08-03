@@ -516,16 +516,16 @@ namespace GCMS.Repository
             // Next
         }
         public async Task<IEnumerable<SelectListItem>> GetCaseTypesAsync()
-        {
+        {           
             return await _context.CaseTypes
-                .Where(x => x.Cancel == "F")
-                .OrderBy(x => x.CaseTypeEng)
-                .Select(x => new SelectListItem
-                {
-                    Value = x.CaseTypeMastId.ToString(),
-                    Text = x.CaseTypeEng
-                })
-                .ToListAsync();
+      .Where(x => x.Cancel == "F")
+      .OrderBy(x => x.CaseTypeEng)
+      .Select(x => new SelectListItem
+        {
+              Value = x.CaseTypeMastId.ToString(),
+              Text = x.CaseTypeEng
+        })
+      .ToListAsync();
         }
         public async Task<IEnumerable<SelectListItem>> GetCaseSubjectsAsync()
         {
@@ -611,7 +611,19 @@ namespace GCMS.Repository
                 })
                 .ToListAsync();
         }
+        public async Task<IEnumerable<SelectListItem>> GetOrderTypesAsync()
+        {
+            return await _context.DepartmentMasters
+               .Where(x => x.IsActive == "T")
+               .OrderBy(x => x.DeptNameEn)
+               .Select(x => new SelectListItem
+               {
+                   Value = x.DepartmentMastId.ToString(),
+                   Text = x.DeptNameEn
+               })
+               .ToListAsync();
+        }
 
-       
+      
     }
 }

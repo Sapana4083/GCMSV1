@@ -58,6 +58,8 @@ namespace GCMS.Repository.Interfaces
         Task<IEnumerable<SelectListItem>> GetDesignationsAsync();
 
         Task<IEnumerable<SelectListItem>> GetAdvocatesAsync();
+
+        Task<IEnumerable<SelectListItem>> GetOrderTypesAsync();
     //Task<CaseRegistrationWizardViewModel?> GetCaseRegistrationAsync(long caseId);
     }
 }

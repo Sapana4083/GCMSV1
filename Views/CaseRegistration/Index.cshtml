@@ -65,7 +65,20 @@
         color: red;
     }
 
-    
+   .save-btn-container {
+        position: fixed;
+        right: 65px;
+        z-index: 999;
+    }
+
+       .btn-save-next {
+        width: 190px;
+        height: 40px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.2);
+    }
 
 </style>
 <form id="frmCaseRegistration">
@@ -131,7 +144,7 @@
             <div class="card-body">
 
                 <div class="row">
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="InstitutionDate"></label>
 
@@ -145,7 +158,7 @@
                               class="text-danger"></span>
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="CaseNumber"></label>
 
@@ -153,32 +166,41 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-2 mb-4">
+                        <div class="is-impugned-container">
+                            <label class="form-label fw-semibold mb-2">Is Impungned</label>
+
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="IsImpungned">
+                            </div>
+                        </div>
+                    </div>
+                 @*    <div class="col-md-4 mb-4">
 
                         <label asp-for="ManualCaseNumber"></label>
 
                         <input asp-for="ManualCaseNumber"
                                class="form-control" />
 
-                    </div>
-                    <div class="col-md-3 mb-3">
+                    </div> *@
+                 @*    <div class="col-md-4 mb-4">
 
                         <label asp-for="OrderNumber"></label>
 
                         <input asp-for="OrderNumber"
                                class="form-control" />
 
-                    </div>
-                    <div class="col-md-3 mb-3">
+                    </div> *@
+                    <div class="col-md-4 mb-4">
 
-                        <label asp-for="DateOfOrder"></label>
+                        <label asp-for="DateofImpugnedOrder"></label>
 
-                        <input asp-for="DateOfOrder"
+                        <input asp-for="DateofImpugnedOrder"
                                class="form-control"
                                type="date" />
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="OrderIssuedById"></label>
 
@@ -191,15 +213,23 @@
                         </select>
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                @* <div class="col-md-4 mb-4">
 
-                        <label asp-for="CourtCode"></label>
+                    <label asp-for="CourtCode"></label>
 
-                        <input asp-for="CourtCode"
+                    <input asp-for="CourtCode"
+                            class="form-control" />
+
+                </div> *@
+                    <div class="col-md-4 mb-4">
+
+                        <label asp-for="OldCaseNumber"></label>
+
+                        <input asp-for="OldCaseNumber"
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="CaseTypeId"></label>
 
@@ -217,7 +247,7 @@
                               class="text-danger"></span>
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="CaseSubjectId"></label>
 
@@ -235,7 +265,7 @@
                               class="text-danger"></span>
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="CasePurposeId"></label>
 
@@ -253,7 +283,7 @@
                               class="text-danger"></span>
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="HearingDate"></label>
 
@@ -262,7 +292,7 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="BenchTypeId"></label>
 
@@ -275,7 +305,7 @@
                         </select>
 
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="LinkedCaseNumber"></label>
 
@@ -283,19 +313,18 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-3 mb-3">
-
-                        <label asp-for="OldCaseNumber"></label>
-
-                        <input asp-for="OldCaseNumber"
-                               class="form-control" />
-
+                    <div class="col-md-4 mb-4">
+                    <div class="save-btn-container">
+                        <button type="submit" class="btn btn-primary btn-save-next">
+                            SAVE & NEXT <i class="bi bi-chevron-double-right"></i>
+                        </button>
+                    </div>
                     </div>
                 </div>
 
-                <hr />
+               
 
-                <div class="text-end">
+               @*  <div class="text-end">
 
                     <button type="button"
                             id="btnStep1"
@@ -305,7 +334,7 @@
 
                     </button>
 
-                </div>
+                </div> *@
 
             </div>
 
@@ -325,7 +354,7 @@
             <div class="card-body">
 
                 <div class="row">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="AppellantName"></label>
 
@@ -333,7 +362,7 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="DesignationId"></label>
 
@@ -346,7 +375,7 @@
                         </select>
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="DistrictId"></label>
 
@@ -359,7 +388,7 @@
                         </select>
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="MobileNumber"></label>
 
@@ -367,7 +396,7 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="EmployeeId"></label>
 
@@ -375,7 +404,7 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="AdvocateId"></label>
 
@@ -388,7 +417,7 @@
                         </select>
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="AdvocateEmail"></label>
 
@@ -396,7 +425,7 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="AdvocateMobile"></label>
 
@@ -446,7 +475,7 @@
             <div class="card-body">
 
                 <div class="row">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="DepartmentId"></label>
 
@@ -459,7 +488,7 @@
                         </select>
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="RespondentAdvocateId"></label>
 
@@ -472,7 +501,7 @@
                         </select>
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="RespondentAdvocateEmail"></label>
 
@@ -480,7 +509,7 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="RespondentAdvocateMobile"></label>
 
@@ -530,7 +559,7 @@
             <div class="card-body">
 
                 <div class="row">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="PrivatePartyName"></label>
 
@@ -538,7 +567,7 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="PrivateDesignation"></label>
 
@@ -546,7 +575,7 @@
                                class="form-control" />
 
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-4">
 
                         <label asp-for="PrivateAdvocateName"></label>
 

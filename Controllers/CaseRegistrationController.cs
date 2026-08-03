@@ -55,9 +55,9 @@ namespace GCMS.Controllers
                 {
                     InstitutionDate = model.InstitutionDate,
                     CaseNo = model.CaseNumber,
-                    ManualCaseNo = model.ManualCaseNumber,
+                    //ManualCaseNo = model.ManualCaseNumber,
                     OrderNo = model.OrderNumber,
-                    DateOfOrder = model.DateOfOrder,
+                    DateOfOrder = model.DateofImpugnedOrder,
                     OrderIssuedById = model.OrderIssuedById,
                     CourtCode = model.CourtCode,
                     CaseTypeId = model.CaseTypeId,
@@ -240,6 +240,8 @@ namespace GCMS.Controllers
 
         private async Task BindDropdowns(CaseRegistrationWizardViewModel vm)
         {
+            vm.OrderIssuedByList = await _caseService.GetOrderTypesAsync();
+
             vm.CaseTypes = await _caseService.GetCaseTypesAsync();
 
             vm.CaseSubjects = await _caseService.GetCaseSubjectsAsync();
@@ -255,8 +257,6 @@ namespace GCMS.Controllers
             vm.Advocates = await _caseService.GetAdvocatesAsync();
 
             vm.Departments = await _caseService.GetDepartmentsAsync();
-        }
-
-        
+        }        
     }
 }

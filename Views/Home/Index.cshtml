@@ -12,6 +12,318 @@
         font-family: 'Segoe UI',sans-serif;
     }
 
+    .page-title {
+        animation: dropIn 0.6s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    @@keyframes dropIn {
+        from {
+            opacity: 0;
+            transform: translateY(-16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .section-title {
+        animation: fadeUp 0.6s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    @@keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card-body-dashboard {
+        display: flex;
+        align-items: center;
+        padding: 26px 22px 18px 22px;
+        gap: 18px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ---------- Expressive, colorful card design ---------- */
+
+    .dashboard-card {
+        position: relative;
+        overflow: hidden;
+        border: none;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 10px 24px rgba(20,40,90,0.10);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        animation: cardIn 0.5s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .row.g-4 > div:nth-child(1) .dashboard-card {
+        animation-delay: 0.05s;
+    }
+
+    .row.g-4 > div:nth-child(2) .dashboard-card {
+        animation-delay: 0.12s;
+    }
+
+    .row.g-4 > div:nth-child(3) .dashboard-card {
+        animation-delay: 0.19s;
+    }
+
+    .row.g-4 > div:nth-child(4) .dashboard-card {
+        animation-delay: 0.26s;
+    }
+
+    @@keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 22px 40px rgba(20,40,90,0.20);
+    }
+
+    /* Big soft color wash behind each card, unique per type */
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -30%;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        opacity: 0.16;
+        z-index: 0;
+        transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+
+    .dashboard-card:hover::before {
+        transform: scale(1.25);
+        opacity: 0.24;
+    }
+
+    /* Top gradient accent bar */
+    .dashboard-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        z-index: 1;
+    }
+
+    .dashboard-card.blue::before {
+        background: radial-gradient(circle, #2f6fe0, transparent 70%);
+    }
+
+    .dashboard-card.blue::after {
+        background: linear-gradient(90deg, #1a4fc4, #5b9bff);
+    }
+
+    .dashboard-card.red::before {
+        background: radial-gradient(circle, #e0374a, transparent 70%);
+    }
+
+    .dashboard-card.red::after {
+        background: linear-gradient(90deg, #c41f34, #ff7a89);
+    }
+
+    .dashboard-card.green::before {
+        background: radial-gradient(circle, #17a879, transparent 70%);
+    }
+
+    .dashboard-card.green::after {
+        background: linear-gradient(90deg, #0d8a63, #5be0ac);
+    }
+
+    .dashboard-card.cyan::before {
+        background: radial-gradient(circle, #14b8cc, transparent 70%);
+    }
+
+    .dashboard-card.cyan::after {
+        background: linear-gradient(90deg, #0f9aab, #7be7f2);
+    }
+
+    .dashboard-card .icon-box {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.5rem;
+        color: #fff;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .dashboard-card.blue .icon-box {
+        background: linear-gradient(135deg, #2f6fe0, #6fa3ff);
+    }
+
+    .dashboard-card.red .icon-box {
+        background: linear-gradient(135deg, #e0374a, #ff7f8c);
+    }
+
+    .dashboard-card.green .icon-box {
+        background: linear-gradient(135deg, #17a879, #5be0ac);
+    }
+
+    .dashboard-card.cyan .icon-box {
+        background: linear-gradient(135deg, #14b8cc, #7be7f2);
+    }
+
+    .dashboard-card:hover .icon-box {
+        transform: scale(1.1) rotate(-6deg);
+    }
+
+    .card-number {
+        font-size: 1.9rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .dashboard-card.blue .card-number {
+        color: #1a4fc4;
+    }
+
+    .dashboard-card.red .card-number {
+        color: #c41f34;
+    }
+
+    .dashboard-card.green .card-number {
+        color: #0d8a63;
+    }
+
+    .dashboard-card.cyan .card-number {
+        color: #0f9aab;
+    }
+
+    .card-text {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #5b6b7d;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-top: 3px;
+    }
+
+    .dashboard-card .card-footer {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 22px;
+        border-top: 1px solid rgba(0,0,0,0.06);
+        background: rgba(0,0,0,0.015);
+    }
+
+        .dashboard-card .card-footer a {
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: gap 0.2s ease;
+        }
+
+    .dashboard-card.blue .card-footer a {
+        color: #1a4fc4;
+    }
+
+    .dashboard-card.red .card-footer a {
+        color: #c41f34;
+    }
+
+    .dashboard-card.green .card-footer a {
+        color: #0d8a63;
+    }
+
+    .dashboard-card.cyan .card-footer a {
+        color: #0f9aab;
+    }
+
+    .dashboard-card .card-footer i.fas.fa-arrow-right {
+        transition: transform 0.2s ease;
+    }
+
+    .dashboard-card.blue .card-footer i {
+        color: #1a4fc4;
+    }
+
+    .dashboard-card.red .card-footer i {
+        color: #c41f34;
+    }
+
+    .dashboard-card.green .card-footer i {
+        color: #0d8a63;
+    }
+
+    .dashboard-card.cyan .card-footer i {
+        color: #0f9aab;
+    }
+
+    .dashboard-card:hover .card-footer a {
+        gap: 8px;
+    }
+
+    .dashboard-card:hover .card-footer i.fas.fa-arrow-right {
+        transform: translateX(4px);
+    }
+
+    /* Progress bar showing each stat's share of total registrations */
+    .stat-progress-track {
+        position: relative;
+        z-index: 1;
+        height: 6px;
+        border-radius: 4px;
+        background: rgba(0,0,0,0.06);
+        margin: 0 22px 16px 22px;
+        overflow: hidden;
+    }
+
+    .stat-progress-fill {
+        height: 100%;
+        border-radius: 4px;
+        width: 0%;
+        transition: width 1.1s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .dashboard-card.blue .stat-progress-fill {
+        background: linear-gradient(90deg, #1a4fc4, #6fa3ff);
+    }
+
+    .dashboard-card.red .stat-progress-fill {
+        background: linear-gradient(90deg, #c41f34, #ff7f8c);
+    }
+
+    .dashboard-card.green .stat-progress-fill {
+        background: linear-gradient(90deg, #0d8a63, #5be0ac);
+    }
+
+    .dashboard-card.cyan .stat-progress-fill {
+        background: linear-gradient(90deg, #0f9aab, #7be7f2);
+    }
 
 </style>
 
@@ -23,6 +335,12 @@
 
     @foreach (var court in Model)
     {
+        var pendingPct = court.RegisteredCases > 0
+        ? Math.Round((double)court.PendingCases / court.RegisteredCases * 100, 0)
+        : 0;
+        var decidedPct = court.RegisteredCases > 0
+        ? Math.Round((double)court.Decided / court.RegisteredCases * 100, 0)
+        : 0;
 
         <div class="section-title">
             <span>@court.CourtName.ToUpper()</span>
@@ -34,16 +352,14 @@
 
                 <div class="dashboard-card blue">
 
-                    <div class="card-body">
+                    <div class="card-body-dashboard">
 
                         <div class="icon-box">
                             <i class="bi bi-reception-4"></i>
                         </div>
 
                         <div>
-                            <div class="card-number">
-                                @court.RegisteredCases
-                            </div>
+                            <div class="card-number" data-count="@court.RegisteredCases">0</div>
 
                             <div class="card-text">
                                 Total Registration
@@ -51,6 +367,8 @@
                         </div>
 
                     </div>
+
+                    <div class="stat-progress-track"><div class="stat-progress-fill" data-target="100"></div></div>
 
                     <div class="card-footer">
 
@@ -68,16 +386,14 @@
 
                 <div class="dashboard-card red">
 
-                    <div class="card-body">
+                    <div class="card-body-dashboard">
 
                         <div class="icon-box">
                             <i class="bi bi-reception-3"></i>
                         </div>
 
                         <div>
-                            <div class="card-number">
-                                @court.PendingCases
-                            </div>
+                            <div class="card-number" data-count="@court.PendingCases">0</div>
 
                             <div class="card-text">
                                 Total Pending Cases
@@ -85,6 +401,8 @@
                         </div>
 
                     </div>
+
+                    <div class="stat-progress-track"><div class="stat-progress-fill" data-target="@pendingPct"></div></div>
 
                     <div class="card-footer">
 
@@ -102,16 +420,14 @@
 
                 <div class="dashboard-card green">
 
-                    <div class="card-body">
+                    <div class="card-body-dashboard">
 
                         <div class="icon-box">
                             <i class="bi bi-reception-2"></i>
                         </div>
 
                         <div>
-                            <div class="card-number">
-                                @court.Decided
-                            </div>
+                            <div class="card-number" data-count="@court.Decided">0</div>
 
                             <div class="card-text">
                                 Total Decided Cases
@@ -119,6 +435,8 @@
                         </div>
 
                     </div>
+
+                    <div class="stat-progress-track"><div class="stat-progress-fill" data-target="@decidedPct"></div></div>
 
                     <div class="card-footer">
 
@@ -136,16 +454,14 @@
 
                 <div class="dashboard-card cyan">
 
-                    <div class="card-body">
+                    <div class="card-body-dashboard">
 
                         <div class="icon-box">
                             <i class="bi bi-person-fill"></i>
                         </div>
 
                         <div>
-                            <div class="card-number">
-                                @court.Users
-                            </div>
+                            <div class="card-number" data-count="@court.Users">0</div>
 
                             <div class="card-text">
                                 Total Users
@@ -153,6 +469,8 @@
                         </div>
 
                     </div>
+
+                    <div class="stat-progress-track"><div class="stat-progress-fill" data-target="100"></div></div>
 
                     <div class="card-footer">
 
@@ -171,3 +489,35 @@
     }
 
 </div>
+
+<script>
+    // Animated count-up for every stat value on load
+    document.querySelectorAll('.card-number[data-count]').forEach(function (el) {
+        var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+        var duration = 1100;
+        var startTime = null;
+
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target).toLocaleString();
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                el.textContent = target.toLocaleString();
+            }
+        }
+        requestAnimationFrame(step);
+    });
+
+    // Animate progress bar fills on load
+    window.addEventListener('load', function () {
+        document.querySelectorAll('.stat-progress-fill').forEach(function (bar) {
+            var target = bar.getAttribute('data-target') || 0;
+            setTimeout(function () {
+                bar.style.width = target + '%';
+            }, 150);
+        });
+    });
+</script>

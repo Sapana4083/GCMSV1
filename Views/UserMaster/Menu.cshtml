@@ -4,9 +4,9 @@
     ViewData["Title"] = "Menu Master";
 }
 
-<div class="container">
+<div class="container-fluid">
 
-    <div class="card shadow">
+    <div class="card shadow mt-3">
 
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">
@@ -204,7 +204,7 @@
 
             <div class="card-footer text-end">
 
-                <button class="btn btn-success"
+                <button class="btn btn-primary"
                         id="btnSubmit">
 
                     <i class="bi bi-check-circle"></i>
@@ -213,7 +213,7 @@
 
                 </button>
 
-                <button class="btn btn-secondary"
+                <button class="btn btn-danger"
                         type="button"
                         id="btnReset">
 
@@ -233,7 +233,7 @@
 
                     <tr>
 
-                        <th width="70">S.No.</th>
+                        <th width="50">S.No.</th>
 
                         <th>Menu Name</th>
 
@@ -301,7 +301,7 @@
 
                             <td>
 
-                                <button class="btn btn-warning btn-sm edit"
+                                <button class="btn btn-default waves-effect waves-light edit"
                                         data-id="@item.MenuId">
 
                                     <i class="bi bi-pencil"></i>

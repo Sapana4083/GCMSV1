@@ -5,111 +5,391 @@
 }
 
 <style>
-    .cardheadermargin {
-        margin-top:200px;
+    :root {
+        --navy: #0f2447;
+        --navy2: #16345f;
+        --gold: #c99a3d;
+        --gold-light: #f0c977;
+        --blue: #3aa0e8;
+    }
+
+    html, body {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        margin: 0;
+        overflow-x: hidden;
+        background: linear-gradient(125deg, var(--navy) 0%, var(--navy2) 45%, #1c3f6e 70%, #0a1830 100%);
+        background-size: 300% 300%;
+        animation: bgShift 16s ease infinite;
+    }
+
+    @@keyframes bgShift {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .login-page-wrapper {
+        position: relative;
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 40px 16px;
+    }
+
+    /* Floating animated accent orbs */
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(50px);
+        opacity: 0.35;
+        animation: float 12s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .orb1 {
+        width: 380px;
+        height: 380px;
+        background: var(--gold);
+        top: -120px;
+        left: -100px;
+        animation-duration: 14s;
+    }
+
+    .orb2 {
+        width: 320px;
+        height: 320px;
+        background: var(--blue);
+        bottom: -140px;
+        right: -100px;
+        animation-duration: 18s;
+        animation-delay: 2s;
+    }
+
+    .orb3 {
+        width: 220px;
+        height: 220px;
+        background: #7db8ff;
+        top: 55%;
+        left: 4%;
+        animation-duration: 10s;
+        animation-delay: 1s;
+        opacity: 0.2;
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0) translateX(0) scale(1);
+        }
+
+        33% {
+            transform: translateY(-30px) translateX(20px) scale(1.08);
+        }
+
+        66% {
+            transform: translateY(20px) translateX(-15px) scale(0.95);
+        }
+    }
+
+    /* Card */
+    .login-card-outer {
+        position: relative;
+        z-index: 5;
+        width: 400px;
+        max-width: 92vw;
+        padding: 2px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, var(--gold-light), var(--blue), var(--gold-light));
+        background-size: 220% 220%;
+        animation: borderGlow 6s ease infinite;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+    }
+
+    @@keyframes borderGlow {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .card.login-card {
+        background: rgba(255,255,255,0.97);
+        border: none;
+        border-radius: 20px;
+        padding: 30px 32px 26px 32px;
+        animation: cardIn 0.7s cubic-bezier(.2,.8,.2,1) both;
+        box-shadow: none;
+    }
+
+    @@keyframes cardIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px) scale(0.98);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .login-card img {
+        max-height: 64px;
+    }
+
+    .login-card hr {
+        border-top: 1px solid #e7ebf0;
+        margin: 16px 0 18px 0;
+    }
+
+    .signin-title {
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+        .signin-title::after {
+            content: '';
+            display: block;
+            width: 46px;
+            height: 3px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--blue));
+            margin: 8px auto 0 auto;
+        }
+
+    .login-card label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #33424f;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .login-card .form-control {
+        border: 1.5px solid #dde3ea;
+        border-radius: 10px;
+        background: #fafbfc;
+        padding: 11px 14px;
+        font-size: 0.92rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+        .login-card .form-control:focus {
+            border-color: var(--blue);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(58,160,232,0.15);
+        }
+
+    .login-card .input-group .form-control {
+        border-radius: 10px 0 0 10px;
+        border-right: none;
+    }
+
+    .login-card .input-group-text {
+        background: #fafbfc;
+        border: 1.5px solid #dde3ea;
+        border-left: none;
+        border-radius: 0 10px 10px 0;
+        color: #9aa7b3;
+        transition: color 0.2s ease;
+    }
+
+        .login-card .input-group-text:hover {
+            color: var(--blue);
+        }
+
+    .loginbtn {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 0;
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        background: linear-gradient(120deg, var(--navy), var(--blue), var(--navy)) !important;
+        background-size: 220% 220%;
+        animation: btnGrad 5s ease infinite;
+        box-shadow: 0 10px 22px rgba(58,160,232,0.35);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        position: relative;
+    }
+
+        .loginbtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(58,160,232,0.45);
+        }
+
+        .loginbtn:active {
+            transform: translateY(0);
+        }
+
+    @@keyframes btnGrad {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    #loader {
+        position: absolute;
+        inset: 0;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15,36,71,0.85);
+        border-radius: 10px;
+    }
+
+    .footer-note {
+        text-align: center;
+        font-size: 0.72rem;
+        color: #9aa7b3;
+        margin-top: 18px;
+        letter-spacing: 0.2px;
+    }
+
+    /* Themed inline error alert */
+    .login-card .alert-danger {
+        background: linear-gradient(120deg, #fff4f4, #fff);
+        border: 1px solid #f3c8c8;
+        border-left: 4px solid #d6455a;
+        color: #8a2b3a;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        padding: 12px 14px;
+    }
+
+    /* Themed toast */
+    .toast-container .toast.text-bg-danger {
+        background: linear-gradient(120deg, var(--navy), var(--navy2)) !important;
+        border: 1px solid var(--gold);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+    }
+
+    .toast-container .toast .toast-header {
+        background: rgba(255,255,255,0.06);
+        color: var(--gold-light);
+        border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+        .toast-container .toast .toast-header .btn-close {
+            filter: invert(1) grayscale(1) brightness(1.8);
+        }
+
+    .toast-container .toast .toast-body {
+        color: #fdeee0;
+        font-size: 0.85rem;
     }
 </style>
-<div class="container">
-    <div class="row justify-content-center align-items-center ">
-        <div class="col-md-6 col-xl-4">
-           
-            <div class="card shadow inline cardheadermargin">
-                @* <div class="card-header text-center">
-                   
-                 
-                </div> *@
-                
-                <div class="card-body ">
-                    <div class="text-center my-1">
-                        <img src="~/images/gcms_logo.png" />
-                    </div>
-                    <hr />
-                    <div class="text-bold text-center fw-boldest">
-                        <span >Sign In</span>
-                    </div>
-                    <form id="loginForm"  method="post">
-                        <div asp-validation-summary="ModelOnly"
-                             class="text-danger mb-3">
-                        </div>
-                        <div class="mb-3">
-                            <label>User Name</label>
-                            <input asp-for="UserName"
-                                   class="form-control" />
-                            <span asp-validation-for="UserName"
-                                  class="text-danger">
-                            </span>
-                        </div>
 
-                        <div class="mb-3">
-                            <label>Password</label>
-                            <div class="input-group">
-                                <input asp-for="Password"
-                                       type="password"
-                                       id="password"
-                                       class="form-control" />
+<div class="login-page-wrapper">
 
-                                <span class="input-group-text"
-                                      id="togglePassword"
-                                      style="cursor:pointer;">
-                                    <i class="bi bi-eye"></i>
-                                </span>
-                            </div>
-                            <span asp-validation-for="Password"
-                                  class="text-danger">
-                            </span>
-                        </div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
 
-                        <button type="submit" id="btnLogin"
-                                class="loginbtn btn btn-primary w-100 mt-3">
-                            Login
-                            <div id="loader" style="display:none;">
-                                <div class="loader-content">
-                                    <div class="spinner-border text-dark"></div>
-                                </div>
-                            </div>
-                        </button>
-                       
-                       
-                    </form>
+    <div class="login-card-outer">
+        <div class="card login-card">
+            <div class="card-body p-0">
 
-                    @if (TempData["Error"] != null)
-                    {
-                        <div class="alert alert-danger my-3">
-                            @TempData["Error"]
-                        </div>
-                    }
+                <div class="text-center my-1">
+                    <img src="~/images/gcms_logo.png" />
                 </div>
-            </div>
+                <hr />
 
+                <div class="signin-title">Sign In</div>
+
+                <form id="loginForm" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label>User Name</label>
+                        <input asp-for="UserName" class="form-control" placeholder="Enter your user name" autocomplete="username" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <div class="input-group">
+                            <input asp-for="Password" type="password" id="password" class="form-control" placeholder="Enter your password" autocomplete="current-password" />
+                            <span class="input-group-text" id="togglePassword" style="cursor:pointer;">
+                                <i class="bi bi-eye"></i>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" id="btnLogin" class="loginbtn btn btn-primary w-100 mt-3">
+                        Login
+                        <div id="loader" style="display:none;">
+                            <div class="loader-content">
+                                <div class="spinner-border text-light"></div>
+                            </div>
+                        </div>
+                    </button>
+
+                </form>
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger my-3">
+                        @TempData["Error"]
+                    </div>
+                }
+
+                <div class="footer-note">Secure Access &middot; Judiciary Portal</div>
+
+            </div>
         </div>
     </div>
+
 </div>
 
 @if (TempData["Error"] != null)
 {
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-
-        <div id="loginToast"
-             class="toast text-bg-danger"
-             role="alert">
-
+        <div id="loginToast" class="toast text-bg-danger" role="alert">
             <div class="toast-header">
-                <strong class="me-auto">
-                    Login Failed
-                </strong>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="toast">
-                </button>
+                <strong class="me-auto">Login Failed</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
-
             <div class="toast-body">
                 @TempData["Error"]
             </div>
-
         </div>
-
     </div>
 }
 
@@ -117,13 +397,24 @@
     <script>
         $(document).ready(function () {
 
+            $("#togglePassword").click(function () {
+                var pw = $("#password");
+                var icon = $(this).find("i");
+                if (pw.attr("type") === "password") {
+                    pw.attr("type", "text");
+                    icon.removeClass("bi-eye").addClass("bi-eye-slash");
+                } else {
+                    pw.attr("type", "password");
+                    icon.removeClass("bi-eye-slash").addClass("bi-eye");
+                }
+            });
+
             $("#btnLogin").click(function () {
-               
+
                 var userName = $("#UserName").val();
                 var password = $("#Password").val();
 
                 if (userName === "" || password === "") {
-                    //alert("Please enter Username and Password");
                     return;
                 }
 
@@ -143,23 +434,15 @@
                         $("#loader").hide();
 
                         if (response.success) {
-
-                            window.location.href =
-                                response.redirectUrl;
-
+                            window.location.href = response.redirectUrl;
                         } else {
-
                             showToast(response.message);
-
                         }
                     },
 
                     error: function () {
-
                         $("#loader").hide();
-
-                        showToast(
-                            "Something went wrong.");
+                        showToast("Something went wrong.");
                     }
                 });
             });
@@ -167,5 +450,3 @@
         });
     </script>
 }
-
-

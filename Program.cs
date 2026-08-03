@@ -59,6 +59,12 @@ builder.Services.AddScoped<ISdoRepository, SdoRepository>();
 builder.Services.AddScoped<ISdoService, SdoService>();
 builder.Services.AddScoped<ICourtDashboardRepository, CourtDashboardRepository>();
 
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+builder.Services.AddScoped<ICourtGroupRepository,CourtGroupRepository>();
+builder.Services.AddScoped<ICourtGroupService,CourtGroupService>();
+
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<ILinkedCaseFamilyRepository, LinkedCaseFamilyRepository>();

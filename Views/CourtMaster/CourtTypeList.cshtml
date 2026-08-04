@@ -1,0 +1,645 @@
+﻿@model List<GCMS.Models.CourtTypeMaster>
+
+@{
+    ViewData["Title"] = "Court Type Master";
+    var srNo = 1;
+}
+<div class="container-fluid bg-light rounded-4 shadow m-3 py-4 px-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+
+        <h4 class="mb-0">
+            Court Type Master
+        </h4>
+
+        <div class="d-flex gap-2">
+
+            <button type="button"
+                    class="btn btn-primary"
+                    id="btnAddCourtType">
+
+                <i class="bi bi-plus-circle"></i>
+                Add Court Type
+
+            </button>
+
+            <button class="btn btn-secondary"
+                    id="btnPrint">
+
+                <i class="bi bi-printer-fill"></i>
+
+            </button>
+
+            <button class="btn btn-success"
+                    id="btnExcel">
+
+                <i class="bi bi-file-earmark-excel"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table id="tblCourtType"
+               class="table table-bordered table-striped align-middle">
+
+            <thead class="table-primary">
+
+                <tr>
+
+                    <th width="60">S.No.</th>
+
+                    <th>Department</th>
+
+                    <th>Court Group</th>
+
+                    <th>Court Category</th>
+
+                    <th>Court Type</th>
+
+                    <th>Court Details</th>
+
+                    <th>Hierarchy Level</th>
+
+                    <th>Display Order</th>
+
+                    <th>Status</th>
+
+                    <th width="120">Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@srNo</td>
+
+                        <td>
+                            @(ViewBag.DepartmentList != null
+                                ? ((IEnumerable<SelectListItem>)ViewBag.DepartmentList)
+                                    .FirstOrDefault(d => d.Value == item.DepartId?.ToString())?.Text
+                                : "")
+                        </td>
+
+                        <td>
+                            @{
+                                var group = ((IEnumerable<SelectListItem>)ViewBag.GroupList)
+                                    .FirstOrDefault(x => x.Value == item.CourtGroupCode);
+                            }
+                            @(group?.Text ?? "")
+                        </td>
+
+                        <td>
+                            @(ViewBag.CourtCategoryList != null
+                                ? ((IEnumerable<SelectListItem>)ViewBag.CourtCategoryList)
+                                    .FirstOrDefault(c => c.Value == item.CourtCategory?.ToString())?.Text
+                                : "")
+                        </td>
+
+                        <td>@item.CourtType</td>
+
+                        <td>@item.CourtTypeName</td>
+
+                        <td>@item.HierarchyLevel</td>
+
+                        <td>@item.DispOrder</td>
+
+                        <td>
+                            @if (item.InActive == "F" || string.IsNullOrEmpty(item.InActive))
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactive</span>
+                            }
+                        </td>
+
+                        <td>
+                            <button type="button"
+                                    class="btn btn-info btn-sm edit"
+                                    data-id="@item.CourtTypeMastId">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+
+                    srNo++;
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+<!-- Bootstrap Modal -->
+<div class="modal fade"
+     id="courtTypeModal"
+     tabindex="-1"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-xl">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="courtTypeModalTitle">Add Court Type</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="frmCourtType">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" id="CourtTypeMastId" name="CourtTypeMastId" />
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Department Name <span class="text-danger">*</span></label>
+                            <select id="DepartId" name="DepartId" class="form-select">
+                                <option value="">Select Department</option>
+                                @if (ViewBag.DepartmentList != null)
+                                {
+                                    foreach (var d in (IEnumerable<SelectListItem>)ViewBag.DepartmentList)
+                                    {
+                                        <option value="@d.Value">@d.Text</option>
+                                    }
+                                }
+                            </select>
+                            <span class="text-danger" id="errDepartId"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">
+                                Court Category <span class="text-danger">*</span>
+                            </label>
+
+                            <select id="CourtCategory"
+                                    name="CourtCategory"
+                                    class="form-select"
+                                    asp-items="ViewBag.CourtCategoryList">
+
+                                <option value="">Select Category</option>
+
+                            </select>
+
+                            <span class="text-danger" id="errCourtCategory"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Court Type <span class="text-danger">*</span></label>
+                            <input id="CourtType" name="CourtType" class="form-control" maxlength="500" />
+                            <span class="text-danger" id="errCourtType"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Court Group</label>
+                            <select id="CourtGroupCode" name="CourtGroupCode" class="form-select">
+                                <option value="">Select Court Group</option>
+                                @if (ViewBag.GroupList != null)
+                                {
+                                    foreach (var g in (IEnumerable<SelectListItem>)ViewBag.GroupList)
+                                    {
+                                        <option value="@g.Value">@g.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Court Details <span class="text-danger">*</span></label>
+                            <input id="CourtTypeName" name="CourtTypeName" class="form-control" maxlength="200" />
+                            <span class="text-danger" id="errCourtTypeName"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Hierarchy Level <span class="text-danger">*</span></label>
+                            <input id="HierarchyLevel" name="HierarchyLevel" type="number" class="form-control" />
+                            <span class="text-danger" id="errHierarchyLevel"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Display Order <span class="text-danger">*</span></label>
+                            <input id="DispOrder" name="DispOrder" type="number" class="form-control" />
+                            <span class="text-danger" id="errDispOrder"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label d-block">Is Active</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       role="switch"
+                                       id="InActive"
+                                       name="InActive"
+                                       checked>
+                                <label class="form-check-label" for="InActive" id="lblInActiveStatus">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnSave">
+
+                    <i class="bi bi-check-circle"></i>
+                    Save
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+
+        // ── Init ─────────────────────────────────────────────
+        $(document).ready(function() {
+
+            $('#tblCourtType').DataTable({
+
+                dom: 'lBfrtip',
+
+                responsive: true,
+                autoWidth: false,
+
+                pageLength: 10,
+
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+
+                columnDefs: [
+                    {
+                        responsivePriority: 1,
+                        targets: 8
+                    },
+                    {
+                        responsivePriority: 2,
+                        targets: 0
+                    }
+                ],
+
+                buttons: [
+
+                    {
+                        extend: 'print',
+                        title: 'Court Type Master'
+                    },
+
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Court Type Master'
+                    }
+
+                ]
+
+            });
+
+            $('.dt-buttons').hide();
+
+        });
+
+
+        //─────────────────────────────────────────────
+        // Print
+        //─────────────────────────────────────────────
+
+        $("#btnPrint").click(function() {
+
+            window.print();
+
+        });
+
+
+        //─────────────────────────────────────────────
+        // Excel
+        //─────────────────────────────────────────────
+
+        $("#btnExcel").click(function() {
+
+            let table = document.getElementById("tblCourtType");
+
+            let html = table.outerHTML;
+
+            let url = 'data:application/vnd.ms-excel,' +
+                encodeURIComponent(html);
+
+            let a = document.createElement('a');
+
+            a.href = url;
+
+            a.download = 'CourtTypeMaster.xls';
+
+            a.click();
+
+        });
+
+
+        //─────────────────────────────────────────────
+        // Modal
+        //─────────────────────────────────────────────
+
+        var courtTypeModal = new bootstrap.Modal(
+            document.getElementById('courtTypeModal')
+        );
+
+
+        //─────────────────────────────────────────────
+        // Add Court Type
+        //─────────────────────────────────────────────
+
+        $("#btnAddCourtType").click(function() {
+
+            $("#CourtTypeMastId").val('');
+
+            $("#DepartId").val('');
+
+            $("#CourtCategory").val('');
+
+            $("#CourtGroupCode").val('');
+
+            $("#CourtType").val('');
+
+            $("#CourtTypeName").val('');
+
+            $("#CourtTypeName").val('');
+
+            $("#HierarchyLevel").val('');
+
+            $("#DispOrder").val('');
+
+            $("#InActive").prop("checked", "F");
+
+            $(".text-danger").text('');
+
+            courtTypeModal.show();
+
+        });
+
+
+        //─────────────────────────────────────────────
+        // Edit
+        //─────────────────────────────────────────────
+
+        $(document).on("click", ".edit", function() {
+
+            var id = $(this).data("id");
+
+            $.ajax({
+
+                url: '/CourtMaster/GetCourtType',
+
+                type: 'GET',
+
+                data: {
+                    id: id
+                },
+
+                success: function(data) {
+
+                    if (!data) {
+
+                        alert("No data returned.");
+
+                        return;
+
+                    }
+
+                    $("#CourtTypeMastId").val(data.courtTypeMastId);
+
+                    $("#DepartId").val(data.departId);
+
+                    $("#CourtCategory").val(data.courtCategory);
+
+                    $("#CourtGroupCode").val(data.courtGroupCode);
+
+                    $("#CourtType").val(data.courtType);
+
+                    $("#CourtTypeName").val(data.courtTypeName);
+
+                    $("#CourtTypeName").val(data.courtTypeName);
+
+                    $("#HierarchyLevel").val(data.hierarchyLevel);
+
+                    $("#DispOrder").val(data.dispOrder);
+
+                    $("#InActive").prop("checked", "F");
+
+                    $(".text-danger").text('');
+
+                    courtTypeModal.show();
+
+                }
+
+            });
+
+        });
+
+
+        //─────────────────────────────────────────────
+        // Save
+        //─────────────────────────────────────────────
+
+        $("#btnSave").click(function() {
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            let isValid = true;
+
+            $(".text-danger").text('');
+
+            if ($("#DepartId").val() == "") {
+
+                $("#errDepartId").text("Department is required");
+
+                isValid = false;
+
+            }
+
+            if ($("#CourtCategory").val() == "") {
+
+                $("#errCourtCategory").text("Court Category is required");
+
+                isValid = false;
+
+            }
+
+            if ($("#CourtType").val().trim() == "") {
+
+                $("#errCourtType").text("Court Type is required");
+
+                isValid = false;
+
+            }
+
+            if ($("#CourtTypeName").val().trim() == "") {
+
+                $("#errCourtTypeName").text("Court Detail is required");
+
+                isValid = false;
+
+            }
+
+            if ($("#HierarchyLevel").val() == "") {
+
+                $("#errHierarchyLevel").text("Hierarchy Level is required");
+
+                isValid = false;
+
+            }
+
+            if ($("#DispOrder").val() == "") {
+
+                $("#errDispOrder").text("Display Order is required");
+
+                isValid = false;
+
+            }
+
+            if (!isValid)
+
+                return;
+
+            $.ajax({
+
+                url: '/CourtMaster/SaveCourtType',
+
+                type: 'POST',
+
+                headers: {
+
+                    RequestVerificationToken: token
+
+                },
+
+                data: {
+
+                    CourtTypeMastId: $("#CourtTypeMastId").val(),
+
+                    DepartId: $("#DepartId").val(),
+
+                    CourtCategory: $("#CourtCategory").val(),
+
+                    CourtGroupCode: $("#CourtGroupCode").val(),
+
+                    CourtType: $("#CourtType").val(),
+
+                    CourtTypeName: $("#CourtTypeName").val(),
+
+                    CourtTypeName: $("#CourtTypeName").val(),
+
+                    HierarchyLevel: $("#HierarchyLevel").val(),
+
+                    DispOrder: $("#DispOrder").val(),
+
+                    InActive: $("#InActive").is(":checked") ? "F" : "T"
+
+                },
+
+                success: function(r) {
+
+                    if (r.success) {
+
+                        courtTypeModal.hide();
+
+                        location.reload();
+
+                    }
+                    else {
+
+                        alert(r.message);
+
+                    }
+
+                },
+
+                error: function() {
+
+                    alert("Save Failed");
+
+                }
+
+            });
+
+        });
+
+
+        //─────────────────────────────────────────────
+        // Delete
+        //─────────────────────────────────────────────
+
+        $(document).on("click", ".delete", function() {
+
+            if (!confirm("Are you sure want to delete?"))
+
+                return;
+
+            var id = $(this).data("id");
+
+            $.ajax({
+
+                url: '/CourtMaster/DeleteCourtType',
+
+                type: 'POST',
+
+                data: {
+
+                    id: id
+
+                },
+
+                success: function(r) {
+
+                    if (r.success) {
+
+                        location.reload();
+
+                    }
+
+                },
+
+                error: function() {
+
+                    alert("Delete Failed");
+
+                }
+
+            });
+
+        });
+
+    </script>
+}

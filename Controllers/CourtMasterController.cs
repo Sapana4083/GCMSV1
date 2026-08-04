@@ -1,7 +1,9 @@
 ﻿using GCMS.Models;
 using GCMS.Models.Entities;
+using GCMS.Services;
 using GCMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GCMS.Controllers
 {
@@ -9,10 +11,12 @@ namespace GCMS.Controllers
     {
         private readonly IDepartmentService _service;
         private readonly ICourtGroupService _courtGroupService;
-        public CourtMasterController(IDepartmentService service , ICourtGroupService courtGroupService)
+        private readonly ICourtTypeService _courtTypeService;
+        public CourtMasterController(IDepartmentService service, ICourtGroupService courtGroupService, ICourtTypeService courtTypeService)
         {
             _service = service;
             _courtGroupService = courtGroupService;
+            _courtTypeService = courtTypeService;
         }
 
         // List Page
@@ -206,5 +210,70 @@ namespace GCMS.Controllers
         }
 
         #endregion
+
+        public async Task<IActionResult> CourtTypeList(int pageNo = 1, int rowCnt = 999999)
+        {
+            var list = await _courtTypeService.GetAllAsync(pageNo, rowCnt);
+
+            var departments = await _service.GetAllAsync(1, 999999);
+            var courtGroup = await _courtGroupService.GetAllAsync(1, 999999);
+            var categoryList = await _courtTypeService.GetCourtCategoryAsync();
+
+            ViewBag.DepartmentList = new SelectList(
+       departments,
+       "DepartmentId",
+       "DepartmentName"
+   );
+            ViewBag.GroupList = new SelectList(
+     courtGroup,
+     "CourtGroupCode",
+     "CourtGroup"
+ );
+
+            ViewBag.CourtCategoryList = new SelectList(
+       categoryList,
+       "Id",
+       "Name"
+   );
+
+
+
+            return View(list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCourtType(long id)
+        {
+            var model = await _courtTypeService.GetByIdAsync(id);
+
+            if (model == null)
+                return NotFound();
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveCourtType(CourtTypeMaster model)
+        {
+            if (model.CourtTypeMastId == 0)
+            {
+                model.CreatedBy = HttpContext.Session.GetString("Username");
+
+                await _courtTypeService.AddAsync(model);
+            }
+            else
+            {
+                model.ModifiedBy = HttpContext.Session.GetString("Username");
+
+                await _courtTypeService.UpdateAsync(model);
+            }
+
+            return Json(new
+            {
+                success = true,
+                message = "Saved Successfully."
+            });
+        }
     }
 }

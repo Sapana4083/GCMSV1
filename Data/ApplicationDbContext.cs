@@ -49,5 +49,7 @@ namespace GCMS.Data
 
         public DbSet<BenchTypeMaster> BenchTypes { get; set; }
 
+        public DbSet<CourtTypeMaster> CourtType { get; set; }
+
     }
 }

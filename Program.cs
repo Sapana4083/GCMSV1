@@ -59,6 +59,9 @@ builder.Services.AddScoped<ISdoRepository, SdoRepository>();
 builder.Services.AddScoped<ISdoService, SdoService>();
 builder.Services.AddScoped<ICourtDashboardRepository, CourtDashboardRepository>();
 
+builder.Services.AddScoped<ICourtTypeRepository, CourtTypeRepository>();
+builder.Services.AddScoped<ICourtTypeService, CourtTypeService>();
+
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 

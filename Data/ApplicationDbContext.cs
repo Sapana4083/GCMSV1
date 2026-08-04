@@ -42,7 +42,7 @@ namespace GCMS.Data
 
 
         public DbSet<CaseTypeMaster> CaseTypes { get; set; }
-
+        public DbSet<CourtSetupCaseType> CourtSetupCaseType { get; set; }
         public DbSet<CaseSubjectMaster> CaseSubjects { get; set; }
 
         public DbSet<CasePurposeMaster> CasePurposes { get; set; }

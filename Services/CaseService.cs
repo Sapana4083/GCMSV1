@@ -111,6 +111,11 @@ namespace GCMS.Services
         {
             return await _repository.GetAdvocatesAsync();
         }
+
+        public async Task<IEnumerable<SelectListItem>> GetOrderTypesAsync()
+        {
+            return await _repository.GetOrderTypesAsync();
+        }
         //public async Task<CaseRegistrationWizardViewModel?> GetCaseRegistrationAsync(long caseId)
         //{
         //    return await _repository.GetCaseRegistrationAsync(caseId);

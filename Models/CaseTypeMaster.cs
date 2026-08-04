@@ -36,7 +36,10 @@ namespace GCMS.Models
 
             [Column("CASE_GROUP")]
             public string? CaseGroup { get; set; }
+      
+            //[Column("COURT_CODE")]
+            //public string? CourtCode { get; set; }
 
-        }
+    }
 }
 

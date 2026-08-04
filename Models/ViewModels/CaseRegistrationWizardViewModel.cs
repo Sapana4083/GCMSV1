@@ -17,15 +17,18 @@ namespace GCMS.Models.ViewModels
         [Display(Name = "Case Number")]
         public string? CaseNumber { get; set; }
 
+        [Display(Name = "Is Impungned")]
+        public bool IsImpungned { get; set; }
+
         [Display(Name = "Manual Case Number")]
         public string? ManualCaseNumber { get; set; }
 
         [Display(Name = "Order Number")]
         public string? OrderNumber { get; set; }
 
-        [Display(Name = "Date Of Order")]
+        [Display(Name = "Date of Impugned Order")]
         [DataType(DataType.Date)]
-        public DateTime? DateOfOrder { get; set; }
+        public DateTime? DateofImpugnedOrder { get; set; }
 
         [Display(Name = "Order Issued By")]
         public long? OrderIssuedById { get; set; }

@@ -14,10 +14,13 @@ namespace GCMS.Controllers
     {
         private const string SaveErrorMessage = "Unable to save case registration details. Please try again or contact support.";
         private readonly ICaseService _caseService;
+        private readonly IStateService _service;
         private readonly ILogger<CaseRegistrationController> _logger;
+        
 
-        public CaseRegistrationController(ICaseService caseService, ILogger<CaseRegistrationController> logger)
+        public CaseRegistrationController(IStateService service, ICaseService caseService, ILogger<CaseRegistrationController> logger)
         {
+            _service = service;
             _caseService = caseService;
             _logger = logger;
         }
@@ -237,8 +240,19 @@ namespace GCMS.Controllers
                 });
             }
         }
+        public async Task<IActionResult> StateList(int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data =
+                await _service.GetAllAsync(
+                    pageNo,
+                    rowCnt);
 
-        private async Task BindDropdowns(CaseRegistrationWizardViewModel vm)
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+        private async Task BindDropdowns(CaseRegistrationWizardViewModel vm )
         {
             vm.OrderIssuedByList = await _caseService.GetOrderTypesAsync();
 
@@ -257,6 +271,9 @@ namespace GCMS.Controllers
             vm.Advocates = await _caseService.GetAdvocatesAsync();
 
             vm.Departments = await _caseService.GetDepartmentsAsync();
+
+            //var states = await _service.GetAllAsync(1, 1000);
+            //ViewBag.StateList = states;
         }        
     }
 }

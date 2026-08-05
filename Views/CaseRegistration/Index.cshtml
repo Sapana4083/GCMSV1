@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Case Registration";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    // var states = ViewBag.StateList as List<GCMS.Models.StateMaster>;
 }
 
 <style>
@@ -144,6 +145,28 @@
             <div class="card-body">
 
                 <div class="row">
+                    @* <div class="col-md-6 mb-3">
+
+                            <label>State</label>
+
+                            <select id="StateName"
+                                    class="form-select">
+
+                                <option value="">
+                                    Select State
+                                </option>
+
+                                @foreach (var s in states)
+                                {
+                                    <option value="@s.StateMastId">
+                                        @s.StateName
+                                    </option>
+                                }
+
+                            </select>
+
+                        </div> *@
+
                     <div class="col-md-4 mb-4">
 
                         <label asp-for="InstitutionDate"></label>

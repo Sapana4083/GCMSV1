@@ -1,15 +1,16 @@
 using GCMS.Data;
+using GCMS.Models;
+using GCMS.Repositories;
 using GCMS.Repository;
+using GCMS.Repository.Implementations;
 using GCMS.Repository.Interfaces;
 using GCMS.Services;
 using GCMS.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using GCMS.Models;
-using GCMS.Repository.Implementations;
 
 
 
@@ -67,6 +68,9 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 builder.Services.AddScoped<ICourtGroupRepository,CourtGroupRepository>();
 builder.Services.AddScoped<ICourtGroupService,CourtGroupService>();
+
+builder.Services.AddScoped<ICasePurposeGroupRepository, CasePurposeGroupRepository>();
+builder.Services.AddScoped<ICasePurposeGroupService, CasePurposeGroupService>();
 
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ICaseService, CaseService>();

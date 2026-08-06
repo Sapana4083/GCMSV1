@@ -69,6 +69,9 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<ICourtGroupRepository,CourtGroupRepository>();
 builder.Services.AddScoped<ICourtGroupService,CourtGroupService>();
 
+builder.Services.AddScoped<ICasePurposeRepository, CasePurposeRepository>();
+builder.Services.AddScoped<ICasePurposeService, CasePurposeService>();
+
 builder.Services.AddScoped<ICasePurposeGroupRepository, CasePurposeGroupRepository>();
 builder.Services.AddScoped<ICasePurposeGroupService, CasePurposeGroupService>();
 

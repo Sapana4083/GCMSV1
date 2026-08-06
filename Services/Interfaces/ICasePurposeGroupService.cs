@@ -1,8 +1,8 @@
 ﻿using GCMS.Models;
 
-namespace GCMS.Repository.Interfaces
+namespace GCMS.Services.Interfaces
 {
-    public interface ICasePurposeGroupRepository
+    public interface ICasePurposeGroupService
     {
         Task<List<CasePurposeGroupMaster>> GetAllAsync(int pageNo, int rowCnt);
 

@@ -1,0 +1,365 @@
+﻿@model List<GCMS.Models.CasePurposeMaster>
+
+@{
+    ViewData["Title"] = "Case Purpose Master";
+    var srNo = 1;
+}
+
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h4>Case Purpose Master</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnAddCasePurpose" title="Click to add new record.">
+                Add Case Purpose
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+    <div class="table-responsive">
+        <!-- Data Table -->
+        <table id="tblCasePurpose" class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Group</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Name (English)</th>
+                    @* <th>Court Code</th>
+                    <th>Disp Order</th> *@
+                    <th>Active</th>
+                    <th>Created By</th>
+                    <th>Modified Date</th>
+                    <th width="100">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                         <td>
+                @{
+                    var groupList = (SelectList)ViewBag.GroupList;
+                    var groupName = groupList
+                        .FirstOrDefault(g => g.Value == item.CasePurposeGroup.ToString())
+                        ?.Text;
+                }
+                @groupName
+            </td>
+                        <td>@item.CasePurposeCode</td>
+                        <td>@item.CasePurposeName</td>
+                        <td>@item.CasePurposeEng</td>
+                        @* <td>@item.CourtCode</td>
+                        <td>@item.DispOrder</td> *@
+                        <td>
+                            @if (item.InActive == "F")
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactive</span>
+                            }
+                        </td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ModifiedOn</td>
+
+                        <td>
+                            <button type="button"
+                                    class="btn btn-default waves-effect waves-light edit"
+                                    data-id="@item.CasePurposeMastId" title="Click to edit record.">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<!-- ========== MODAL ========== -->
+<div class="modal fade" id="casePurposeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Case Purpose Master</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+
+                @Html.AntiForgeryToken()
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <input type="hidden" id="CasePurposeMastId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Code<span class="text-danger">*</span></label>
+                        <input type="text" id="CasePurposeCode" maxlength="10" class="form-control" />
+                        <span class="text-danger" id="errCasePurposeCode"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Case Purpose<span class="text-danger">*</span></label>
+                        <input type="text" id="CasePurposeName" maxlength="100" class="form-control" />
+                        <span class="text-danger" id="errCasePurposeName"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Case Purpose Group<span class="text-danger">*</span></label>
+                        @Html.DropDownList(
+                            "CasePurposeGroup",
+                            (SelectList)ViewBag.GroupList,
+                            "Select an option",
+                            new { @class = "form-select", id = "CasePurposeGroup" }
+                        )
+                        <span class="text-danger" id="errCasePurposeGroup"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Case Purpose Description</label>
+                        <textarea id="CasePurposeDescription" maxlength="300" class="form-control"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Case Purpose English<span class="text-danger">*</span></label>
+                        <input type="text" id="CasePurposeEng" maxlength="300" class="form-control" />
+                        <span class="text-danger" id="errCasePurposeEng"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Purpose Sub Group</label>
+                        <input type="text" id="PurposeSubGroup" maxlength="10" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Order Level<span class="text-danger">*</span></label>
+                        <input type="number" id="OrderLevel" class="form-control" />
+                        <span class="text-danger" id="errOrderLevel"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Is Complete</label>
+                        <input type="text" id="IsComplete" maxlength="10" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                            <label class="form-check-label">In Active<span class="text-danger">*</span></label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">RB ID</label>
+                        <input type="number" id="RbId" class="form-control" />
+                    </div>
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnSave">
+                        Save
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== SCRIPTS ========== -->
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            $('#tblCasePurpose').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                autoWidth: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                buttons: [
+                    { extend: 'print', title: 'Case Purpose Master' },
+                    { extend: 'excelHtml5', title: 'Case Purpose Master' }
+                ]
+            });
+
+            $('.dt-buttons').hide();
+        });
+
+        $("#btnPrint").click(function () {
+            window.print();
+        });
+
+        $("#btnExcel").click(function () {
+            let table = document.getElementById("tblCasePurpose");
+            let html = table.outerHTML;
+            let url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'CasePurposeMaster.xls';
+            a.click();
+        });
+
+        var casePurposeModal = new bootstrap.Modal(
+            document.getElementById('casePurposeModal')
+        );
+
+        function clearForm() {
+            $("#CasePurposeMastId").val('');
+            $("#CasePurposeCode").val('');
+            $("#CasePurposeName").val('');
+            $("#CasePurposeGroup").val('');
+            $("#CasePurposeDescription").val('');
+            $("#CasePurposeEng").val('');
+            $("#PurposeSubGroup").val('');
+            $("#OrderLevel").val('');
+            $("#IsComplete").val('');
+            $("#RbId").val('');
+            $("#InActive").prop("checked", false);
+            $("#errCasePurposeCode").text('');
+            $("#errCasePurposeName").text('');
+            $("#errCasePurposeGroup").text('');
+            $("#errCasePurposeEng").text('');
+            $("#errOrderLevel").text('');
+        }
+
+        // ── Add ─────────────────────────────────────────
+        $("#btnAddCasePurpose").click(function () {
+            clearForm();
+            casePurposeModal.show();
+        });
+
+        // ── Edit ────────────────────────────────────────
+        $(document).on("click", ".edit", function () {
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/CourtMaster/GetCasePurpose',
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    if (!data) {
+                        alert("No data returned from server");
+                        return;
+                    }
+
+                    $("#CasePurposeMastId").val(data.casePurposeMastId);
+                    $("#CasePurposeCode").val(data.casePurposeCode);
+                    $("#CasePurposeName").val(data.casePurposeName);
+                    $("#CasePurposeGroup").val(data.casePurposeGroup);
+                    $("#CasePurposeDescription").val(data.casePurposeDescription);
+                    $("#CasePurposeEng").val(data.casePurposeEng);
+                    $("#PurposeSubGroup").val(data.purposeSubGroup);
+                    $("#OrderLevel").val(data.orderLevel);
+                    $("#IsComplete").val(data.isComplete);
+                    $("#RbId").val(data.rbId);
+                    $("#InActive").prop("checked", data.inActive === "T");
+
+                    casePurposeModal.show();
+                }
+            });
+        });
+
+        // ── Save ────────────────────────────────────────
+        $("#btnSave").click(function () {
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            let isValid = true;
+
+            $("#errCasePurposeCode").text('');
+            $("#errCasePurposeName").text('');
+            $("#errCasePurposeGroup").text('');
+            $("#errCasePurposeEng").text('');
+            $("#errOrderLevel").text('');
+
+            if ($("#CasePurposeCode").val().trim() === "") {
+                $("#errCasePurposeCode").text("Code is required");
+                isValid = false;
+            }
+
+            if ($("#CasePurposeName").val().trim() === "") {
+                $("#errCasePurposeName").text("Case Purpose is required");
+                isValid = false;
+            }
+
+            if ($("#CasePurposeGroup").val() === "" || $("#CasePurposeGroup").val() === null) {
+                $("#errCasePurposeGroup").text("Case Purpose Group is required");
+                isValid = false;
+            }
+
+            if ($("#CasePurposeEng").val().trim() === "") {
+                $("#errCasePurposeEng").text("Case Purpose English is required");
+                isValid = false;
+            }
+
+            if ($("#OrderLevel").val().trim() === "") {
+                $("#errOrderLevel").text("Order Level is required");
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            $.ajax({
+    url: '/CourtMaster/SaveCasePurpose',
+    type: 'POST',
+    headers: { RequestVerificationToken: token },
+    data: {
+        CasePurposeMastId: $("#CasePurposeMastId").val() || 0,
+        CasePurposeCode: $("#CasePurposeCode").val(),
+        CasePurposeName: $("#CasePurposeName").val(),
+        CasePurposeGroup: $("#CasePurposeGroup").val(),
+        CasePurposeDescription: $("#CasePurposeDescription").val(),
+        CasePurposeEng: $("#CasePurposeEng").val(),
+        PurposeSubGroup: $("#PurposeSubGroup").val(),
+        OrderLevel: $("#OrderLevel").val(),
+        IsComplete: $("#IsComplete").val(),
+        RbId: $("#RbId").val(),
+        InActive: $("#InActive").is(":checked") ? "T" : "F"
+    },
+    success: function (r) {
+        console.log("SUCCESS RESPONSE:", r);
+        alert(JSON.stringify(r));
+    },
+    error: function (xhr, status, err) {
+        console.log("XHR STATUS:", xhr.status);
+        console.log("XHR RESPONSE:", xhr.responseText);
+        alert("AJAX ERROR: " + xhr.status + " - " + xhr.responseText);
+    }
+});
+        });
+
+    </script>
+}

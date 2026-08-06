@@ -12,11 +12,15 @@ namespace GCMS.Controllers
         private readonly IDepartmentService _service;
         private readonly ICourtGroupService _courtGroupService;
         private readonly ICourtTypeService _courtTypeService;
-        public CourtMasterController(IDepartmentService service, ICourtGroupService courtGroupService, ICourtTypeService courtTypeService)
+        private readonly ICasePurposeGroupService _casePurposeGroupService;
+        private readonly ICasePurposeService _casePurposeService;
+        public CourtMasterController(IDepartmentService service, ICourtGroupService courtGroupService, ICourtTypeService courtTypeService, ICasePurposeGroupService casePurposeGroupService, ICasePurposeService casePurposeService)
         {
             _service = service;
             _courtGroupService = courtGroupService;
             _courtTypeService = courtTypeService;
+            _casePurposeGroupService = casePurposeGroupService;
+            _casePurposeService = casePurposeService;
         }
 
         // List Page
@@ -281,5 +285,139 @@ namespace GCMS.Controllers
                 message = "Saved Successfully."
             });
         }
+
+
+        #region Case Purpose Group List
+        public async Task<IActionResult> CasePurposeGroupList(
+    int pageNo = 1,
+    int rowCnt = 999999)
+        {
+            var list = await _casePurposeGroupService.GetAllAsync(pageNo, rowCnt);
+
+            return View(list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCasePurposeGroup(long id)
+        {
+            var model = await _casePurposeGroupService.GetByIdAsync(id);
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveCasePurposeGroup(CasePurposeGroupMaster model)
+        {
+            try
+            {
+                if (model.CasePurposeGroupMastId == 0)
+                {
+                    model.CreatedBy = HttpContext.Session.GetString("Username");
+
+                    await _casePurposeGroupService.AddAsync(model);
+                }
+                else
+                {
+                    model.ModifiedBy = HttpContext.Session.GetString("Username");
+
+                    await _casePurposeGroupService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                // TODO: proper logging (ILogger) yahan add karo production ke liye
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        //[HttpPost]
+        //public async Task<IActionResult> DeleteCasePurposeGroup(long id)
+        //{
+        //    var user = HttpContext.Session.GetString("Username");
+
+        //    await _casePurposeGroupService.DeleteAsync(id, user);
+
+        //    return Json(new
+        //    {
+        //        success = true
+        //    });
+        //}
+
+        #endregion
+
+        #region Case Purpose 
+        // ── LIST PAGE ──────────────────────────────────
+        [HttpGet]
+        public async Task<IActionResult> CasePurposeList(int pageNo = 1, int rowCnt = 999999)
+        {
+            var list = await _casePurposeService.GetAllAsync(pageNo, rowCnt);
+
+            var groupList = await _casePurposeGroupService.GetAllAsync(1, 999999);
+
+            ViewBag.GroupList = new SelectList(
+                groupList,
+                "CasePurposeGroupMastId",
+                "CasePurposeGroup"
+            );
+
+            return View(list);
+        }
+
+        // ── GET BY ID (for edit modal) ────────────────
+        [HttpGet]
+        public async Task<IActionResult> GetCasePurpose(long id)
+        {
+            var data = await _casePurposeService.GetByIdAsync(id);
+            if (data == null)
+                return Json(null);
+
+            return Json(data);
+        }
+
+        // ── SAVE (Insert / Update) ────────────────────
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveCasePurpose(CasePurposeMaster model)
+        {
+            try
+            {
+                // TODO: apna session-based username yaha se lo (jaise baaki modules me hai)
+                var userName = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                if (model.CasePurposeMastId == 0)
+                {
+                    model.CreatedBy = userName;
+                    await _casePurposeService.AddAsync(model);
+                }
+                else
+                {
+                    model.UserName = userName;
+                    await _casePurposeService.UpdateAsync(model);
+                }
+
+                return Json(new { success = true, message = "Record saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion
     }
 }

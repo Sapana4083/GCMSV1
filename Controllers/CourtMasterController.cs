@@ -25,6 +25,12 @@ namespace GCMS.Controllers
             var list = await _service.GetAllAsync(pageNo, rowCnt);
             return View(list);
         }
+        public async Task<IActionResult> OrderDepartmentList(int pageNo = 1, int rowCnt = 999999)
+        {
+            var list = await _service.GetAllOrderAsync(pageNo, rowCnt);
+            return View(list);
+        }
+        
 
         // GET single record (for Edit modal - AJAX)
         [HttpGet]

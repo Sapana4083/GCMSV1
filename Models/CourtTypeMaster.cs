@@ -15,9 +15,7 @@ namespace GCMS.Models
 
         [Column("COURT_TYPE_NAME")]
         public string? CourtTypeName { get; set; }
-
-       
-
+      
         public long? CourtGroupId { get; set; }
 
         [Column("COURTDETAIL")]
@@ -92,4 +90,6 @@ namespace GCMS.Models
         public long Id { get; set; }
         public string? Name { get; set; }
     }
+
+   
 }

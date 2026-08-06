@@ -14,15 +14,17 @@ namespace GCMS.Controllers
     {
         private const string SaveErrorMessage = "Unable to save case registration details. Please try again or contact support.";
         private readonly ICaseService _caseService;
-        private readonly IStateService _service;
+        private readonly IDepartmentService _service;
+        private readonly ICourtTypeService _CourtTypeservice;
         private readonly ILogger<CaseRegistrationController> _logger;
         
 
-        public CaseRegistrationController(IStateService service, ICaseService caseService, ILogger<CaseRegistrationController> logger)
+        public CaseRegistrationController(IDepartmentService service, ICaseService caseService, ICourtTypeService courtTypeService, ILogger<CaseRegistrationController> logger)
         {
             _service = service;
             _caseService = caseService;
             _logger = logger;
+            _CourtTypeservice = courtTypeService;
         }
 
         [HttpGet]
@@ -254,9 +256,9 @@ namespace GCMS.Controllers
         }
         private async Task BindDropdowns(CaseRegistrationWizardViewModel vm )
         {
-            vm.OrderIssuedByList = await _caseService.GetOrderTypesAsync();
+            //vm.OrderIssuedByList = await _caseService.GetOrderTypesAsync();
 
-            vm.CaseTypes = await _caseService.GetCaseTypesAsync();
+            //vm.CaseTypes = await _caseService.GetCaseTypesAsync();
 
             vm.CaseSubjects = await _caseService.GetCaseSubjectsAsync();
 
@@ -274,6 +276,11 @@ namespace GCMS.Controllers
 
             //var states = await _service.GetAllAsync(1, 1000);
             //ViewBag.StateList = states;
-        }        
+            var orders = await _service.GetAllOrderAsync(1, 1000);
+            ViewBag.OrderList = orders;
+
+            var casetype = await _CourtTypeservice.GetCaseTypeAsync(1, 1000);
+            ViewBag.CaseTypeList = casetype;
+        }
     }
 }

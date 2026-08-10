@@ -3,7 +3,9 @@
 @{
     ViewData["Title"] = "Case Registration";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    // var states = ViewBag.StateList as List<GCMS.Models.StateMaster>;
+    // var states = ViewBag.StateList as List<GCMS.Models.StateMaster>;    
+    var Orders = ViewBag.OrderList as List<GCMS.Models.Entities.DepartmentMaster>;
+    var CaseType = ViewBag.CaseTypeList as List<GCMS.Models.CaseTypeMaster>;
 }
 
 <style>
@@ -226,14 +228,30 @@
                     <div class="col-md-4 mb-4">
 
                         <label asp-for="OrderIssuedById"></label>
+                        <select id="OrderIssuedById"
+                                class="form-select">
 
-                        <select asp-for="OrderIssuedById"
+                            <option value="">
+                                Select 
+                            </option>
+
+                            @foreach (var o in Orders)
+                            {
+                                <option value="@o.DepartmentId">
+                                    @o.DepartmentName
+                                </option>
+                            }
+
+                        </select>
+
+                       @*  <select asp-for="OrderIssuedById"
                                 asp-items="Model.OrderIssuedByList"
                                 class="form-select">
 
                             <option value="">Select</option>
 
-                        </select>
+                        </select> *@
+                      
 
                     </div>
                 @* <div class="col-md-4 mb-4">
@@ -258,16 +276,22 @@
 
                         <span class="required">*</span>
 
-                        <select asp-for="CaseTypeId"
-                                asp-items="Model.CaseTypes"
-                                class="form-select">
+                    <select asp-for="CaseTypeId"
+                            asp-items="Model.CaseTypes"
+                            class="form-select">
 
-                            <option value="">Select</option>
+                        <option value="">Select</option>
+                            @foreach (var ct in CaseType)
+                            {
+                                <option value="@ct.CaseTypeMastId">
+                                    @ct.CaseType
+                                </option>
+                            }
 
-                        </select>
+                    </select>
 
-                        <span asp-validation-for="CaseTypeId"
-                              class="text-danger"></span>
+                    <span asp-validation-for="CaseTypeId"
+                            class="text-danger"></span>
 
                     </div>
                     <div class="col-md-4 mb-4">
@@ -347,7 +371,7 @@
 
                
 
-               @*  <div class="text-end">
+                 <div class="text-end">
 
                     <button type="button"
                             id="btnStep1"
@@ -357,7 +381,7 @@
 
                     </button>
 
-                </div> *@
+                </div>
 
             </div>
 

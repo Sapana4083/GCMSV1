@@ -1,0 +1,400 @@
+﻿@model List<GCMS.Models.CaseTypeMaster>
+
+@{
+    ViewData["Title"] = "Case Type Master";
+    var srNo = 1;
+}
+
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h4>Case Type Master</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnAddCaseType" title="Click to add new record.">
+                Add Case Type
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+    <div class="table-responsive">
+        <!-- Data Table -->
+        <table id="tblCaseType" class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Case Code</th>
+                    <th>Case Type</th>
+                    <th>Case Type (English)</th>
+                    <th>Order Level</th>
+                    <th>Active</th>
+                    <th>Created By</th>
+                    <th>Modified Date</th>
+
+                    <th width="180">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.CaseCode</td>
+                        <td>@item.CaseType</td>
+                        <td>@item.CaseTypeEng</td>
+                        <td>@item.OrderLevel</td>
+                        <td>
+
+                        
+                            @if (item.InActive == "F")
+                            {
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+                            }
+
+                        </td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ModifiedOn</td>
+
+                        <td>
+                            <button type="button"
+                                    class="btn btn-default waves-effect waves-light edit"
+                                    data-id="@item.CaseTypeMastId" title="Click to edit record.">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<!-- ========== MODAL ========== -->
+<div class="modal fade" id="caseTypeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Case Type Master</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+
+                @Html.AntiForgeryToken()
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <input type="hidden" id="CaseTypeMastId" />
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Case Code<span class="text-danger">*</span></label>
+                            <input type="text" id="CaseCode" class="form-control" />
+                            <span class="text-danger" id="errCaseCode"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Case Type<span class="text-danger">*</span></label>
+                            <input type="text" id="CaseType" class="form-control" />
+                            <span class="text-danger" id="errCaseType"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Case Type (English)<span class="text-danger">*</span></label>
+                            <input type="text" id="CaseTypeEng" class="form-control" />
+                            <span class="text-danger" id="errCaseTypeEng"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Order Level<span class="text-danger">*</span></label>
+                            <input type="number" id="OrderLevel" class="form-control" />
+                            <span class="text-danger" id="errOrderLevel"></span>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">CTYPE_ABBR</label>
+                            <input type="text" id="CtypeAbbr" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">In Active</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">CASE_GROUP_CODE</label>
+                            <input type="text" id="CaseGroupCode" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">case_type_group</label>
+                            <input type="text" id="CaseTypeGroup" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">CASE_GROUP</label>
+                            <input type="text" id="CaseGroup" class="form-control" />
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">rb_id</label>
+                            <input type="number" id="RbId" class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnSave">
+                        Save
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== SCRIPTS ========== -->
+@section Scripts {
+    <script>
+
+        // ── Init ─────────────────────────────────────────────
+        $(document).ready(function() {
+
+            $('#tblCaseType').DataTable({
+
+                dom: 'lBfrtip',
+
+                responsive: true,
+                autoWidth: false,
+
+                pageLength: 10,
+
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+
+                columnDefs: [{
+                    responsivePriority: 1,
+                    targets: 7
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 0
+                }
+                ],
+
+                buttons: [{
+                    extend: 'print',
+                    title: 'Case Type Master'
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: 'Case Type Master'
+                }
+                ]
+            });
+
+            $('.dt-buttons').hide();
+        });
+        $("#btnPrint").click(function() {
+
+            window.print();
+
+        });
+
+        $("#btnExcel").click(function() {
+
+            let table = document.getElementById("tblCaseType");
+
+            let html = table.outerHTML;
+
+            let url = 'data:application/vnd.ms-excel,' +
+                encodeURIComponent(html);
+
+            let a = document.createElement('a');
+
+            a.href = url;
+            a.download = 'CaseTypeMaster.xls';
+
+            a.click();
+
+        });
+
+        var caseTypeModal = new bootstrap.Modal(
+            document.getElementById('caseTypeModal')
+        );
+
+        // ── Add Case Type ─────────────────────────────────────
+        $("#btnAddCaseType").click(function() {
+            $("#CaseTypeMastId").val('');
+            $("#CaseCode").val('');
+            $("#CaseType").val('');
+            $("#CaseTypeEng").val('');
+            $("#OrderLevel").val('');
+            $("#CtypeAbbr").val('');
+            $("#CaseGroupCode").val('');
+            $("#CaseTypeGroup").val('');
+            $("#CaseGroup").val('');
+            $("#RbId").val('');
+            $("#errCaseCode").text('');
+            $("#errCaseType").text('');
+            $("#errCaseTypeEng").text('');
+            $("#errOrderLevel").text('');
+            $("#InActive").prop("checked", false);
+            caseTypeModal.show();
+        });
+
+        
+
+        // ── Edit Case Type ────────────────────────────────────
+        $(document).on("click", ".edit", function() {
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/CourtMaster/GetCaseType',
+                type: 'GET',
+                data: {
+                    id: id
+                },
+                success: function(data) {
+
+                    console.log(data);
+
+                    if (!data) {
+                        alert("No data returned from server");
+                        return;
+                    }
+
+                    $("#CaseTypeMastId").val(data.caseTypeMastId);
+                    $("#CaseCode").val(data.caseCode);
+                    $("#CaseType").val(data.caseType);
+                    $("#CaseTypeEng").val(data.caseTypeEng);
+                    $("#OrderLevel").val(data.orderLevel);
+                    $("#CtypeAbbr").val(data.ctypeAbbr);
+                    $("#CaseGroupCode").val(data.caseGroupCode);
+                    $("#CaseTypeGroup").val(data.caseTypeGroup);
+                    $("#CaseGroup").val(data.caseGroup);
+                    $("#RbId").val(data.rbId);
+                    $("#InActive").prop(
+                        "checked",
+                        data.inActive === "T"
+                    );
+                    $("#errCaseCode").text('');
+                    $("#errCaseType").text('');
+                    $("#errCaseTypeEng").text('');
+                    $("#errOrderLevel").text('');
+                    caseTypeModal.show();
+                }
+            });
+        });
+
+        // ── Save Case Type ────────────────────────────────────
+        $("#btnSave").click(function() {
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            let isValid = true;
+
+            $("#errCaseCode").text('');
+            $("#errCaseType").text('');
+            $("#errCaseTypeEng").text('');
+            $("#errOrderLevel").text('');
+
+            if ($("#CaseCode").val().trim() === "") {
+                $("#errCaseCode").text("Case Code is required");
+                isValid = false;
+            }
+
+            if ($("#CaseType").val().trim() === "") {
+                $("#errCaseType").text("Case Type is required");
+                isValid = false;
+            }
+
+            if ($("#CaseTypeEng").val().trim() === "") {
+                $("#errCaseTypeEng").text("Case Type (English) is required");
+                isValid = false;
+            }
+
+            if ($("#OrderLevel").val().trim() === "") {
+                $("#errOrderLevel").text("Order Level is required");
+                isValid = false;
+            }
+
+            if (!isValid)
+                return;
+
+            
+            $.ajax({
+                url: '/CourtMaster/SaveCaseType',
+                type: 'POST',
+                headers: {
+                    RequestVerificationToken: token
+                },
+                data: {
+                    CaseTypeMastId: $("#CaseTypeMastId").val() || 0,
+                    CaseCode: $("#CaseCode").val(),
+                    CaseType: $("#CaseType").val(),
+                    CaseTypeEng: $("#CaseTypeEng").val(),
+                    OrderLevel: $("#OrderLevel").val(),
+                    CtypeAbbr: $("#CtypeAbbr").val(),
+                    CaseGroupCode: $("#CaseGroupCode").val(),
+                    CaseTypeGroup: $("#CaseTypeGroup").val(),
+                    CaseGroup: $("#CaseGroup").val(),
+                    RbId: $("#RbId").val(),
+                    InActive: $("#InActive").is(":checked") ? "T" : "F"
+                },
+
+                success: function(r) {
+                    if (r.success) {
+                        caseTypeModal.hide();
+                        location.reload();
+                    } else {
+                        alert(r.message);
+                    }
+                },
+                error: function() {
+                    alert("Save Failed");
+                }
+            });
+        });
+
+    </script>
+}

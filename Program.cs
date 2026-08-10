@@ -82,6 +82,9 @@ builder.Services.AddScoped<ILinkedCaseFamilyRepository, LinkedCaseFamilyReposito
 builder.Services.AddScoped<IRcsatCaseUpdateRepository, RcsatCaseUpdateRepository>();
 builder.Services.AddScoped<ILinkedCaseRepository, LinkedCaseRepository>();
 
+builder.Services.AddScoped<ICaseTypeRepository, CaseTypeRepository>();
+builder.Services.AddScoped<ICaseTypeService, CaseTypeService>();
+
 builder.Services.AddAuthentication(
     CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

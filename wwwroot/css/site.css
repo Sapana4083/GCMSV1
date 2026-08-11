@@ -1321,11 +1321,10 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     display: none !important;
    
 }
-.dropdown-item.active, .dropdown-item:active
- {
+.dropdown-item.active, .dropdown-item:active {
     color: var(--bs-dropdown-link-active-color);
     text-decoration: none;
-    background-color: #c6cedb !important;
+    background-color: #4d5d78 !important;
 }
 .bg-primary {
     --bs-bg-opacity: 1;

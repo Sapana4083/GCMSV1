@@ -6,6 +6,8 @@ namespace GCMS.Services.Interfaces
     {
         Task<List<CourtTypeMaster>> GetAllAsync(int pageNo, int rowCnt);
 
+        Task<List<CaseTypeMaster>> GetCaseTypeAsync(int pageNo, int rowCnt);
+
         Task<CourtTypeMaster?> GetByIdAsync(long id);
 
         Task AddAsync(CourtTypeMaster model);

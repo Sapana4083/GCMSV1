@@ -18,6 +18,10 @@ namespace GCMS.Services
         {
             return await _repository.GetAllAsync(pageNo, rowCnt);
         }
+        public async Task<List<DepartmentMaster>> GetAllOrderAsync(int pageNo, int rowCnt)
+        {
+            return await _repository.GetAllOrderAsync(pageNo, rowCnt);
+        }
 
         public async Task<DepartmentMaster?> GetByIdAsync(long id)
         {

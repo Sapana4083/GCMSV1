@@ -14,13 +14,15 @@ namespace GCMS.Controllers
         private readonly ICourtTypeService _courtTypeService;
         private readonly ICasePurposeGroupService _casePurposeGroupService;
         private readonly ICasePurposeService _casePurposeService;
-        public CourtMasterController(IDepartmentService service, ICourtGroupService courtGroupService, ICourtTypeService courtTypeService, ICasePurposeGroupService casePurposeGroupService, ICasePurposeService casePurposeService)
+        private readonly ICaseTypeService _caseTypeService;
+        public CourtMasterController(IDepartmentService service, ICourtGroupService courtGroupService, ICourtTypeService courtTypeService, ICasePurposeGroupService casePurposeGroupService, ICasePurposeService casePurposeService, ICaseTypeService caseTypeService)
         {
             _service = service;
             _courtGroupService = courtGroupService;
             _courtTypeService = courtTypeService;
             _casePurposeGroupService = casePurposeGroupService;
             _casePurposeService = casePurposeService;
+            _caseTypeService = caseTypeService;
         }
 
         // List Page
@@ -29,6 +31,12 @@ namespace GCMS.Controllers
             var list = await _service.GetAllAsync(pageNo, rowCnt);
             return View(list);
         }
+        public async Task<IActionResult> OrderDepartmentList(int pageNo = 1, int rowCnt = 999999)
+        {
+            var list = await _service.GetAllOrderAsync(pageNo, rowCnt);
+            return View(list);
+        }
+        
 
         // GET single record (for Edit modal - AJAX)
         [HttpGet]
@@ -411,6 +419,62 @@ namespace GCMS.Controllers
             {
                 return Json(new { success = false, message = ex.Message });
             }
+        }
+        #endregion
+        #region Case Type
+        // Case Type Master
+        public async Task<IActionResult> CaseTypeList(int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data = await _caseTypeService.GetAllAsync(pageNo, rowCnt);
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> SaveCaseType(CaseTypeMaster model)
+        {
+            try
+            {
+                if (model.CaseTypeMastId == 0)
+                {
+                    var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+                    model.CreatedBy = username;
+
+                    await _caseTypeService.AddAsync(model);
+                }
+                else
+                {
+                    var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+                    model.CreatedBy = username;
+
+                    await _caseTypeService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetCaseType(long id)
+        {
+            var caseType = await _caseTypeService.GetByIdAsync(id);
+            return Json(caseType);
         }
         #endregion
     }

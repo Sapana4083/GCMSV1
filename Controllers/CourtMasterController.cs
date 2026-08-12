@@ -15,7 +15,17 @@ namespace GCMS.Controllers
         private readonly ICasePurposeGroupService _casePurposeGroupService;
         private readonly ICasePurposeService _casePurposeService;
         private readonly ICaseTypeService _caseTypeService;
-        public CourtMasterController(IDepartmentService service, ICourtGroupService courtGroupService, ICourtTypeService courtTypeService, ICasePurposeGroupService casePurposeGroupService, ICasePurposeService casePurposeService, ICaseTypeService caseTypeService)
+        private readonly IBenchTypeService _benchTypeService;
+        private readonly ICaseSubjectService _caseSubjectService;
+        public CourtMasterController(
+            IDepartmentService service, 
+            ICourtGroupService courtGroupService, 
+            ICourtTypeService courtTypeService, 
+            ICasePurposeGroupService casePurposeGroupService, 
+            ICasePurposeService casePurposeService, 
+            ICaseTypeService caseTypeService, 
+            IBenchTypeService benchTypeService, 
+            ICaseSubjectService caseSubjectService)
         {
             _service = service;
             _courtGroupService = courtGroupService;
@@ -23,6 +33,8 @@ namespace GCMS.Controllers
             _casePurposeGroupService = casePurposeGroupService;
             _casePurposeService = casePurposeService;
             _caseTypeService = caseTypeService;
+            _benchTypeService = benchTypeService;
+            _caseSubjectService = caseSubjectService;
         }
 
         // List Page
@@ -36,7 +48,7 @@ namespace GCMS.Controllers
             var list = await _service.GetAllOrderAsync(pageNo, rowCnt);
             return View(list);
         }
-        
+
 
         // GET single record (for Edit modal - AJAX)
         [HttpGet]
@@ -475,6 +487,124 @@ namespace GCMS.Controllers
         {
             var caseType = await _caseTypeService.GetByIdAsync(id);
             return Json(caseType);
+        }
+        #endregion
+
+        #region Bench Type
+        // Bench Type Master
+        public async Task<IActionResult> BenchTypeList(int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data = await _benchTypeService.GetAllAsync(pageNo, rowCnt);
+
+            var courtList = await _courtTypeService.GetAllAsync(1, 999999); // apna actual Court service
+
+            ViewBag.CourtList = new SelectList(
+                courtList,
+                "CourtTypeMastId",  // CourtMaster model ki actual ID property
+                "CourtTypeName"     // CourtMaster model ki actual Name property
+            );
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> SaveBenchType(BenchTypeMaster model)
+        {
+            try
+            {
+                var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                if (model.BenchTypeMastId == 0)
+                {
+                    model.CreatedBy = username;
+                    await _benchTypeService.AddAsync(model);
+                }
+                else
+                {
+                    model.UserName = username;
+                    await _benchTypeService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetBenchType(long id)
+        {
+            var benchType = await _benchTypeService.GetByIdAsync(id);
+            return Json(benchType);
+        }
+        #endregion
+
+        #region Case Subject
+        // Case Subject Master
+        public async Task<IActionResult> CaseSubjectList(int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data = await _caseSubjectService.GetAllAsync(pageNo, rowCnt);
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> SaveCaseSubject(CaseSubjectMaster model)
+        {
+            try
+            {
+                var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                if (model.CaseSubjectId == 0)
+                {
+                    model.CreatedBy = username;
+                    await _caseSubjectService.AddAsync(model);
+                }
+                else
+                {
+                    model.UserName = username;
+                    await _caseSubjectService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetCaseSubject(long id)
+        {
+            var caseSubject = await _caseSubjectService.GetByIdAsync(id);
+            return Json(caseSubject);
         }
         #endregion
     }

@@ -85,6 +85,12 @@ builder.Services.AddScoped<ILinkedCaseRepository, LinkedCaseRepository>();
 builder.Services.AddScoped<ICaseTypeRepository, CaseTypeRepository>();
 builder.Services.AddScoped<ICaseTypeService, CaseTypeService>();
 
+builder.Services.AddScoped<IBenchTypeRepository, BenchTypeRepository>();
+builder.Services.AddScoped<IBenchTypeService, BenchTypeService>();
+
+builder.Services.AddScoped<ICaseSubjectRepository, CaseSubjectRepository>();
+builder.Services.AddScoped<ICaseSubjectService, CaseSubjectService>();
+
 builder.Services.AddAuthentication(
     CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

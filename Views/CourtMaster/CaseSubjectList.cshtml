@@ -1,0 +1,322 @@
+﻿@model List<GCMS.Models.CaseSubjectMaster>
+
+@{
+    ViewData["Title"] = "Case Subject Master";
+    var srNo = 1;
+}
+
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h4>Case Subject Master</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnAddCaseSubject" title="Click to add new record.">
+                Add Case Subject
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+    <div class="table-responsive">
+        <!-- Data Table -->
+        <table id="tblCaseSubject" class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Case Subject (In English)</th>
+                    <th>Case Subject (In Hindi)</th>
+                    <th>Active</th>
+                    <th>Created By</th>
+                    <th>Modified Date</th>
+
+                    <th width="180">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.Subject</td>
+                        <td>@item.SubjectHi</td>
+                        <td>
+
+                        
+                            @if (item.InActive == "N")
+                            {
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+                            }
+
+                        </td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ModifiedOn</td>
+
+                        <td>
+                            <button type="button"
+                                    class="btn btn-default waves-effect waves-light edit"
+                                    data-id="@item.CaseSubjectId" title="Click to edit record.">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<!-- ========== MODAL ========== -->
+<div class="modal fade" id="caseSubjectModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Case Subject Master</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+
+                @Html.AntiForgeryToken()
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <input type="hidden" id="CaseSubjectId" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Case Subject (In English)<span class="text-danger">*</span></label>
+                            <input type="text" id="Subject" class="form-control" />
+                            <span class="text-danger" id="errSubject"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Case Subject (In Hindi)<span class="text-danger">*</span></label>
+                            <input type="text" id="SubjectHi" class="form-control" />
+                            <span class="text-danger" id="errSubjectHi"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">In Active</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnSave">
+                        Save
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== SCRIPTS ========== -->
+@section Scripts {
+    <script>
+
+        // ── Init ─────────────────────────────────────────────
+        $(document).ready(function() {
+
+            $('#tblCaseSubject').DataTable({
+
+                dom: 'lBfrtip',
+
+                responsive: true,
+                autoWidth: false,
+
+                pageLength: 10,
+
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+
+                columnDefs: [{
+                    responsivePriority: 1,
+                    targets: 6
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 0
+                }
+                ],
+
+                buttons: [{
+                    extend: 'print',
+                    title: 'Case Subject Master'
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: 'Case Subject Master'
+                }
+                ]
+            });
+
+            $('.dt-buttons').hide();
+        });
+        $("#btnPrint").click(function() {
+
+            window.print();
+
+        });
+
+        $("#btnExcel").click(function() {
+
+            let table = document.getElementById("tblCaseSubject");
+
+            let html = table.outerHTML;
+
+            let url = 'data:application/vnd.ms-excel,' +
+                encodeURIComponent(html);
+
+            let a = document.createElement('a');
+
+            a.href = url;
+            a.download = 'CaseSubjectMaster.xls';
+
+            a.click();
+
+        });
+
+        var caseSubjectModal = new bootstrap.Modal(
+            document.getElementById('caseSubjectModal')
+        );
+
+        // ── Add Case Subject ─────────────────────────────────────
+        $("#btnAddCaseSubject").click(function() {
+            $("#CaseSubjectId").val('');
+            $("#Subject").val('');
+            $("#SubjectHi").val('');
+            $("#errSubject").text('');
+            $("#errSubjectHi").text('');
+            $("#InActive").prop("checked", false);
+            caseSubjectModal.show();
+        });
+
+        
+
+        // ── Edit Case Subject ────────────────────────────────────
+        $(document).on("click", ".edit", function() {
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/CourtMaster/GetCaseSubject',
+                type: 'GET',
+                data: {
+                    id: id
+                },
+                success: function(data) {
+
+                    console.log(data);
+
+                    if (!data) {
+                        alert("No data returned from server");
+                        return;
+                    }
+
+                    $("#CaseSubjectId").val(data.caseSubjectId);
+                    $("#Subject").val(data.subject);
+                    $("#SubjectHi").val(data.subjectHi);
+                    $("#InActive").prop(
+                        "checked",
+                        data.inActive === "Y"
+                    );
+                    $("#errSubject").text('');
+                    $("#errSubjectHi").text('');
+                    caseSubjectModal.show();
+                }
+            });
+        });
+
+        // ── Save Case Subject ────────────────────────────────────
+        $("#btnSave").click(function() {
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            let isValid = true;
+
+            $("#errSubject").text('');
+            $("#errSubjectHi").text('');
+
+            if ($("#Subject").val().trim() === "") {
+                $("#errSubject").text("Case Subject (In English) is required");
+                isValid = false;
+            }
+
+            if ($("#SubjectHi").val().trim() === "") {
+                $("#errSubjectHi").text("Case Subject (In Hindi) is required");
+                isValid = false;
+            }
+
+            if (!isValid)
+                return;
+
+            
+            $.ajax({
+                url: '/CourtMaster/SaveCaseSubject',
+                type: 'POST',
+                headers: {
+                    RequestVerificationToken: token
+                },
+                data: {
+                    CaseSubjectId: $("#CaseSubjectId").val() || 0,
+                    Subject: $("#Subject").val(),
+                    SubjectHi: $("#SubjectHi").val(),
+                    InActive: $("#InActive").is(":checked") ? "Y" : "N"
+                },
+
+                success: function(r) {
+                    if (r.success) {
+                        caseSubjectModal.hide();
+                        location.reload();
+                    } else {
+                        alert(r.message);
+                    }
+                },
+                error: function() {
+                    alert("Save Failed");
+                }
+            });
+        });
+
+    </script>
+}

@@ -541,7 +541,8 @@ img {
     .sidebar .nav-link.active {
         /*background: #eef3ff;
         color: #0d6efd;*/
-        background: #406083;
+        /*background: #406083;*/
+        background: rgb(92 133 199);
         color: #ffffff;
     }
 
@@ -984,7 +985,8 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     cursor: pointer;
     position: relative;
     padding-right: 26px;
-    background: #1085b3 !important;
+    /*background: #1085b3 !important;*/
+    background: #416aad !important;
     color: rgb(255, 255, 255) !important;
 }
 
@@ -1012,7 +1014,8 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 }
 .btn-default {
     color: #fff;
-    background-color: #2BBBAD;
+    /*background-color: #2BBBAD;*/
+    background-color: #2b86bb;
 }
 .btn {
     line-height: 31px;
@@ -1328,7 +1331,8 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 }
 .bg-primary {
     --bs-bg-opacity: 1;
-    background-color: #0878a5 !important;
+    /*background-color: #0878a5 !important;*/
+    background-color: #416aad !important;
 }
 
 .border-primary {
@@ -1481,7 +1485,8 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 
 #sidebar {
     /*background: linear-gradient(180deg, var(--gcms-navy) 0%, var(--gcms-navy2) 100%);*/
-    background: linear-gradient(180deg, #1f3c6b 0%, #535b67 100%);
+    /*background: linear-gradient(180deg, #1f3c6b 0%, #535b67 100%);*/
+    background: linear-gradient(180deg, #597db7 0%, #456799 100%);
 }
 
     #sidebar .nav-link {
@@ -1616,9 +1621,29 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 
 .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
    
-    width: 100% !important;
+    width: 99% !important;
     
 }
 .dropdown-item {
     width: 95% !important;
 }
+
+/*
+#sidebar .dropdown-menu {
+    display: none !important;
+    position: static !important;
+    float: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin-left: 12px;
+    padding-left: 8px;
+}
+
+    #sidebar .dropdown-menu.show {
+        display: block !important;
+    }
+
+#sidebar .dd-parent.show > .dropdown-toggle .caret {
+    transform: rotate(180deg);
+    transition: transform .2s ease;
+}*/

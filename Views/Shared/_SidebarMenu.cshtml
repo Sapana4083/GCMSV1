@@ -2,10 +2,10 @@
 
 @if (Model.Children.Any())
 {
-    <li class="nav-item dd-parent">
+    <li class="nav-item dd-parent" data-bs-auto-close="outside">
 
         <a href="#"
-           class="nav-link dropdown-toggle">
+           class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
 
             <i class="@Model.Icon"></i>
 
@@ -43,3 +43,4 @@ else
 
     </li>
 }
+

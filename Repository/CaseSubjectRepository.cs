@@ -26,17 +26,36 @@ namespace GCMS.Repository
         // ───────────────────────────────────────────────
         public async Task<List<CaseSubjectMaster>> GetAllAsync(int pageNo, int rowCnt)
         {
-            var query = _context.Set<CaseSubjectMaster>()
-                .Where(x => x.Cancel == null || x.Cancel != "Y")
-                .OrderByDescending(x => x.CaseSubjectId)
-                .AsQueryable();
+            var list = new List<CaseSubjectMaster>();
 
-            if (pageNo > 0 && rowCnt > 0)
+            using var conn = _connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_MAST_RCSAT_CSSUBJECT";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 5;
+
+            cmd.Parameters.Add("P_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
             {
-                query = query.Skip((pageNo - 1) * rowCnt).Take(rowCnt);
+                list.Add(MapReader(reader));
             }
 
-            return await query.ToListAsync();
+            // SP list branch pagination support nahi karta — in-memory paging
+            if (pageNo > 0 && rowCnt > 0)
+            {
+                return await Task.FromResult(
+                    list.Skip((pageNo - 1) * rowCnt).Take(rowCnt).ToList());
+            }
+
+            return await Task.FromResult(list);
         }
 
         // ───────────────────────────────────────────────
@@ -100,7 +119,7 @@ namespace GCMS.Repository
             cmd.Parameters.Add("P_SUBJECTHI", OracleDbType.Varchar2).Value = model.SubjectHi;
 
             cmd.Parameters.Add("P_INACTIVE", OracleDbType.Varchar2)
-               .Value = model.InActive ?? "N";
+               .Value = model.InActive ?? "F";
 
             cmd.Parameters.Add("P_SUBJECTENGHI", OracleDbType.Varchar2)
                .Value = model.SubjectEngHi ?? (object)DBNull.Value;
@@ -108,8 +127,11 @@ namespace GCMS.Repository
             cmd.Parameters.Add("P_CREATEDBY", OracleDbType.Varchar2)
                .Value = model.CreatedBy ?? (object)DBNull.Value;
 
+            cmd.Parameters.Add("P_USERNAME", OracleDbType.Varchar2)
+               .Value = model.CreatedBy ?? (object)DBNull.Value;
+
             cmd.Parameters.Add("P_CANCEL", OracleDbType.Char)
-               .Value = model.Cancel ?? "N";
+               .Value = model.Cancel ?? "F";
 
             cmd.Parameters.Add("P_CURSOR", OracleDbType.RefCursor)
                .Direction = ParameterDirection.Output;
@@ -163,7 +185,7 @@ namespace GCMS.Repository
             cmd.Parameters.Add("P_CANCELREMARKS", OracleDbType.Varchar2)
                .Value = model.CancelRemarks ?? (object)DBNull.Value;
 
-            cmd.Parameters.Add("P_USERNAME", OracleDbType.Varchar2)
+            cmd.Parameters.Add("P_MODIFIEDBY", OracleDbType.Varchar2)
                .Value = model.UserName ?? (object)DBNull.Value;
 
             cmd.Parameters.Add("P_CURSOR", OracleDbType.RefCursor)

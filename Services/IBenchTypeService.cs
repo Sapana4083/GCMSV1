@@ -1,4 +1,5 @@
 ﻿using GCMS.Models;
+using GCMS.Models.Entities;
 
 namespace GCMS.Services.Interfaces
 {
@@ -11,5 +12,6 @@ namespace GCMS.Services.Interfaces
         Task AddAsync(BenchTypeMaster model);
 
         Task UpdateAsync(BenchTypeMaster model);
+        Task<List<BenchTypeMaster>> GetBenchDDL(int pageNo, int rowCnt);
     }
 }

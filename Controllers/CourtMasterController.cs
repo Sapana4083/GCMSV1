@@ -17,15 +17,18 @@ namespace GCMS.Controllers
         private readonly ICaseTypeService _caseTypeService;
         private readonly IBenchTypeService _benchTypeService;
         private readonly ICaseSubjectService _caseSubjectService;
+        private readonly IDesignationService _designationService;
+
         public CourtMasterController(
-            IDepartmentService service, 
-            ICourtGroupService courtGroupService, 
-            ICourtTypeService courtTypeService, 
-            ICasePurposeGroupService casePurposeGroupService, 
-            ICasePurposeService casePurposeService, 
-            ICaseTypeService caseTypeService, 
-            IBenchTypeService benchTypeService, 
-            ICaseSubjectService caseSubjectService)
+            IDepartmentService service,
+            ICourtGroupService courtGroupService,
+            ICourtTypeService courtTypeService,
+            ICasePurposeGroupService casePurposeGroupService,
+            ICasePurposeService casePurposeService,
+            ICaseTypeService caseTypeService,
+            IBenchTypeService benchTypeService,
+            ICaseSubjectService caseSubjectService,
+            IDesignationService designationService)
         {
             _service = service;
             _courtGroupService = courtGroupService;
@@ -35,6 +38,7 @@ namespace GCMS.Controllers
             _caseTypeService = caseTypeService;
             _benchTypeService = benchTypeService;
             _caseSubjectService = caseSubjectService;
+            _designationService = designationService;
         }
 
         // List Page
@@ -605,6 +609,61 @@ namespace GCMS.Controllers
         {
             var caseSubject = await _caseSubjectService.GetByIdAsync(id);
             return Json(caseSubject);
+        }
+        #endregion
+
+        #region Designation
+        // Designation Master
+        public async Task<IActionResult> DesignationList(int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data = await _designationService.GetAllAsync(pageNo, rowCnt);
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> SaveDesignation(DesignationMaster model)
+        {
+            try
+            {
+                var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                if (model.CmRcsatDesignTmpId == 0)
+                {
+                    model.CreatedBy = username;
+                    await _designationService.AddAsync(model);
+                }
+                else
+                {
+                    model.CreatedBy = username; // P_MODIFIEDBY ke liye reuse
+                    await _designationService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetDesignation(long id)
+        {
+            var designation = await _designationService.GetByIdAsync(id);
+            return Json(designation);
         }
         #endregion
     }

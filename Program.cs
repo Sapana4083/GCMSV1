@@ -91,6 +91,9 @@ builder.Services.AddScoped<IBenchTypeService, BenchTypeService>();
 builder.Services.AddScoped<ICaseSubjectRepository, CaseSubjectRepository>();
 builder.Services.AddScoped<ICaseSubjectService, CaseSubjectService>();
 
+builder.Services.AddScoped<IDesignationRepository, DesignationRepository>();
+builder.Services.AddScoped<IDesignationService, DesignationService>();
+
 builder.Services.AddAuthentication(
     CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

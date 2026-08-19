@@ -24,5 +24,8 @@ namespace GCMS.Services
 
         public Task UpdateAsync(DesignationMaster model) =>
             _repository.UpdateAsync(model);
+        public Task<List<DesignationMaster>> GetDesignationDDL(int pageNo, int rowCnt) =>
+           _repository.GetAllAsync(pageNo, rowCnt);
+     
     }
 }

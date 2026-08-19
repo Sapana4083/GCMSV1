@@ -24,5 +24,8 @@ namespace GCMS.Services
 
         public Task UpdateAsync(BenchTypeMaster model) =>
             _repository.UpdateAsync(model);
+
+        public Task<List<BenchTypeMaster>> GetBenchDDL(int pageNo, int rowCnt) =>
+           _repository.GetBenchDDL(pageNo, rowCnt);
     }
 }

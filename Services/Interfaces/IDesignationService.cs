@@ -11,5 +11,6 @@ namespace GCMS.Services.Interfaces
         Task AddAsync(DesignationMaster model);
 
         Task UpdateAsync(DesignationMaster model);
+        Task<List<DesignationMaster>> GetDesignationDDL(int pageNo, int rowCnt);  
     }
 }

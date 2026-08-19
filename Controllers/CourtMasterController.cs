@@ -41,6 +41,7 @@ namespace GCMS.Controllers
             _designationService = designationService;
         }
 
+        #region Department
         // List Page
         public async Task<IActionResult> DepartmentList(int pageNo = 1, int rowCnt = 999999)
         {
@@ -116,6 +117,7 @@ namespace GCMS.Controllers
                 return Json(new { success = false, message = "Delete failed: " + ex.Message });
             }
         }
+        #endregion
 
         #region Court Group List
 
@@ -239,6 +241,7 @@ namespace GCMS.Controllers
 
         #endregion
 
+        #region Court Type
         public async Task<IActionResult> CourtTypeList(int pageNo = 1, int rowCnt = 999999)
         {
             var list = await _courtTypeService.GetAllAsync(pageNo, rowCnt);
@@ -303,7 +306,7 @@ namespace GCMS.Controllers
                 message = "Saved Successfully."
             });
         }
-
+        #endregion
 
         #region Case Purpose Group List
         public async Task<IActionResult> CasePurposeGroupList(
@@ -437,6 +440,7 @@ namespace GCMS.Controllers
             }
         }
         #endregion
+
         #region Case Type
         // Case Type Master
         public async Task<IActionResult> CaseTypeList(int pageNo = 1, int rowCnt = 999999999)
@@ -665,6 +669,10 @@ namespace GCMS.Controllers
             var designation = await _designationService.GetByIdAsync(id);
             return Json(designation);
         }
+        #endregion
+
+        #region Advocate
+
         #endregion
     }
 }

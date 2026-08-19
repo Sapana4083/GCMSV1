@@ -4,9 +4,7 @@ namespace GCMS.Services.Interfaces
 {
     public interface IDivisionService
     {
-        Task<List<DivisionMaster>> GetAllAsync(
-    int pageNo,
-    int rowCnt);
+        Task<List<DivisionMaster>> GetAllAsync(int pageNo, int rowCnt);
 
         Task<DivisionMaster?> GetByIdAsync(long id);
 

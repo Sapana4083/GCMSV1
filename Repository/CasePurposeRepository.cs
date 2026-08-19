@@ -263,5 +263,45 @@ namespace GCMS.Repository
                 ModifiedOn = reader["MODIFIEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["MODIFIEDON"])
             };
         }
+
+        public async Task<List<CasePurposeMaster>> GetDropDownAsync(int pageNo, int rowCnt)
+        {
+            var list = new List<CasePurposeMaster>();
+
+            using var conn = _connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_CASE_PURPOSE";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 6;
+
+            cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor)
+               .Direction = ParameterDirection.Output;
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new CasePurposeMaster
+                {
+                    CasePurposeMastId = Convert.ToInt64(reader["CasePurposeMastId"]),
+                    CasePurposeEng = reader["CASE_PURPOSE_ENG"]?.ToString()
+                });
+                //list.Add(MapReader(reader));
+            }
+
+            // SP list branch pagination support nahi karta — in-memory paging
+            if (pageNo > 0 && rowCnt > 0)
+            {
+                return await Task.FromResult(
+                    list.Skip((pageNo - 1) * rowCnt).Take(rowCnt).ToList());
+            }
+
+            return await Task.FromResult(list);
+        }
     }
 }

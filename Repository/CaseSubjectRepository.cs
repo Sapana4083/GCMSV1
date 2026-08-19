@@ -234,5 +234,39 @@ namespace GCMS.Repository
                 ModifiedOn = reader["MODIFIEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["MODIFIEDON"])
             };
         }
+
+        public async Task<List<CaseSubjectMaster>> GetCaseSubjectAsync(int pageNo, int rowCnt)
+        {
+            List<CaseSubjectMaster> list = new();
+
+            using var conn = _connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_MAST_RCSAT_CSSUBJECT";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 6;
+            cmd.Parameters.Add("P_ROW_CNT", OracleDbType.Int32).Value = rowCnt;
+            cmd.Parameters.Add("P_PAGE_NO", OracleDbType.Int32).Value = pageNo;
+
+            cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor)
+                .Direction = ParameterDirection.Output;
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new CaseSubjectMaster
+                {
+                    CaseSubjectId = Convert.ToInt64(reader["MAST_RCSAT_CSSUBJECTID"]),
+                    SubjectEngHi = reader["SUBJECTENGHI"]?.ToString()
+                });
+            }
+
+            return list;
+        }
     }
 }

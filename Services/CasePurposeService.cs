@@ -24,5 +24,8 @@ namespace GCMS.Services
 
         public Task UpdateAsync(CasePurposeMaster model) =>
             _repository.UpdateAsync(model);
+
+        public Task<List<CasePurposeMaster>> GetCasePurposeAsync(int pageNo, int rowCnt) =>
+          _repository.GetDropDownAsync(pageNo, rowCnt);
     }
 }

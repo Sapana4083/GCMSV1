@@ -6,6 +6,8 @@
     // var states = ViewBag.StateList as List<GCMS.Models.StateMaster>;    
     var Orders = ViewBag.OrderList as List<GCMS.Models.Entities.DepartmentMaster>;
     var CaseType = ViewBag.CaseTypeList as List<GCMS.Models.CaseTypeMaster>;
+    var CaseSubject = ViewBag.CaseSubjectList as List<GCMS.Models.CaseSubjectMaster>;
+    var CasePurpose = ViewBag.CasePurposeList as List<GCMS.Models.CasePurposeMaster>;
 }
 
 <style>
@@ -305,6 +307,12 @@
                                 class="form-select">
 
                             <option value="">Select Case Subject</option>
+                            @foreach (var cs in CaseSubject)
+                            {
+                                <option value="@cs.CaseSubjectId">
+                                    @cs.SubjectEngHi
+                                </option>
+                            }
 
                         </select>
 
@@ -323,6 +331,13 @@
                                 class="form-select">
 
                             <option value="">Select Case Purpose</option>
+                            @foreach (var cp in CasePurpose)
+                            {
+                                <option value="@cp.CasePurposeMastId">
+                                    @cp.CasePurposeEng
+                                </option>
+                            }
+
 
                         </select>
 
@@ -371,7 +386,7 @@
 
                
 
-                 <div class="text-end">
+                @*  <div class="text-end">
 
                     <button type="button"
                             id="btnStep1"
@@ -381,7 +396,7 @@
 
                     </button>
 
-                </div>
+                </div> *@
 
             </div>
 

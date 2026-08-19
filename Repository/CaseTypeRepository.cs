@@ -273,5 +273,42 @@ namespace GCMS.Repository
                 ModifiedOn = reader["MODIFIEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["MODIFIEDON"])
             };
         }
+
+        public async Task<List<CaseTypeMaster>> GetCaseTypeAsync(int pageNo, int rowCnt)
+        {
+            List<CaseTypeMaster> list = new();
+
+            using var conn = _connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_CASE_TYPE";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 6;
+            cmd.Parameters.Add("P_ROW_CNT", OracleDbType.Int32).Value = rowCnt;
+            cmd.Parameters.Add("P_PAGE_NO", OracleDbType.Int32).Value = pageNo;
+
+            cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor)
+                .Direction = ParameterDirection.Output;
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new CaseTypeMaster
+                {
+                    CaseTypeMastId = Convert.ToInt64(reader["case_type_mastid"]),
+                    CaseType = reader["case_type"]?.ToString()
+                    //CourtTypeName = reader["CourtType"]?.ToString(),
+                    //CourtGroupCode = reader["CourtGroupId"]?.ToString(),
+                    //InActive = reader["inactive"]?.ToString()
+                });
+            }
+
+            return list;
+        }
     }
 }

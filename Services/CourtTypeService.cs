@@ -18,10 +18,10 @@ namespace GCMS.Services
             return await _repository.GetAllAsync(pageNo, rowCnt);
         }
 
-        public async Task<List<CaseTypeMaster>> GetCaseTypeAsync(int pageNo, int rowCnt)
-        {
-            return await _repository.GetCaseTypeAsync(pageNo, rowCnt);
-        }
+        //public async Task<List<CaseTypeMaster>> GetCaseTypeAsync(int pageNo, int rowCnt)
+        //{
+        //    return await _repository.GetCaseTypeAsync(pageNo, rowCnt);
+        //}
         public async Task<CourtTypeMaster?> GetByIdAsync(long id)
         {
             return await _repository.GetByIdAsync(id);

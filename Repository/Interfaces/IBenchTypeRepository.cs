@@ -11,5 +11,7 @@ namespace GCMS.Repository.Interfaces
         Task AddAsync(BenchTypeMaster model);
 
         Task UpdateAsync(BenchTypeMaster model);
+
+        Task<List<BenchTypeMaster>> GetBenchDDL(int pageNo, int rowCnt);
     }
 }

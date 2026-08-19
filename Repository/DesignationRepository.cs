@@ -205,5 +205,36 @@ namespace GCMS.Repository
                 ModifiedOn = reader["MODIFIEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["MODIFIEDON"])
             };
         }
+
+        public async Task<List<DesignationMaster>> GetDesignationDDL(int pageNo, int rowCnt)
+        {
+            var list = new List<DesignationMaster>();
+
+            using var conn = _connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_DESIGNATION_MASTER";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 6;
+
+            cmd.Parameters.Add("P_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new DesignationMaster
+                {
+                    DesgCode = reader["CM_RCSAT_DESIGN_TMPID"].ToString(),
+                    DesgEngHi = reader["DESGENGHI"]?.ToString()
+                });
+            }
+
+            return list;
+        }
     }
 }

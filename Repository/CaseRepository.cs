@@ -603,11 +603,11 @@ namespace GCMS.Repository
         {
             return await _context.AdvocateMaster
                 .Where(x => x.InActive == "T")
-                .OrderBy(x => x.AdvocateName)
+                .OrderBy(x => x.AdvName)
                 .Select(x => new SelectListItem
                 {
-                    Value = x.AdvocateMastId.ToString(),
-                    Text = x.AdvocateName
+                    Value = x.MastRcsatAdvocateId.ToString(),
+                    Text = x.AdvName
                 })
                 .ToListAsync();
         }

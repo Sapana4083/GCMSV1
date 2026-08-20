@@ -16,7 +16,7 @@
     @* Third Party  *@
     <link href="~/thirdparty/css/buttons.datatables.min.css" rel="stylesheet" />
     <link href="~/thirdparty/css/responsive.datatables.min.css" rel="stylesheet" />
-    <link href="~/css/all.min.css" rel="stylesheet" />
+    <link href="~/thirdparty/css/all.min.css" rel="stylesheet" />
 
    @*  <link rel="stylesheet"
           href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
@@ -339,7 +339,9 @@
                 </button>
 
                 @* <img src="~/images/rcsatimg.jpeg" alt="GCMS Logo" class="mainlogo" /> *@
-                <img src="~/images/mainlogo/gcms_blue.png" alt="GCMS Logo" class="mainlogo" />
+                @* <img src="~/images/mainlogo/gcms_blue.png" alt="GCMS Logo" class="mainlogo" /> *@
+                <img src="~/images/mainlogo/logo_saffron.png" alt="GCMS Logo" class="mainlogo" />
+
                 <span class="accessibility-divider-logo" aria-hidden="true">|</span>
                 <span class="topbar-title deepshadow text-end">
                     @(Context.Session.GetString("CourtName") ?? "N/A")
@@ -365,8 +367,14 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/sidebarjavascript.js" asp-append-version="true"></script>
     <script src="~/js/accessibility.js" asp-append-version="true"></script>
-   
 
+	<script src="~/thirdparty/js/datatables.buttons.min.js"></script>
+	<script src="~/thirdparty/js/jszip.min.js"></script>
+	<script src="~/thirdparty/js/pdfmake.min.js"></script>
+	<script src="~/thirdparty/js/vfs_fonts.js"></script>
+	<script src="~/thirdparty/js/buttons.html5.min.js"></script>
+	<script src="~/thirdparty/js/buttons.print.min.js"></script>
+	<script src="~/thirdparty/js/datatables.responsive.min.js"></script>
   
 @*  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>

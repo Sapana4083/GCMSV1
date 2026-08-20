@@ -486,13 +486,13 @@ img {
    the sidebar uses .dd-parent so the two never collide)
 ============================================================ */
 :root {
-    --sidebar-width: 280px;
+    --sidebar-width: 282px;
     --sidebar-collapsed-width: 63px;
     --topbar-height: 75px;
 }
 
 #mainContent {
-    margin-top: 8rem;
+    margin-top: 8.2rem;
     margin-left: 1rem;
 }
 
@@ -590,7 +590,7 @@ img {
     z-index: 1010;
     color: white;
     background-size: cover;
-    margin-top: 16px;
+    margin-top: 21px;
 }
 
     .topbar button {
@@ -842,6 +842,7 @@ textarea:focus-visible,
     left: 0;
     position: fixed;
     z-index: 1040;
+    background: url(../images/mainlogo/topbarback.png) !important;
 }
 
     .accessibility-bar .container-fluid {
@@ -1055,7 +1056,8 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
         background: -moz-linear-gradient(top, #585858 0%, #111 100%);
         background: -ms-linear-gradient(top, #585858 0%, #111 100%);
         background: -o-linear-gradient(top, #585858 0%, #111 100%);
-        background: linear-gradient(to bottom, #4bbcf7 0%, #4bbcf7 100%);
+        /*background: linear-gradient(to bottom, #4bbcf7 0%, #4bbcf7 100%);*/
+        background: linear-gradient(to bottom, #416aad 0%, #8daee3 100%);
     }
 .bg-success {
     --bs-bg-opacity: 1;
@@ -1654,7 +1656,7 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 }
 
 .topbarimg {
-    margin-left: -4%;
+    margin-left: -8%;
 }
 
 .btn-close {

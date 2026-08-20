@@ -20,7 +20,6 @@ namespace GCMS.Controllers
         private readonly IDesignationService _designationService;
         private readonly IAdvocateService _advocateService; 
 
-
         public CourtMasterController(
             IDepartmentService service,
             ICourtGroupService courtGroupService,
@@ -134,10 +133,6 @@ namespace GCMS.Controllers
             return View(list);
         }
 
-        #endregion
-
-        #region Get Court Group By Id
-
         [HttpGet]
 
         public async Task<IActionResult> GetCourtGroup(long id)
@@ -165,7 +160,7 @@ namespace GCMS.Controllers
 
         #endregion
 
-        #region Save Court Group
+        #region Court Group
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -199,10 +194,6 @@ namespace GCMS.Controllers
                 message = "Court Group Saved Successfully."
             });
         }
-
-        #endregion
-
-        #region Delete Court Group
 
         [HttpPost]
         public async Task<IActionResult> DeleteCourtGroup(long id)

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using GCMS.Data;
 using GCMS.Helpers;
 using GCMS.Models.Common;
+using GCMS.Services;
 
 namespace GCMS.Controllers
 {
@@ -15,16 +16,26 @@ namespace GCMS.Controllers
         private const string SaveErrorMessage = "Unable to save case registration details. Please try again or contact support.";
         private readonly ICaseService _caseService;
         private readonly IDepartmentService _service;
-        private readonly ICourtTypeService _CourtTypeservice;
+        private readonly ICaseTypeService _CaseTypeservice;
+        private readonly ICaseSubjectService _CaseSubjectService;
+        private readonly ICasePurposeService _CasePurposeService;
+        private readonly IBenchTypeService _BenchTypeService;
+        private readonly IDistrictService _DistrictService;
+        private readonly IDesignationService _DesignationService;
         private readonly ILogger<CaseRegistrationController> _logger;
         
 
-        public CaseRegistrationController(IDepartmentService service, ICaseService caseService, ICourtTypeService courtTypeService, ILogger<CaseRegistrationController> logger)
+        public CaseRegistrationController(IDepartmentService service, ICaseService caseService, ICaseTypeService caseTypeService, ICaseSubjectService caseSubjectService,ICasePurposeService casePurposeService,IBenchTypeService benchTypeService,IDistrictService districtService,IDesignationService designationService,ILogger<CaseRegistrationController> logger)
         {
             _service = service;
             _caseService = caseService;
             _logger = logger;
-            _CourtTypeservice = courtTypeService;
+            _CaseTypeservice = caseTypeService;
+            _CaseSubjectService = caseSubjectService;
+            _CasePurposeService = casePurposeService;
+            _BenchTypeService = benchTypeService;
+            _DistrictService = districtService;
+            _DesignationService = designationService;
         }
 
         [HttpGet]
@@ -260,13 +271,13 @@ namespace GCMS.Controllers
 
             //vm.CaseTypes = await _caseService.GetCaseTypesAsync();
 
-            vm.CaseSubjects = await _caseService.GetCaseSubjectsAsync();
+            //vm.CaseSubjects = await _caseService.GetCaseSubjectsAsync();
 
-            vm.CasePurposes = await _caseService.GetCasePurposesAsync();
+            //vm.CasePurposes = await _caseService.GetCasePurposesAsync();
 
-            vm.BenchTypes = await _caseService.GetBenchTypesAsync();
+            //vm.BenchTypes = await _caseService.GetBenchTypesAsync();
 
-            vm.Designations = await _caseService.GetDesignationsAsync();
+           // vm.Designations = await _caseService.GetDesignationsAsync();
 
             vm.Districts = await _caseService.GetDistrictsAsync();
 
@@ -279,8 +290,24 @@ namespace GCMS.Controllers
             var orders = await _service.GetAllOrderAsync(1, 1000);
             ViewBag.OrderList = orders;
 
-            var casetype = await _CourtTypeservice.GetCaseTypeAsync(1, 1000);
+            var casetype = await _CaseTypeservice.GetCaseTypeAsync(1, 1000);
             ViewBag.CaseTypeList = casetype;
+
+            
+            var casesubject = await _CaseSubjectService.GetCaseSubjectAsync(1, 1000);
+            ViewBag.CaseSubjectList = casesubject;
+
+            var casepurpose = await _CasePurposeService.GetCasePurposeAsync(1, 1000);
+            ViewBag.CasePurposeList = casepurpose;
+
+            var Bench = await _BenchTypeService.GetBenchDDL(1, 1000);
+            ViewBag.BenchList = Bench;
+
+            var District = await _DistrictService.GetAllAsync(1, 1000);
+            ViewBag.DistrictList = District;
+
+            var Designation = await _DesignationService.GetDesignationDDL(1, 1000);
+            ViewBag.DesignationList = Designation;
         }
     }
 }

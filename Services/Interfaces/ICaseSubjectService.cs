@@ -11,5 +11,7 @@ namespace GCMS.Services.Interfaces
         Task AddAsync(CaseSubjectMaster model);
 
         Task UpdateAsync(CaseSubjectMaster model);
+        Task<List<CaseSubjectMaster>> GetCaseSubjectAsync(int pageNo, int rowCnt);
+        
     }
 }

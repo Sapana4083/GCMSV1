@@ -23,9 +23,9 @@ namespace GCMS.Controllers
         public IActionResult Index() => View(new RcsatCaseUpdateViewModel());
 
         [HttpGet]
-        public async Task<IActionResult> GetCaseDetails(string linkCase)
+        public async Task<IActionResult> GetCaseDetails(string linkCase , string casetype, string courtcode)
         {
-            var result = await _repo.GetByLinkCaseAsync(linkCase);
+            var result = await _repo.GetByLinkCaseAsync(linkCase, casetype , courtcode);
             if (result == null) return Json(new { found = false });
 
             return Json(new
@@ -36,8 +36,8 @@ namespace GCMS.Controllers
                 caseType = result.CaseType,
                 appellantName = result.AppellantName,
                 respondentName = result.RespondentName,
-                institutionDate = result.InstitutionDate?.ToString("yyyy-MM-dd"),
-                hearingDate = result.HearingDate?.ToString("yyyy-MM-dd"),
+                institutionDate = result.InstitutionDate?.ToString("yyyy/MM/dd"),
+                hearingDate = result.HearingDate?.ToString("yyyy/MM/dd"),
                 district = result.District,
                 purposeName = result.PurposeName
             });
@@ -67,6 +67,7 @@ namespace GCMS.Controllers
             return row == null ? Json(new { found = false }) : Json(new { found = true, data = row });
         }
 
+
         [HttpPost]
         public async Task<IActionResult> DeleteLinkedCase(long caseId)
         {
@@ -77,8 +78,8 @@ namespace GCMS.Controllers
         [HttpPost]
         public async Task<IActionResult> Save([FromBody] RcsatCaseUpdateViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.LinkCase))
-                return BadRequest("Linked Case (Main Case) is required.");
+            //if (string.IsNullOrWhiteSpace(model.LinkCase))
+            //    return BadRequest("Linked Case (Main Case) is required.");
 
             try
             {

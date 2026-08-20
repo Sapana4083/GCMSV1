@@ -6,6 +6,6 @@ namespace GCMS.Repository.Interfaces
     public interface IRcsatCaseUpdateRepository
     {
         Task<long> SaveCaseWithLinkedRowsAsync(RcsatCaseUpdateViewModel model);
-        Task<RcsatCaseUpdateViewModel> GetByLinkCaseAsync(string linkCase);
+        Task<RcsatCaseUpdateViewModel> GetByLinkCaseAsync(string linkCase, string casetype , string court_code);
     }
 }

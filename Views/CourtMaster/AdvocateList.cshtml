@@ -1,0 +1,564 @@
+﻿@model List<GCMS.Models.AdvocateMaster>
+
+@{
+    ViewData["Title"] = "Advocate Master";
+    var srNo = 1;
+    var departmentList = ViewBag.DepartmentList as SelectList;
+    var courtList = ViewBag.CourtList as SelectList;
+}
+
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h4>Advocate Master</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnAddAdvocate" title="Click to add new record.">
+                Add Advocate
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+    <div class="table-responsive">
+        <!-- Data Table -->
+        <table id="tblAdvocate" class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Name (In English)</th>
+                    <th>Name (In Hindi)</th>
+                    <th>Bar Council No</th>
+                    <th>Mobile No</th>
+                    <th>Active</th>
+                    <th>Created By</th>
+                    <th>Modified Date</th>
+
+                    <th width="180">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.AdvName</td>
+                        <td>@item.AdvNameHi</td>
+                        <td>@item.BarCouncilNo</td>
+                        <td>@item.AdvMobile</td>
+                        <td>
+
+                        
+                            @if (item.InActive == "0")
+                            {
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Inactive
+                                </span>
+                            }
+
+                        </td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ModifiedOn</td>
+
+                        <td>
+                            <button type="button"
+                                    class="btn btn-default waves-effect waves-light edit"
+                                    data-id="@item.MastRcsatAdvocateId" title="Click to edit record.">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<!-- ========== MODAL ========== -->
+<div class="modal fade" id="advocateModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Advocate Master</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+
+                @Html.AntiForgeryToken()
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <input type="hidden" id="MastRcsatAdvocateId" />
+
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Name (In English)<span class="text-danger">*</span></label>
+                            <input type="text" id="AdvName" class="form-control" />
+                            <span class="text-danger" id="errAdvName"></span>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Name (In Hindi)<span class="text-danger">*</span></label>
+                            <input type="text" id="AdvNameHi" class="form-control" />
+                            <span class="text-danger" id="errAdvNameHi"></span>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Bar Council No</label>
+                            <input type="text" id="BarCouncilNo" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Email Id</label>
+                            <input type="text" id="AdvEmail" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Mobile No</label>
+                            <input type="text" id="AdvMobile" maxlength="10" class="form-control" />
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">In Active</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="InActive">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== DEPARTMENTS PANEL ========== -->
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                            <span><i class="bi bi-chevron-up"></i> Departments</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex gap-2 mb-2">
+                                <button type="button" class="btn btn-sm btn-info text-white" id="btnAddDeptRow" title="Add Row">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnDeleteDeptRow" title="Delete Selected Row">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            <table class="table table-bordered" id="tblDepartmentRows">
+                                <thead>
+                                    <tr>
+                                        <th width="40"></th>
+                                        <th width="60">S.no</th>
+                                        <th>Department</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="checkbox" class="row-select" /></td>
+                                        <td class="row-sno">1</td>
+                                        <td>
+                                            @if (departmentList != null)
+                                            {
+                                                @Html.DropDownList(
+                                                    "DeptDropdown",
+                                                    departmentList,
+                                                    "Select an option",
+                                                    new { @class = "form-select dept-dropdown" }
+                                                )
+                                            }
+                                            else
+                                            {
+                                                <select class="form-select dept-dropdown">
+                                                    <option value="">Select an option</option>
+                                                </select>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ========== ADVOCATE COURT MAP PANEL ========== -->
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                            <span><i class="bi bi-chevron-up"></i> Advocate Court Map</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex gap-2 mb-2">
+                                <button type="button" class="btn btn-sm btn-info text-white" id="btnAddCourtRow" title="Add Row">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnDeleteCourtRow" title="Delete Selected Row">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            <table class="table table-bordered" id="tblCourtRows">
+                                <thead>
+                                    <tr>
+                                        <th width="40"></th>
+                                        <th width="60">S.no</th>
+                                        <th>Court Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="checkbox" class="row-select" /></td>
+                                        <td class="row-sno">1</td>
+                                        <td>
+                                            @if (courtList != null)
+                                            {
+                                                @Html.DropDownList(
+                                                    "CourtDropdown",
+                                                    courtList,
+                                                    "Select an option",
+                                                    new { @class = "form-select court-dropdown" }
+                                                )
+                                            }
+                                            else
+                                            {
+                                                <select class="form-select court-dropdown">
+                                                    <option value="">Select an option</option>
+                                                </select>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-success" id="btnSave">
+                        Save
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== SCRIPTS ========== -->
+@section Scripts {
+    <script>
+
+        // ── Init ─────────────────────────────────────────────
+        $(document).ready(function() {
+
+            $('#tblAdvocate').DataTable({
+
+                dom: 'lBfrtip',
+
+                responsive: true,
+                autoWidth: false,
+
+                pageLength: 10,
+
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+
+                columnDefs: [{
+                    responsivePriority: 1,
+                    targets: 8
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 0
+                }
+                ],
+
+                buttons: [{
+                    extend: 'print',
+                    title: 'Advocate Master'
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: 'Advocate Master'
+                }
+                ]
+            });
+
+            $('.dt-buttons').hide();
+        });
+        $("#btnPrint").click(function() {
+
+            window.print();
+
+        });
+
+        $("#btnExcel").click(function() {
+
+            let table = document.getElementById("tblAdvocate");
+
+            let html = table.outerHTML;
+
+            let url = 'data:application/vnd.ms-excel,' +
+                encodeURIComponent(html);
+
+            let a = document.createElement('a');
+
+            a.href = url;
+            a.download = 'AdvocateMaster.xls';
+
+            a.click();
+
+        });
+
+        var advocateModal = new bootstrap.Modal(
+            document.getElementById('advocateModal')
+        );
+
+        // ── Dynamic Row Helpers ─────────────────────────────
+        function renumberRows(tableSelector) {
+            $(tableSelector + " tbody tr").each(function(idx) {
+                $(this).find(".row-sno").text(idx + 1);
+            });
+        }
+
+        function resetDeptRows() {
+            var firstRow = $("#tblDepartmentRows tbody tr:first").clone();
+            firstRow.find("select").val("");
+            firstRow.find("input.row-select").prop("checked", false);
+            $("#tblDepartmentRows tbody").html(firstRow);
+            renumberRows("#tblDepartmentRows");
+        }
+
+        function resetCourtRows() {
+            var firstRow = $("#tblCourtRows tbody tr:first").clone();
+            firstRow.find("select").val("");
+            firstRow.find("input.row-select").prop("checked", false);
+            $("#tblCourtRows tbody").html(firstRow);
+            renumberRows("#tblCourtRows");
+        }
+
+        // ── Add Department Row ──────────────────────────────
+        $("#btnAddDeptRow").click(function() {
+            var newRow = $("#tblDepartmentRows tbody tr:first").clone();
+            newRow.find("select").val("");
+            newRow.find("input.row-select").prop("checked", false);
+            $("#tblDepartmentRows tbody").append(newRow);
+            renumberRows("#tblDepartmentRows");
+        });
+
+        // ── Delete Selected Department Row(s) ───────────────
+        $("#btnDeleteDeptRow").click(function() {
+            $("#tblDepartmentRows tbody tr").each(function() {
+                if ($(this).find(".row-select").is(":checked")) {
+                    $(this).remove();
+                }
+            });
+            if ($("#tblDepartmentRows tbody tr").length === 0) {
+                resetDeptRows();
+            } else {
+                renumberRows("#tblDepartmentRows");
+            }
+        });
+
+        // ── Add Court Row ────────────────────────────────────
+        $("#btnAddCourtRow").click(function() {
+            var newRow = $("#tblCourtRows tbody tr:first").clone();
+            newRow.find("select").val("");
+            newRow.find("input.row-select").prop("checked", false);
+            $("#tblCourtRows tbody").append(newRow);
+            renumberRows("#tblCourtRows");
+        });
+
+        // ── Delete Selected Court Row(s) ────────────────────
+        $("#btnDeleteCourtRow").click(function() {
+            $("#tblCourtRows tbody tr").each(function() {
+                if ($(this).find(".row-select").is(":checked")) {
+                    $(this).remove();
+                }
+            });
+            if ($("#tblCourtRows tbody tr").length === 0) {
+                resetCourtRows();
+            } else {
+                renumberRows("#tblCourtRows");
+            }
+        });
+
+        // ── Add Advocate ─────────────────────────────────────
+        $("#btnAddAdvocate").click(function() {
+            $("#MastRcsatAdvocateId").val('');
+            $("#AdvName").val('');
+            $("#AdvNameHi").val('');
+            $("#BarCouncilNo").val('');
+            $("#AdvEmail").val('');
+            $("#AdvMobile").val('');
+            $("#errAdvName").text('');
+            $("#errAdvNameHi").text('');
+            $("#InActive").prop("checked", false);
+            resetDeptRows();
+            resetCourtRows();
+            advocateModal.show();
+        });
+
+        
+
+        // ── Edit Advocate ────────────────────────────────────
+        $(document).on("click", ".edit", function() {
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: '/CourtMaster/GetAdvocate',
+                type: 'GET',
+                data: {
+                    id: id
+                },
+                success: function(data) {
+
+                    console.log(data);
+
+                    if (!data) {
+                        alert("No data returned from server");
+                        return;
+                    }
+
+                    $("#MastRcsatAdvocateId").val(data.mastRcsatAdvocateId);
+                    $("#AdvName").val(data.advName);
+                    $("#AdvNameHi").val(data.advNameHi);
+                    $("#BarCouncilNo").val(data.barCouncilNo);
+                    $("#AdvEmail").val(data.advEmail);
+                    $("#AdvMobile").val(data.advMobile);
+                    $("#InActive").prop(
+                        "checked",
+                        data.inActive === "1"
+                    );
+                    $("#errAdvName").text('');
+                    $("#errAdvNameHi").text('');
+
+                    // Department rows
+                    resetDeptRows();
+                    if (data.departmentIds) {
+                        var deptIds = data.departmentIds.split(',');
+                        $("#tblDepartmentRows tbody tr:first select").val(deptIds[0]);
+                        for (var i = 1; i < deptIds.length; i++) {
+                            var newRow = $("#tblDepartmentRows tbody tr:first").clone();
+                            newRow.find("select").val(deptIds[i]);
+                            newRow.find("input.row-select").prop("checked", false);
+                            $("#tblDepartmentRows tbody").append(newRow);
+                        }
+                        renumberRows("#tblDepartmentRows");
+                    }
+
+                    // Court rows
+                    resetCourtRows();
+                    if (data.courtIds) {
+                        var courtIds = data.courtIds.split(',');
+                        $("#tblCourtRows tbody tr:first select").val(courtIds[0]);
+                        for (var i = 1; i < courtIds.length; i++) {
+                            var newRow = $("#tblCourtRows tbody tr:first").clone();
+                            newRow.find("select").val(courtIds[i]);
+                            newRow.find("input.row-select").prop("checked", false);
+                            $("#tblCourtRows tbody").append(newRow);
+                        }
+                        renumberRows("#tblCourtRows");
+                    }
+
+                    advocateModal.show();
+                }
+            });
+        });
+
+        // ── Save Advocate ────────────────────────────────────
+        $("#btnSave").click(function() {
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            let isValid = true;
+
+            $("#errAdvName").text('');
+            $("#errAdvNameHi").text('');
+
+            if ($("#AdvName").val().trim() === "") {
+                $("#errAdvName").text("Name (In English) is required");
+                isValid = false;
+            }
+
+            if ($("#AdvNameHi").val().trim() === "") {
+                $("#errAdvNameHi").text("Name (In Hindi) is required");
+                isValid = false;
+            }
+
+            if (!isValid)
+                return;
+
+            // Collect Department IDs
+            var deptIds = [];
+            $("#tblDepartmentRows tbody select").each(function() {
+                if ($(this).val()) deptIds.push($(this).val());
+            });
+
+            // Collect Court IDs
+            var courtIds = [];
+            $("#tblCourtRows tbody select").each(function() {
+                if ($(this).val()) courtIds.push($(this).val());
+            });
+
+            
+            $.ajax({
+                url: '/CourtMaster/SaveAdvocate',
+                type: 'POST',
+                headers: {
+                    RequestVerificationToken: token
+                },
+                data: {
+                    MastRcsatAdvocateId: $("#MastRcsatAdvocateId").val() || 0,
+                    AdvName: $("#AdvName").val(),
+                    AdvNameHi: $("#AdvNameHi").val(),
+                    BarCouncilNo: $("#BarCouncilNo").val(),
+                    AdvEmail: $("#AdvEmail").val(),
+                    AdvMobile: $("#AdvMobile").val(),
+                    InActive: $("#InActive").is(":checked") ? "1" : "0",
+                    DepartmentIds: deptIds.join(','),
+                    CourtIds: courtIds.join(',')
+                },
+
+                success: function(r) {
+                    if (r.success) {
+                        advocateModal.hide();
+                        location.reload();
+                    } else {
+                        alert(r.message);
+                    }
+                },
+                error: function() {
+                    alert("Save Failed");
+                }
+            });
+        });
+
+    </script>
+}

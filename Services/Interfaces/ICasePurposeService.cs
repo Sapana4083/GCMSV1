@@ -8,5 +8,7 @@ namespace GCMS.Services.Interfaces
         Task<CasePurposeMaster?> GetByIdAsync(long id);
         Task AddAsync(CasePurposeMaster model);
         Task UpdateAsync(CasePurposeMaster model);
+
+        Task<List<CasePurposeMaster>> GetCasePurposeAsync(int pageNo, int rowCnt);
     }
 }

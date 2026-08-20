@@ -17,15 +17,21 @@ namespace GCMS.Controllers
         private readonly ICaseTypeService _caseTypeService;
         private readonly IBenchTypeService _benchTypeService;
         private readonly ICaseSubjectService _caseSubjectService;
+        private readonly IDesignationService _designationService;
+        private readonly IAdvocateService _advocateService; 
+
+
         public CourtMasterController(
-            IDepartmentService service, 
-            ICourtGroupService courtGroupService, 
-            ICourtTypeService courtTypeService, 
-            ICasePurposeGroupService casePurposeGroupService, 
-            ICasePurposeService casePurposeService, 
-            ICaseTypeService caseTypeService, 
-            IBenchTypeService benchTypeService, 
-            ICaseSubjectService caseSubjectService)
+            IDepartmentService service,
+            ICourtGroupService courtGroupService,
+            ICourtTypeService courtTypeService,
+            ICasePurposeGroupService casePurposeGroupService,
+            ICasePurposeService casePurposeService,
+            ICaseTypeService caseTypeService,
+            IBenchTypeService benchTypeService,
+            ICaseSubjectService caseSubjectService,
+            IDesignationService designationService,
+            IAdvocateService advocateService)
         {
             _service = service;
             _courtGroupService = courtGroupService;
@@ -35,8 +41,11 @@ namespace GCMS.Controllers
             _caseTypeService = caseTypeService;
             _benchTypeService = benchTypeService;
             _caseSubjectService = caseSubjectService;
+            _designationService = designationService;
+            _advocateService = advocateService;
         }
 
+        #region Department
         // List Page
         public async Task<IActionResult> DepartmentList(int pageNo = 1, int rowCnt = 999999)
         {
@@ -112,6 +121,7 @@ namespace GCMS.Controllers
                 return Json(new { success = false, message = "Delete failed: " + ex.Message });
             }
         }
+        #endregion
 
         #region Court Group List
 
@@ -235,6 +245,7 @@ namespace GCMS.Controllers
 
         #endregion
 
+        #region Court Type
         public async Task<IActionResult> CourtTypeList(int pageNo = 1, int rowCnt = 999999)
         {
             var list = await _courtTypeService.GetAllAsync(pageNo, rowCnt);
@@ -299,7 +310,7 @@ namespace GCMS.Controllers
                 message = "Saved Successfully."
             });
         }
-
+        #endregion
 
         #region Case Purpose Group List
         public async Task<IActionResult> CasePurposeGroupList(
@@ -433,6 +444,7 @@ namespace GCMS.Controllers
             }
         }
         #endregion
+
         #region Case Type
         // Case Type Master
         public async Task<IActionResult> CaseTypeList(int pageNo = 1, int rowCnt = 999999999)
@@ -605,6 +617,129 @@ namespace GCMS.Controllers
         {
             var caseSubject = await _caseSubjectService.GetByIdAsync(id);
             return Json(caseSubject);
+        }
+        #endregion
+
+        #region Designation
+        // Designation Master
+        public async Task<IActionResult> DesignationList(int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data = await _designationService.GetAllAsync(pageNo, rowCnt);
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> SaveDesignation(DesignationMaster model)
+        {
+            try
+            {
+                var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                if (model.CmRcsatDesignTmpId == 0)
+                {
+                    model.CreatedBy = username;
+                    await _designationService.AddAsync(model);
+                }
+                else
+                {
+                    model.CreatedBy = username; // P_MODIFIEDBY ke liye reuse
+                    await _designationService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetDesignation(long id)
+        {
+            var designation = await _designationService.GetByIdAsync(id);
+            return Json(designation);
+        }
+        #endregion
+
+        #region Advocate
+        // Advocate Master
+        public async Task<IActionResult> AdvocateList(int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data = await _advocateService.GetAllAsync(pageNo, rowCnt);
+
+            var departments = await _service.GetAllAsync(1, 999999);
+            ViewBag.DepartmentList = new SelectList(
+                departments,
+                "DepartmentId",
+                "DepartmentName"
+            );
+
+            var courtList = await _courtTypeService.GetAllAsync(1, 999999);
+            ViewBag.CourtList = new SelectList(
+                courtList,
+                "CourtTypeMastId",
+                "CourtTypeName"
+            );
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> SaveAdvocate(AdvocateMaster model)
+        {
+            try
+            {
+                var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+                model.CreatedBy = username;
+
+                if (model.MastRcsatAdvocateId == 0)
+                {
+                    await _advocateService.AddAsync(model);
+                }
+                else
+                {
+                    await _advocateService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAdvocate(long id)
+        {
+            var advocate = await _advocateService.GetByIdAsync(id);
+            return Json(advocate);
         }
         #endregion
     }

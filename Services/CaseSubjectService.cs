@@ -24,5 +24,10 @@ namespace GCMS.Services
 
         public Task UpdateAsync(CaseSubjectMaster model) =>
             _repository.UpdateAsync(model);
+
+        public Task<List<CaseSubjectMaster>> GetCaseSubjectAsync(int pageNo, int rowCnt) =>
+           _repository.GetAllAsync(pageNo, rowCnt);
+
+        
     }
 }

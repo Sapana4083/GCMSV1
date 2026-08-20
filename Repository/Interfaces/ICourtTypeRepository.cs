@@ -6,7 +6,7 @@ namespace GCMS.Repository.Interfaces
     {
         Task<List<CourtTypeMaster>> GetAllAsync(int pageNo, int rowCnt);
 
-        Task<List<CaseTypeMaster>> GetCaseTypeAsync(int pageNo, int rowCnt);
+    //Task<List<CaseTypeMaster>> GetCaseTypeAsync(int pageNo, int rowCnt);
 
         Task<CourtTypeMaster?> GetByIdAsync(long id);
 

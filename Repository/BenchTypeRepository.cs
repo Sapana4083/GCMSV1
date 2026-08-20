@@ -59,6 +59,38 @@ namespace GCMS.Repository
             return list;
         }
 
+        public async Task<List<BenchTypeMaster>> GetBenchDDL(int pageNo, int rowCnt)
+        {
+            var list = new List<BenchTypeMaster>();
+
+            using var conn = _connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_BENCH_TYPE";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 7;
+
+            cmd.Parameters.Add("P_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new BenchTypeMaster
+                {
+                    BenchTypeMastId = Convert.ToInt64(reader["BENCH_TYPE_MASTID"]),
+                    BenchType = reader["BENCH_TYPE"]?.ToString()
+                });
+            }
+
+            return list;
+        }
+
+
         // ───────────────────────────────────────────────
         // GET BY ID (V_INPUT = 4)
         // ───────────────────────────────────────────────

@@ -53,6 +53,8 @@ builder.Services.AddSession(options =>
 
     // CURRENT SERVER IS HTTP
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    // CURRENT SERVER IS HTTPS
+    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
@@ -147,6 +149,8 @@ builder.Services
 
         // CURRENT SERVER IS HTTP
         options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+        // CURRENT SERVER IS HTTPS
+        //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 
         options.Cookie.SameSite = SameSiteMode.Strict;
 
@@ -190,6 +194,8 @@ builder.Services.AddAntiforgery(options =>
 
     // CURRENT SERVER IS HTTP
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+    // CURRENT SERVER IS HTTPS
+    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
     options.Cookie.SameSite = SameSiteMode.Strict;
 });

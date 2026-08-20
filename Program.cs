@@ -140,15 +140,6 @@ builder.Services.AddScoped<IAdvocateRepository, AdvocateRepository>();
 builder.Services.AddScoped<IAdvocateService, AdvocateService>();
 
 
-
-//builder.Services.AddAuthentication(
-//    CookieAuthenticationDefaults.AuthenticationScheme)
-//    .AddCookie(options =>
-//    {
-//        options.LoginPath = "/Account/Login";
-//    });
-
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -217,6 +208,8 @@ app.Use(async (context, next) =>
     await next();
 });
 
+
+
 app.Use(async (context, next) =>
 {
     context.Response.OnStarting(() =>
@@ -260,8 +253,13 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseHttpsRedirection();
 
+
 var provider = new FileExtensionContentTypeProvider();
 provider.Mappings[".css"] = "text/css";
+provider.Mappings[".woff2"] = "font/woff2";
+provider.Mappings[".json"] = "application/json";
+provider.Mappings[".ttf"] = "font/ttf";
+provider.Mappings[".woff"] = "font/woff";
 
 app.UseStaticFiles(new StaticFileOptions
 {

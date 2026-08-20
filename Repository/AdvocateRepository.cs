@@ -272,6 +272,44 @@ namespace GCMS.Repository
         }
 
         // ───────────────────────────────────────────────
+        // GET ADVOCATES BY COURT CODE (V_INPUT = 6)
+        // ───────────────────────────────────────────────
+        public async Task<List<AdvocateMaster>> GetAdvocatesByCourtCodeAsync(string courtCode)
+        {
+            var list = new List<AdvocateMaster>();
+
+            using var conn = (OracleConnection)_connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_RCSAT_ADVOCATE";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 6;
+
+            cmd.Parameters.Add("P_COURT_IDS", OracleDbType.Varchar2).Value = courtCode;
+
+            cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new AdvocateMaster
+                {
+                    MastRcsatAdvocateId = Convert.ToInt64(reader["MAST_RCSAT_ADVOCATEID"]),
+                    AdvEngHi = reader["ADVENGHI"]?.ToString(),
+                    AdvEmail = reader["ADVEMAIL"]?.ToString(),
+                    AdvMobile = reader["ADVMOBILE"] == DBNull.Value ? null : Convert.ToInt64(reader["ADVMOBILE"])
+                });
+            }
+
+            return await Task.FromResult(list);
+        }
+
+        // ───────────────────────────────────────────────
         // Helper
         // ───────────────────────────────────────────────
         private static AdvocateMaster MapReader(OracleDataReader reader)

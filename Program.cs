@@ -150,7 +150,7 @@ builder.Services
         // CURRENT SERVER IS HTTP
         options.Cookie.SecurePolicy = CookieSecurePolicy.None;
         // CURRENT SERVER IS HTTPS
-        //options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+        //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
         options.Cookie.SameSite = SameSiteMode.Strict;
 

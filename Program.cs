@@ -140,15 +140,6 @@ builder.Services.AddScoped<IAdvocateRepository, AdvocateRepository>();
 builder.Services.AddScoped<IAdvocateService, AdvocateService>();
 
 
-
-//builder.Services.AddAuthentication(
-//    CookieAuthenticationDefaults.AuthenticationScheme)
-//    .AddCookie(options =>
-//    {
-//        options.LoginPath = "/Account/Login";
-//    });
-
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

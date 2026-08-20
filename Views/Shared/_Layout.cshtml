@@ -12,11 +12,17 @@
 
     <link rel="stylesheet" href="~/GCMS.styles.css" asp-append-version="true" />
     <link href="~/lib/bootstrap-icon/font/bootstrap-icons-new.css" rel="stylesheet" />
-    <link rel="stylesheet"
+
+    @* Third Party  *@
+    <link href="~/thirdparty/css/buttons.datatables.min.css" rel="stylesheet" />
+    <link href="~/thirdparty/css/responsive.datatables.min.css" rel="stylesheet" />
+    <link href="~/css/all.min.css" rel="stylesheet" />
+
+   @*  <link rel="stylesheet"
           href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
     <link rel="stylesheet"
           href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> *@
 
     <style>
         :root {
@@ -75,6 +81,14 @@
                 color: #c3ccd4;
             }
 
+        .accessibility-divider-logo {
+            color: #3d7cb3;
+            height: 100% !important;
+            width: 1%;
+            font-size: 31px;
+            margin-right: -10px;
+            }
+
         /* User dropdown pill */
         .user-menu-toggle {
             display: flex;
@@ -112,13 +126,13 @@
                 height: 15px;
             }
 
-        .user-name {
-            font-size: 0.95rem;
+       /*  .user-name {
+            font-size: 0.75rem;
             font-weight: 700;
             color: #0c3e6f;
             /* text-transform: capitalize; */
             text-transform: uppercase;
-        }
+        } */
 
         .user-dropdown-menu {
             border: 1px solid #e7ebf0;
@@ -200,15 +214,15 @@
                 }
 
         .topbar-title.deepshadow {
-            flex: 1;
+            /* flex: 1; */
             text-align: center;
-            /* color: #f9fbfd; */
+           
             color: #0e569d;
             font-size: 1.3rem;
             font-weight: 600;
             letter-spacing: 0.3px;
             text-shadow: none;
-            /* width: 100%; */
+           
             padding-right: 16%;
         }
 
@@ -233,7 +247,7 @@
             <div class="topbar-brand">
                 
                 @* <img src="~/images/rajasthan-sarkar-logo.png" class="me-5" /> *@
-                <img src="~/images/mainlogo/logo.png" class="me-5" />
+                <img src="~/images/mainlogo/logo.png" class="topbarimg" />
                
             </div>
 
@@ -315,6 +329,7 @@
 
                 @* <img src="~/images/rcsatimg.jpeg" alt="GCMS Logo" class="mainlogo" /> *@
                 <img src="~/images/mainlogo/gcms_blue.png" alt="GCMS Logo" class="mainlogo" />
+                <span class="accessibility-divider-logo" aria-hidden="true">|</span>
                 <span class="topbar-title deepshadow text-end">
                     @(Context.Session.GetString("CourtName") ?? "N/A")
                 </span>
@@ -339,13 +354,16 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/sidebarjavascript.js" asp-append-version="true"></script>
     <script src="~/js/accessibility.js" asp-append-version="true"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  
+@*  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+   <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script> 
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script> *@
+
+
 @* 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

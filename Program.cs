@@ -10,11 +10,17 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(
 options =>
@@ -24,18 +30,23 @@ options =>
         .GetConnectionString("RcsatOracle"));
 });
 
-
-
-
-
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
 });
+
+//builder.Services.AddSession(options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromMinutes(30);
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.IsEssential = true;
+//});
 
 
 
@@ -91,11 +102,24 @@ builder.Services.AddScoped<IBenchTypeService, BenchTypeService>();
 builder.Services.AddScoped<ICaseSubjectRepository, CaseSubjectRepository>();
 builder.Services.AddScoped<ICaseSubjectService, CaseSubjectService>();
 
-builder.Services.AddAuthentication(
-    CookieAuthenticationDefaults.AuthenticationScheme)
+//builder.Services.AddAuthentication(
+//    CookieAuthenticationDefaults.AuthenticationScheme)
+//    .AddCookie(options =>
+//    {
+//        options.LoginPath = "/Account/Login";
+//    });
+
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied"; // add if you have one
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // match your session idle timeout
+        options.SlidingExpiration = true;
     });
 
 builder.Services.AddControllersWithViews(options =>
@@ -122,13 +146,58 @@ builder.Services.AddAntiforgery(options =>
 });
 
 var app = builder.Build();
+app.Use(async (context, next) =>
+{
+    context.Response.OnStarting(() =>
+    {
+        var headers = context.Response.Headers;
+        headers.Remove("Server");
+        headers.Remove("X-Powered-By");
+        headers.Remove("X-AspNet-Version");
+        headers.Remove("X-AspNetMvc-Version");
+
+        headers["X-Content-Type-Options"] = "nosniff";
+        headers["X-Frame-Options"] = "DENY";
+        headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+        headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()";
+
+        var connectSrc = app.Environment.IsDevelopment()
+            ? "connect-src 'self' ws: wss: http://localhost:* https://localhost:*;"
+            : "connect-src 'self';";
+
+        headers["Content-Security-Policy"] =
+            "default-src 'self'; " +
+            //"script-src 'self' 'unsafe-eval' blob:; " +
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; " +
+            "style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; " +
+            "img-src 'self' data: blob:; " +
+            "font-src 'self' https://cdnjs.cloudflare.com data:; " +
+            connectSrc + " " +
+            "object-src 'none'; " +
+            "worker-src 'self' blob:;";
+
+        return Task.CompletedTask;
+    });
+    await next();
+});
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Account/Error");
     app.UseHsts();
 }
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".css"] = "text/css";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider
+});
+
+//app.UseStaticFiles();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();

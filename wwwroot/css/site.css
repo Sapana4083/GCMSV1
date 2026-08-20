@@ -38,7 +38,7 @@ html {
 
 body {
     margin: 0;
-    font-family: 'poppins-regular', sans-serif;
+    /*font-family: 'poppins-regular', sans-serif;*/
     font-size: clamp(14px, 2vw, 14px);
     font-weight: 400;
     line-height: 1.5;
@@ -575,23 +575,11 @@ img {
 }
 
 .topbar {
-    /*height: var(--topbar-height);
-    width: 100%;
-    background: #fff;
-    border-bottom: 1px solid #e9ecef;
-    display: flex;
-    align-items: center;
-    padding: 0 1rem;
-    gap: 1rem;
-    position: fixed;
-    top: 2rem;*/
+  
     z-index: 1010;
     height: var(--topbar-height);
     width: 100%;
-    /*background: #004a81;*/
     background-image: url('../images/headerimg.png');
-    /*background-image: url('../images/headerbanner.png');*/
-    /*background-image: url('../images/headbanner.png');*/
     border-bottom: 1px solid #e9ecef;
     display: flex;
     align-items: center;
@@ -618,12 +606,14 @@ img {
             background: #f1f3f5;
         }
 
-.topbar-title {
-    /*font-weight: 600;*/
+
+
+/*.topbar-title {
+   
     font-size: 22px;
     margin-left: 0%;
 }
-
+*/
 /* Sidebar dropdown toggle caret (generic, works at every depth) */
 .sidebar .dropdown-toggle {
     position: relative;
@@ -1123,10 +1113,11 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
 }
 
 .user-name {
-    flex-shrink: 0;
-    font-size: 0.9rem;
-    /*font-weight: 600;*/
-    color: #222;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0c3e6f;
+    /* text-transform: capitalize; */
+    text-transform: uppercase;
 }
 
 .user-caret {
@@ -1506,7 +1497,7 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
             font-size: 1.05rem;
             width: 20px;
             text-align: center;
-            color: rgba(255,255,255,0.65);
+            color: rgba(255,255,255);
             transition: color 0.2s ease;
             margin-top: 2px;
             flex-shrink: 0;
@@ -1660,6 +1651,14 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: #198754;
     --bs-btn-disabled-border-color: #198754;
+}
+
+.topbarimg {
+    margin-left: -4%;
+}
+
+.btn-close {
+    --bs-btn-close-bg: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e) !important;
 }
 
 /*

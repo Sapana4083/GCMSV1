@@ -20,7 +20,6 @@ namespace GCMS.Controllers
         private readonly IDesignationService _designationService;
         private readonly IAdvocateService _advocateService; 
 
-
         public CourtMasterController(
             IDepartmentService service,
             ICourtGroupService courtGroupService,

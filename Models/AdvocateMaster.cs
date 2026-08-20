@@ -20,6 +20,9 @@ public class AdvocateMaster
     [StringLength(150)]
     public string? AdvNameHi { get; set; }
 
+    [NotMapped]
+    public string? DepEngHi { get; set; }
+
     [Column("ADVENGHI")]
     public string? AdvEngHi { get; set; }
 

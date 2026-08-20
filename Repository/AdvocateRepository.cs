@@ -65,81 +65,57 @@ namespace GCMS.Repository
             using var conn = (OracleConnection)_connectionFactory.CreateConnection();
             conn.Open();
 
+            // ── Base advocate data (V_INPUT = 3) ──
+            using (var cmd = (OracleCommand)conn.CreateCommand())
+            {
+                cmd.BindByName = true;
+                cmd.CommandText = "PROC_RCSAT_ADVOCATE";
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new OracleParameter("V_INPUT", OracleDbType.Int32) { Value = 3 });
+                cmd.Parameters.Add(new OracleParameter("P_MAST_RCSAT_ADVOCATEID", OracleDbType.Int64) { Value = id });
+                cmd.Parameters.Add(new OracleParameter("OUT_CURSOR", OracleDbType.RefCursor) { Direction = ParameterDirection.Output });
+
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    model = MapReader(reader);
+                }
+            }
+
+            if (model == null)
+            {
+                return null;
+            }
+
+            // ── Department mapping (V_INPUT = 8) ──
+            model.DepartmentIds = await GetMappingIdsAsync(conn, id, vInput: 8, columnName: "DEPTNAME");
+
+            // ── Court mapping (V_INPUT = 7) ──
+            model.CourtIds = await GetMappingIdsAsync(conn, id, vInput: 7, columnName: "COURT_NAME");
+
+            return model;
+        }
+
+        private static async Task<string?> GetMappingIdsAsync(OracleConnection conn, long advocateId, int vInput, string columnName)
+        {
             using var cmd = (OracleCommand)conn.CreateCommand();
 
             cmd.BindByName = true;
             cmd.CommandText = "PROC_RCSAT_ADVOCATE";
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.Add(new OracleParameter("V_INPUT", OracleDbType.Int32)
-            {
-                Value = 3
-            });
-
-            cmd.Parameters.Add(new OracleParameter("P_MAST_RCSAT_ADVOCATEID", OracleDbType.Int64)
-            {
-                Value = id
-            });
-
-            cmd.Parameters.Add(new OracleParameter("OUT_CURSOR", OracleDbType.RefCursor)
-            {
-                Direction = ParameterDirection.Output
-            });
-
-            using var reader = cmd.ExecuteReader();
-
-            if (reader.Read())
-            {
-                model = MapReader(reader);
-            }
-
-            if (model != null)
-            {
-                model.DepartmentIds = await GetDepartmentIdsAsync(conn, id);
-                model.CourtIds = await GetCourtIdsAsync(conn, id);
-            }
-
-            return model;
-        }
-
-        private static async Task<string?> GetDepartmentIdsAsync(OracleConnection conn, long advocateId)
-        {
-            using var cmd = (OracleCommand)conn.CreateCommand();
-            cmd.BindByName = true;
-            cmd.CommandText = @"SELECT DEPTNAME FROM TRB_ADV_DEPARTMENT
-                                 WHERE MAST_RCSAT_ADVOCATEID = :id
-                                   AND NVL(LSACTIVE,'1') = '1'
-                                 ORDER BY TRB_ADV_DEPARTMENTROW";
-
-            cmd.Parameters.Add(new OracleParameter("id", OracleDbType.Int64) { Value = advocateId });
+            cmd.Parameters.Add(new OracleParameter("V_INPUT", OracleDbType.Int32) { Value = vInput });
+            cmd.Parameters.Add(new OracleParameter("P_MAST_RCSAT_ADVOCATEID", OracleDbType.Int64) { Value = advocateId });
+            cmd.Parameters.Add(new OracleParameter("OUT_CURSOR", OracleDbType.RefCursor) { Direction = ParameterDirection.Output });
 
             var ids = new StringBuilder();
+
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 if (ids.Length > 0) ids.Append(',');
-                ids.Append(reader["DEPTNAME"]);
-            }
-
-            return await Task.FromResult(ids.Length > 0 ? ids.ToString() : null);
-        }
-
-        private static async Task<string?> GetCourtIdsAsync(OracleConnection conn, long advocateId)
-        {
-            using var cmd = (OracleCommand)conn.CreateCommand();
-            cmd.BindByName = true;
-            cmd.CommandText = @"SELECT COURT_NAME FROM TRN_RCSAT_ADVCTMAP
-                                 WHERE MAST_RCSAT_ADVOCATEID = :id
-                                 ORDER BY TRN_RCSAT_ADVCTMAPROW";
-
-            cmd.Parameters.Add(new OracleParameter("id", OracleDbType.Int64) { Value = advocateId });
-
-            var ids = new StringBuilder();
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                if (ids.Length > 0) ids.Append(',');
-                ids.Append(reader["COURT_NAME"]);
+                ids.Append(reader[columnName]);
             }
 
             return await Task.FromResult(ids.Length > 0 ? ids.ToString() : null);
@@ -290,6 +266,82 @@ namespace GCMS.Repository
             cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 6;
 
             cmd.Parameters.Add("P_COURT_IDS", OracleDbType.Varchar2).Value = courtCode;
+
+            cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new AdvocateMaster
+                {
+                    MastRcsatAdvocateId = Convert.ToInt64(reader["MAST_RCSAT_ADVOCATEID"]),
+                    AdvEngHi = reader["ADVENGHI"]?.ToString(),
+                    AdvEmail = reader["ADVEMAIL"]?.ToString(),
+                    AdvMobile = reader["ADVMOBILE"] == DBNull.Value ? null : Convert.ToInt64(reader["ADVMOBILE"])
+                });
+            }
+
+            return await Task.FromResult(list);
+        }
+
+        // ───────────────────────────────────────────────
+        // GET RESPONDENT ADVOCATE BY COURT CODE + DEPARTMENT (V_INPUT = 9)
+        // ───────────────────────────────────────────────
+        public async Task<List<AdvocateMaster>> GetRespondentAdvocatesAsync(string courtCode, string departmentName)
+        {
+            var list = new List<AdvocateMaster>();
+
+            using var conn = (OracleConnection)_connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_RCSAT_ADVOCATE";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 9;
+
+            cmd.Parameters.Add("P_COURT_IDS", OracleDbType.Varchar2).Value = courtCode;
+            cmd.Parameters.Add("P_DEPARTMENT_IDS", OracleDbType.Varchar2).Value = departmentName;
+
+            cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                list.Add(new AdvocateMaster
+                {
+                    MastRcsatAdvocateId = Convert.ToInt64(reader["MAST_RCSAT_ADVOCATEID"]),
+                    AdvEngHi = reader["ADVENGHI"]?.ToString(),
+                    AdvEmail = reader["ADVEMAIL"]?.ToString(),
+                    AdvMobile = reader["ADVMOBILE"] == DBNull.Value ? null : Convert.ToInt64(reader["ADVMOBILE"]),
+                    DepEngHi = reader["DEPENGHI"]?.ToString()
+                });
+            }
+
+            return await Task.FromResult(list);
+        }
+
+        // ───────────────────────────────────────────────
+        // GET PRIVATE ADVOCATE (V_INPUT = 10)
+        // ───────────────────────────────────────────────
+        public async Task<List<AdvocateMaster>> GetPrivateAdvocatesAsync()
+        {
+            var list = new List<AdvocateMaster>();
+
+            using var conn = (OracleConnection)_connectionFactory.CreateConnection();
+            conn.Open();
+
+            using var cmd = (OracleCommand)conn.CreateCommand();
+
+            cmd.BindByName = true;
+            cmd.CommandText = "PROC_RCSAT_ADVOCATE";
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 10;
 
             cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
 

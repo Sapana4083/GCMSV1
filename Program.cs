@@ -6,157 +6,168 @@ using GCMS.Repository.Implementations;
 using GCMS.Repository.Interfaces;
 using GCMS.Services;
 using GCMS.Services.Interfaces;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
+
+
+// ============================================================
+// KESTREL
+// ============================================================
 
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.AddServerHeader = false;
 });
 
-builder.Services.AddDbContext<ApplicationDbContext>(
-options =>
+
+// ============================================================
+// DATABASE
+// ============================================================
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseOracle(
-        builder.Configuration
-        .GetConnectionString("RcsatOracle"));
+        builder.Configuration.GetConnectionString("RcsatOracle"));
 });
+
+
+// ============================================================
+// SESSION
+// ============================================================
 
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(240); 
+    options.IdleTimeout = TimeSpan.FromMinutes(240);
+
+    options.Cookie.Name = ".AspNetCore.Session";
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+    // CURRENT SERVER IS HTTP
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+
     options.Cookie.SameSite = SameSiteMode.Strict;
 });
 
-//builder.Services.AddSession(options =>
-//{
-//    options.IdleTimeout = TimeSpan.FromMinutes(30);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.IsEssential = true;
-//});
 
+// ============================================================
+// REPOSITORIES / SERVICES
+// ============================================================
 
 builder.Services.AddScoped<OracleConnectionFactory>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IStateRepository, StateRepository>();
-
 builder.Services.AddScoped<IStateService, StateService>();
 
 builder.Services.AddScoped<IDistrictRepository, DistrictRepository>();
-
 builder.Services.AddScoped<IDistrictService, DistrictService>();
 
 builder.Services.AddScoped<IDivisionRepository, DivisionRepository>();
-
 builder.Services.AddScoped<IDivisionService, DivisionService>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-
 builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
-
 builder.Services.AddScoped<IMenuService, MenuService>();
 
 builder.Services.AddScoped<IRoleMenuMappingRepository, RoleMenuMappingRepository>();
-
 builder.Services.AddScoped<IRoleMenuMappingService, RoleMenuMappingService>();
 
 builder.Services.AddScoped<ITehsilRepository, TehsilRepository>();
-
 builder.Services.AddScoped<ITehsilService, TehsilService>();
 
 builder.Services.AddScoped<ISdoRepository, SdoRepository>();
-
 builder.Services.AddScoped<ISdoService, SdoService>();
 
 builder.Services.AddScoped<ICourtDashboardRepository, CourtDashboardRepository>();
 
 builder.Services.AddScoped<ICourtTypeRepository, CourtTypeRepository>();
-
 builder.Services.AddScoped<ICourtTypeService, CourtTypeService>();
 
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 builder.Services.AddScoped<ICourtGroupRepository, CourtGroupRepository>();
-
 builder.Services.AddScoped<ICourtGroupService, CourtGroupService>();
 
 builder.Services.AddScoped<ICasePurposeRepository, CasePurposeRepository>();
-
 builder.Services.AddScoped<ICasePurposeService, CasePurposeService>();
 
 builder.Services.AddScoped<ICasePurposeGroupRepository, CasePurposeGroupRepository>();
-
 builder.Services.AddScoped<ICasePurposeGroupService, CasePurposeGroupService>();
 
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
-
 builder.Services.AddScoped<ICaseService, CaseService>();
 
 builder.Services.AddScoped<ILinkedCaseFamilyRepository, LinkedCaseFamilyRepository>();
-
 builder.Services.AddScoped<IRcsatCaseUpdateRepository, RcsatCaseUpdateRepository>();
-
 builder.Services.AddScoped<ILinkedCaseRepository, LinkedCaseRepository>();
 
 builder.Services.AddScoped<ICaseTypeRepository, CaseTypeRepository>();
-
 builder.Services.AddScoped<ICaseTypeService, CaseTypeService>();
 
 builder.Services.AddScoped<IBenchTypeRepository, BenchTypeRepository>();
-
 builder.Services.AddScoped<IBenchTypeService, BenchTypeService>();
 
 builder.Services.AddScoped<ICaseSubjectRepository, CaseSubjectRepository>();
-
 builder.Services.AddScoped<ICaseSubjectService, CaseSubjectService>();
 
 builder.Services.AddScoped<IDesignationRepository, DesignationRepository>();
-
 builder.Services.AddScoped<IDesignationService, DesignationService>();
 
 builder.Services.AddScoped<IAdvocateRepository, AdvocateRepository>();
-
 builder.Services.AddScoped<IAdvocateService, AdvocateService>();
 
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+// ============================================================
+// AUTHENTICATION
+// ============================================================
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
-        options.AccessDeniedPath = "/Account/AccessDenied"; // add if you have one
+        options.AccessDeniedPath = "/Account/AccessDenied";
+
+        options.Cookie.Name = ".AspNetCore.Cookies";
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+        // CURRENT SERVER IS HTTP
+        options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+
         options.Cookie.SameSite = SameSiteMode.Strict;
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // match your session idle timeout
+
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
         options.SlidingExpiration = true;
     });
+
+
+// ============================================================
+// MVC + ANTIFORGERY
+// ============================================================
 
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
+
+// ============================================================
+// AUTHORIZATION
+// ============================================================
 
 builder.Services.AddAuthorization(options =>
 {
@@ -166,113 +177,135 @@ builder.Services.AddAuthorization(options =>
 });
 
 
+// ============================================================
+// ANTIFORGERY
+// ============================================================
 
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "RequestVerificationToken";
-    options.Cookie.SameSite = SameSiteMode.Strict; // or Lax
+
     options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+
+    // CURRENT SERVER IS HTTP
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+
+    options.Cookie.SameSite = SameSiteMode.Strict;
 });
+
 
 var app = builder.Build();
 
 
-// existing header-stripping + CSP middleware
-app.Use(async (context, next) => { /* your existing header logic */ await next(); });
+// ============================================================
+// EXCEPTION HANDLING
+// ============================================================
 
-// blocked verbs
-var blockedVerbs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-    { "OPTIONS", "TRACE", "HEAD", "DELETE", "PUT", "PATCH" };
-app.Use(async (context, next) =>
+if (!app.Environment.IsDevelopment())
 {
-    if (blockedVerbs.Contains(context.Request.Method))
-    {
-        context.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
-        return;
-    }
-    await next();
-});
+    app.UseExceptionHandler("/Account/Error");
 
-// blocked file extensions
-var blockedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-    { ".bak", ".tmp", ".swp", ".log", ".old", ".~", ".zip", ".rar", ".7z", ".tar", ".gz", ".trc" };
-app.Use(async (context, next) =>
-{
-    var extension = Path.GetExtension(context.Request.Path.Value ?? "");
-    if (!string.IsNullOrEmpty(extension) && blockedExtensions.Contains(extension))
-    {
-        context.Response.StatusCode = StatusCodes.Status404NotFound;
-        return;
-    }
-    await next();
-});
+    // DO NOT USE HSTS WHILE RUNNING HTTP
+    // app.UseHsts();
+}
 
 
+// ============================================================
+// IMPORTANT
+// ============================================================
+// CURRENT SERVER URL:
+// http://172.18.177.128/
+//
+// Therefore DO NOT use:
+// app.UseHttpsRedirection();
+//
+// Enable it only after HTTPS is configured.
+// ============================================================
+
+// app.UseHttpsRedirection();
+
+
+// ============================================================
+// SECURITY HEADERS
+// ============================================================
 
 app.Use(async (context, next) =>
 {
     context.Response.OnStarting(() =>
     {
         var headers = context.Response.Headers;
-        headers.Remove("Server");
+
+        // Remove application headers
         headers.Remove("X-Powered-By");
         headers.Remove("X-AspNet-Version");
         headers.Remove("X-AspNetMvc-Version");
 
+        // Security headers
         headers["X-Content-Type-Options"] = "nosniff";
+
         headers["X-Frame-Options"] = "DENY";
-        headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
-        headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()";
 
-        var connectSrc = app.Environment.IsDevelopment()
-            ? "connect-src 'self' ws: wss: http://localhost:* https://localhost:*;"
-            : "connect-src 'self';";
+        headers["Referrer-Policy"] =
+            "strict-origin-when-cross-origin";
 
-        headers["Content-Security-Policy"] =
-            "default-src 'self'; " +
-            //"script-src 'self' 'unsafe-eval' blob:; " +
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; " +
-            "style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; " +
-            "img-src 'self' data: blob:; " +
-            "font-src 'self' https://cdnjs.cloudflare.com data:; " +
-            connectSrc + " " +
-            "object-src 'none'; " +
-            "worker-src 'self' blob:;";
+        headers["Permissions-Policy"] =
+            "geolocation=(), camera=(), microphone=()";
 
         return Task.CompletedTask;
     });
+
     await next();
 });
 
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Account/Error");
-    app.UseHsts();
-}
-app.UseHttpsRedirection();
-
+// ============================================================
+// STATIC FILES
+// ============================================================
 
 var provider = new FileExtensionContentTypeProvider();
-provider.Mappings[".css"] = "text/css";
-provider.Mappings[".woff2"] = "font/woff2";
-provider.Mappings[".json"] = "application/json";
-provider.Mappings[".ttf"] = "font/ttf";
-provider.Mappings[".woff"] = "font/woff";
 
 app.UseStaticFiles(new StaticFileOptions
 {
     ContentTypeProvider = provider
 });
 
-//app.UseStaticFiles();
+
+// ============================================================
+// ROUTING
+// ============================================================
+
+app.UseRouting();
+
+
+// ============================================================
+// SESSION
+// ============================================================
+
 app.UseSession();
+
+
+// ============================================================
+// AUTHENTICATION
+// ============================================================
+
 app.UseAuthentication();
+
+
+// ============================================================
+// AUTHORIZATION
+// ============================================================
+
 app.UseAuthorization();
+
+
+// ============================================================
+// DEFAULT ROUTE
+// ============================================================
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
+
 
 app.Run();

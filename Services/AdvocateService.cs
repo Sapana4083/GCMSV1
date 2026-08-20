@@ -24,5 +24,14 @@ namespace GCMS.Services
 
         public Task UpdateAsync(AdvocateMaster model) =>
             _repository.UpdateAsync(model);
+
+        public Task<List<AdvocateMaster>> GetAdvocatesByCourtCodeAsync(string courtCode) =>
+    _repository.GetAdvocatesByCourtCodeAsync(courtCode);
+
+        public Task<List<AdvocateMaster>> GetRespondentAdvocatesAsync(string courtCode, string departmentName) =>
+    _repository.GetRespondentAdvocatesAsync(courtCode, departmentName);
+
+        public Task<List<AdvocateMaster>> GetPrivateAdvocatesAsync() =>
+            _repository.GetPrivateAdvocatesAsync();
     }
 }

@@ -11,5 +11,11 @@ namespace GCMS.Services.Interfaces
         Task AddAsync(AdvocateMaster model);
 
         Task UpdateAsync(AdvocateMaster model);
+
+        Task<List<AdvocateMaster>> GetAdvocatesByCourtCodeAsync(string courtCode);
+
+        Task<List<AdvocateMaster>> GetRespondentAdvocatesAsync(string courtCode, string departmentName);
+
+        Task<List<AdvocateMaster>> GetPrivateAdvocatesAsync();
     }
 }

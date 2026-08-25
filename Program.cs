@@ -132,6 +132,9 @@ builder.Services.AddScoped<IDesignationService, DesignationService>();
 builder.Services.AddScoped<IAdvocateRepository, AdvocateRepository>();
 builder.Services.AddScoped<IAdvocateService, AdvocateService>();
 
+builder.Services.AddScoped<IRcsatDepartmentRepository, RcsatDepartmentRepository>();
+builder.Services.AddScoped<IRcsatDepartmentService, RcsatDepartmentService>();
+
 
 // ============================================================
 // AUTHENTICATION

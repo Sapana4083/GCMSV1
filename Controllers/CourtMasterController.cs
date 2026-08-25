@@ -20,6 +20,8 @@ namespace GCMS.Controllers
         private readonly IDesignationService _designationService;
         private readonly IAdvocateService _advocateService; 
 
+        private readonly IRcsatDepartmentService _rcsatDepartmentService;
+
         public CourtMasterController(
             IDepartmentService service,
             ICourtGroupService courtGroupService,
@@ -30,7 +32,8 @@ namespace GCMS.Controllers
             IBenchTypeService benchTypeService,
             ICaseSubjectService caseSubjectService,
             IDesignationService designationService,
-            IAdvocateService advocateService)
+            IAdvocateService advocateService,
+            IRcsatDepartmentService rcsatDepartmentService)
         {
             _service = service;
             _courtGroupService = courtGroupService;
@@ -42,6 +45,7 @@ namespace GCMS.Controllers
             _caseSubjectService = caseSubjectService;
             _designationService = designationService;
             _advocateService = advocateService;
+            _rcsatDepartmentService = rcsatDepartmentService;
         }
 
         #region Department
@@ -731,6 +735,60 @@ namespace GCMS.Controllers
         {
             var advocate = await _advocateService.GetByIdAsync(id);
             return Json(advocate);
+        }
+        #endregion
+
+#region RCSAT Department Master
+        public async Task<IActionResult> RcsatDepartmentList(int pageNo = 1, int rowCnt = 999999999)
+        {
+            var data = await _rcsatDepartmentService.GetAllAsync(pageNo, rowCnt);
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> SaveRcsatDepartment(RcsatDepartmentMaster model)
+        {
+            try
+            {
+                var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                if (model.CmRcsatDeptId == 0)
+                {
+                    model.CreatedBy = username;
+                    await _rcsatDepartmentService.AddAsync(model);
+                }
+                else
+                {
+                    model.ModifiedBy = username;
+                    await _rcsatDepartmentService.UpdateAsync(model);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Saved Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetRcsatDepartment(long id)
+        {
+            var department = await _rcsatDepartmentService.GetByIdAsync(id);
+            return Json(department);
         }
         #endregion
     }

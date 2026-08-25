@@ -18,7 +18,7 @@ namespace GCMS.Repository
         }
 
         // ───────────────────────────────────────────────
-        // GET ALL (V_INPUT = 5) — paged list
+        // GET ALL (V_INPUT = 5) — all records, no paging in SP
         // ───────────────────────────────────────────────
         public async Task<List<RcsatDepartmentMaster>> GetAllAsync(int pageNo, int rowCnt)
         {
@@ -34,8 +34,6 @@ namespace GCMS.Repository
             cmd.CommandType = CommandType.StoredProcedure;
 
             cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 5;
-            cmd.Parameters.Add("P_ROW_CNT", OracleDbType.Int32).Value = rowCnt;
-            cmd.Parameters.Add("P_PAGE_NO", OracleDbType.Int32).Value = pageNo;
 
             cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
 
@@ -43,10 +41,17 @@ namespace GCMS.Repository
 
             while (reader.Read())
             {
-                list.Add(MapReader(reader));
+                list.Add(MapReaderAliased(reader));
             }
 
-            return list;
+            // SP pagination nahi karta — in-memory paging
+            if (pageNo > 0 && rowCnt > 0)
+            {
+                return await Task.FromResult(
+                    list.Skip((pageNo - 1) * rowCnt).Take(rowCnt).ToList());
+            }
+
+            return await Task.FromResult(list);
         }
 
         // ───────────────────────────────────────────────
@@ -84,7 +89,7 @@ namespace GCMS.Repository
 
             if (reader.Read())
             {
-                model = MapReader(reader);
+                model = MapReaderAliased(reader);
             }
 
             return await Task.FromResult(model);
@@ -157,7 +162,7 @@ namespace GCMS.Repository
         }
 
         // ───────────────────────────────────────────────
-        // LIST DEPARTMENT NAME (V_INPUT = 6) — dropdown ke liye
+        // LIST DEPARTMENT NAME (V_INPUT = 6) — non-aliased columns
         // ───────────────────────────────────────────────
         public async Task<List<RcsatDepartmentMaster>> GetDepartmentNameListAsync()
         {
@@ -180,14 +185,14 @@ namespace GCMS.Repository
 
             while (reader.Read())
             {
-                list.Add(MapReader(reader));
+                list.Add(MapReaderRaw(reader));
             }
 
             return await Task.FromResult(list);
         }
 
         // ───────────────────────────────────────────────
-        // GET DEPARTMENT DETAIL (V_INPUT = 7)
+        // GET DEPARTMENT DETAIL (V_INPUT = 7) — aliased columns
         // ───────────────────────────────────────────────
         public async Task<RcsatDepartmentMaster?> GetDepartmentDetailAsync(long id)
         {
@@ -221,16 +226,31 @@ namespace GCMS.Repository
 
             if (reader.Read())
             {
-                model = MapReader(reader);
+                model = MapReaderAliased(reader);
             }
 
             return await Task.FromResult(model);
         }
 
         // ───────────────────────────────────────────────
-        // Helper
+        // Helpers
         // ───────────────────────────────────────────────
-        private static RcsatDepartmentMaster MapReader(OracleDataReader reader)
+
+        // V_INPUT = 4, 5, 7 → aliased columns: DEPARTMENT_MASTID, DEPTNAMEEN, DEPTNAMEHI, DEPENGHI, ISACTIVE
+        private static RcsatDepartmentMaster MapReaderAliased(OracleDataReader reader)
+        {
+            return new RcsatDepartmentMaster
+            {
+                CmRcsatDeptId = Convert.ToInt64(reader["DEPARTMENT_MASTID"]),
+                DeptName = reader["DEPTNAMEEN"]?.ToString(),
+                DeptNameHi = reader["DEPTNAMEHI"]?.ToString(),
+                DepEngHi = reader["DEPENGHI"]?.ToString(),
+                InActive = reader["ISACTIVE"]?.ToString()
+            };
+        }
+
+        // V_INPUT = 6 → raw table columns: CM_RCSAT_DEPTID, DEPT_NAME, DEPT_NAMEHI, DEPENGHI, INACTIVE
+        private static RcsatDepartmentMaster MapReaderRaw(OracleDataReader reader)
         {
             return new RcsatDepartmentMaster
             {

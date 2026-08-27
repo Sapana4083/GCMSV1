@@ -57,7 +57,7 @@ namespace GCMS.Controllers
         }
         public async Task<IActionResult> OrderDepartmentList(int pageNo = 1, int rowCnt = 999999)
         {
-            var list = await _service.GetAllOrderAsync(pageNo, rowCnt);
+            var list = await _rcsatDepartmentService.GetDepartmentNameListAsync();
             return View(list);
         }
 

@@ -116,6 +116,8 @@ namespace GCMS.Models.ViewModels
         #endregion
 
         #region ===== STEP 4 : PRIVATE PARTY =====
+        [Display(Name = "Private Advocate")]
+        public long? PrivateAdvocateId { get; set; }
 
         [Display(Name = "Private Party Name")]
         public string? PrivatePartyName { get; set; }

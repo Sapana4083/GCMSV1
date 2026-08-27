@@ -221,7 +221,7 @@ namespace GCMS.Repository
 
             cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 6;
 
-            cmd.Parameters.Add("P_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+            cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
 
             using var reader = cmd.ExecuteReader();
 
@@ -229,7 +229,7 @@ namespace GCMS.Repository
             {
                 list.Add(new DesignationMaster
                 {
-                    DesgCode = reader["CM_RCSAT_DESIGN_TMPID"].ToString(),
+                    CmRcsatDesignTmpId = Convert.ToInt64(reader["CM_RCSAT_DESIGN_TMPID"]),
                     DesgEngHi = reader["DESGENGHI"]?.ToString()
                 });
             }

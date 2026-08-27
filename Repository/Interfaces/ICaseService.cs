@@ -1,4 +1,5 @@
 ﻿using GCMS.Models.Entities;
+using GCMS.Models.ViewModels;
 
 namespace GCMS.Repository.Interfaces
 {
@@ -35,5 +36,9 @@ namespace GCMS.Repository.Interfaces
         //==========================
 
         Task DeleteCaseAsync(long caseId);
+
+        Task<long> SaveFullCaseRegistrationAsync(
+    CaseRegistrationWizardViewModel model,
+    string createdBy);
     }
 }

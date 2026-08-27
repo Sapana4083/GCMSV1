@@ -15,52 +15,21 @@ namespace GCMS.Services
             _repository = repository;
         }
 
-        // STEP-1
-
-        public async Task<long> SaveCaseAsync(CaseRegistration model)
+        // FINAL SUBMIT
+        // Saves Step 1 + Step 2 + Step 3 + Step 4 using one Oracle stored procedure.
+        public async Task<long> SaveFullCaseRegistrationAsync(
+            CaseRegistrationWizardViewModel model,
+            string createdBy)
         {
-            return await _repository.SaveCaseAsync(model);
+            return await _repository.SaveFullCaseRegistrationAsync(
+                model,
+                createdBy);
         }
 
-        public async Task<bool> UpdateCaseAsync(CaseRegistration model)
-        {
-            return await _repository.UpdateCaseAsync(model);
-        }
-
+        // CASE READ / DELETE
         public async Task<CaseRegistration?> GetCaseAsync(long caseId)
         {
             return await _repository.GetCaseAsync(caseId);
-        }
-
-        // STEP-2
-
-        public async Task<long> SaveAppellantAsync(CaseAppellant model)
-        {
-            return await _repository.SaveAppellantAsync(model);
-        }
-        public async Task UpdateAppellantAsync(CaseAppellant model)
-        {
-            await _repository.UpdateAppellantAsync(model);
-        }
-        // STEP-3
-
-        public async Task SaveRespondentAsync(CaseRespondent model)
-        {
-            await _repository.SaveRespondentAsync(model);
-        }
-        public async Task UpdateRespondentAsync(CaseRespondent model)
-        {
-            await _repository.UpdateRespondentAsync(model);
-        }
-        // STEP-4
-
-        public async Task SavePrivatePartyAsync(CasePrivateParty model)
-        {
-            await _repository.SavePrivatePartyAsync(model);
-        }
-        public async Task UpdatePrivatePartyAsync(CasePrivateParty model)
-        {
-            await _repository.UpdatePrivatePartyAsync(model);
         }
 
         public async Task DeleteCaseAsync(long caseId)
@@ -68,10 +37,7 @@ namespace GCMS.Services
             await _repository.DeleteCaseAsync(caseId);
         }
 
-        //=========================
-        // Dropdowns
-        //=========================
-
+        // DROPDOWNS
         public async Task<IEnumerable<SelectListItem>> GetCaseTypesAsync()
         {
             return await _repository.GetCaseTypesAsync();
@@ -116,10 +82,5 @@ namespace GCMS.Services
         {
             return await _repository.GetOrderTypesAsync();
         }
-        //public async Task<CaseRegistrationWizardViewModel?> GetCaseRegistrationAsync(long caseId)
-        //{
-        //    return await _repository.GetCaseRegistrationAsync(caseId);
-        //}
-
     }
 }

@@ -6,28 +6,18 @@ namespace GCMS.Services.Interfaces
 {
     public interface ICaseService
     {
-        // STEP-1
-        Task<long> SaveCaseAsync(CaseRegistration model);
+        // FINAL SUBMIT
+        // Saves Step 1 + Step 2 + Step 3 + Step 4 in one database transaction.
+        Task<long> SaveFullCaseRegistrationAsync(
+            CaseRegistrationWizardViewModel model,
+            string createdBy);
 
-        Task<bool> UpdateCaseAsync(CaseRegistration model);
-
+        // CASE READ / DELETE
         Task<CaseRegistration?> GetCaseAsync(long caseId);
-
-        // STEP-2
-        Task<long> SaveAppellantAsync(CaseAppellant model);
-        Task UpdateAppellantAsync(CaseAppellant model);
-      
-        // STEP-3
-        Task SaveRespondentAsync(CaseRespondent model);
-        Task UpdateRespondentAsync(CaseRespondent model);       
-
-        // STEP-4
-        Task SavePrivatePartyAsync(CasePrivateParty model);
-        Task UpdatePrivatePartyAsync(CasePrivateParty model);
 
         Task DeleteCaseAsync(long caseId);
 
-        // Dropdowns
+        // DROPDOWNS
         Task<IEnumerable<SelectListItem>> GetCaseTypesAsync();
 
         Task<IEnumerable<SelectListItem>> GetCaseSubjectsAsync();
@@ -43,9 +33,7 @@ namespace GCMS.Services.Interfaces
         Task<IEnumerable<SelectListItem>> GetDistrictsAsync();
 
         Task<IEnumerable<SelectListItem>> GetAdvocatesAsync();
+
         Task<IEnumerable<SelectListItem>> GetOrderTypesAsync();
-        //Task<CaseRegistrationWizardViewModel?> GetCaseRegistrationAsync(long caseId);
-
-
     }
 }

@@ -73,47 +73,7 @@ namespace GCMS.Repository
 
             return departments;
         }
-
-        public async Task<List<DepartmentMaster>> GetAllOrderAsync(int pageNo, int rowCnt)
-        {
-            var departments = new List<DepartmentMaster>();
-
-            using var conn = _connectionFactory.CreateConnection();
-
-            conn.Open();
-
-            using var cmd = (OracleCommand)conn.CreateCommand();
-
-            cmd.BindByName = true;
-            cmd.CommandText = "proc_department_master";
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            cmd.Parameters.Add("v_input", OracleDbType.Int32).Value = 6;
-
-            cmd.Parameters.Add("p_row_cnt", OracleDbType.Int32).Value = rowCnt;
-
-            cmd.Parameters.Add("p_page_no", OracleDbType.Int32).Value = pageNo;
-
-            cmd.Parameters.Add("out_cursor",
-                OracleDbType.RefCursor,
-                ParameterDirection.Output);
-
-            using var reader = cmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                departments.Add(new DepartmentMaster
-                {
-                    DepartmentId = Convert.ToInt64(reader["CM_RCSAT_DEPTID"]),
-                    DepartmentName = reader["DEPENGHI"]?.ToString(),
-                    DepartmentNameHindi = reader["DEPENGHI"]?.ToString(),
-                    IsActive = reader["INACTIVE"]?.ToString(),
-                    
-                });
-            }
-
-            return departments;
-        }
+        
 
         public async Task<DepartmentMaster?> GetByIdAsync(long id)
         {
@@ -254,5 +214,7 @@ namespace GCMS.Repository
 
             return await Task.FromResult(result);
         }
+
+       
     }
 }

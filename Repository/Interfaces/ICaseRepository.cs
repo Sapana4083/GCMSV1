@@ -6,43 +6,18 @@ namespace GCMS.Repository.Interfaces
 {
     public interface ICaseRepository
     {
-        //========================
-        // CASE
-        //========================
+        // FINAL SUBMIT
+        // Saves Step 1 + Step 2 + Step 3 + Step 4 using one Oracle stored procedure.
+        Task<long> SaveFullCaseRegistrationAsync(
+            CaseRegistrationWizardViewModel model,
+            string createdBy);
 
-        Task<long> SaveCaseAsync(CaseRegistration model);
-
-        Task<bool> UpdateCaseAsync(CaseRegistration model);
-
+        // CASE READ / DELETE
         Task<CaseRegistration?> GetCaseAsync(long caseId);
 
         Task DeleteCaseAsync(long caseId);
 
-        //========================
-        // APPELLANT
-        //========================
-
-        Task<long> SaveAppellantAsync(CaseAppellant model);
-        Task<bool> UpdateAppellantAsync(CaseAppellant model);
-        
-        //========================
-        // RESPONDENT
-        //========================
-
-        Task<long> SaveRespondentAsync(CaseRespondent model);
-        Task<bool> UpdateRespondentAsync(CaseRespondent model);
-
-        //========================
-        // PRIVATE PARTY
-        //========================
-
-        Task<long> SavePrivatePartyAsync(CasePrivateParty model);
-        Task<bool> UpdatePrivatePartyAsync(CasePrivateParty model);
-
-        //========================
         // DROPDOWNS
-        //========================
-
         Task<IEnumerable<SelectListItem>> GetCaseTypesAsync();
 
         Task<IEnumerable<SelectListItem>> GetCaseSubjectsAsync();
@@ -60,6 +35,5 @@ namespace GCMS.Repository.Interfaces
         Task<IEnumerable<SelectListItem>> GetAdvocatesAsync();
 
         Task<IEnumerable<SelectListItem>> GetOrderTypesAsync();
-    //Task<CaseRegistrationWizardViewModel?> GetCaseRegistrationAsync(long caseId);
     }
 }

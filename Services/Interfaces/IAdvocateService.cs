@@ -14,7 +14,7 @@ namespace GCMS.Services.Interfaces
 
         Task<List<AdvocateMaster>> GetAdvocatesByCourtCodeAsync(string courtCode);
 
-        Task<List<AdvocateMaster>> GetRespondentAdvocatesAsync(string courtCode, string departmentName);
+        Task<List<AdvocateMaster>> GetRespondentAdvocatesAsync(string courtCode, long departmentId);
 
         Task<List<AdvocateMaster>> GetPrivateAdvocatesAsync();
     }

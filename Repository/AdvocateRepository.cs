@@ -288,7 +288,7 @@ namespace GCMS.Repository
         // ───────────────────────────────────────────────
         // GET RESPONDENT ADVOCATE BY COURT CODE + DEPARTMENT (V_INPUT = 9)
         // ───────────────────────────────────────────────
-        public async Task<List<AdvocateMaster>> GetRespondentAdvocatesAsync(string courtCode, string departmentName)
+        public async Task<List<AdvocateMaster>> GetRespondentAdvocatesAsync(string courtCode, long departmentId)
         {
             var list = new List<AdvocateMaster>();
 
@@ -304,7 +304,7 @@ namespace GCMS.Repository
             cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 9;
 
             cmd.Parameters.Add("P_COURT_IDS", OracleDbType.Varchar2).Value = courtCode;
-            cmd.Parameters.Add("P_DEPARTMENT_IDS", OracleDbType.Varchar2).Value = departmentName;
+            cmd.Parameters.Add("P_DEPARTMENT_IDS", OracleDbType.Long).Value = departmentId;
 
             cmd.Parameters.Add("OUT_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
 

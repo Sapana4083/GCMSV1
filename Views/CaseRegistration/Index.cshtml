@@ -1,162 +1,164 @@
 ﻿@model GCMS.Models.ViewModels.CaseRegistrationWizardViewModel
 
 @{
-	ViewData["Title"] = "Case Registration";
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	// var states = ViewBag.StateList as List<GCMS.Models.StateMaster>;
-	var Department = ViewBag.OrderList as List<GCMS.Models.RcsatDepartmentMaster>;
-	var CaseType = ViewBag.CaseTypeList as List<GCMS.Models.CaseTypeMaster>;
-	var CaseSubject = ViewBag.CaseSubjectList as List<GCMS.Models.CaseSubjectMaster>;
-	var CasePurpose = ViewBag.CasePurposeList as List<GCMS.Models.CasePurposeMaster>;
-	var Bench = ViewBag.BenchList as List<GCMS.Models.BenchTypeMaster>;
-	var District = ViewBag.DistrictList as List<GCMS.Models.DistrictMaster>;
-	var Designation = ViewBag.DesignationList as List<GCMS.Models.DesignationMaster>;
-	var AppleantAdv = ViewBag.AppleantAdvocateList as List<GCMS.Models.AdvocateMaster>;
-	var RespodentAdv = ViewBag.RespondentAdvocateList as List<GCMS.Models.AdvocateMaster>;
+    ViewData["Title"] = "Case Registration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // var states = ViewBag.StateList as List<GCMS.Models.StateMaster>;
+    var Department = ViewBag.OrderList as List<GCMS.Models.RcsatDepartmentMaster>;
+    var CaseType = ViewBag.CaseTypeList as List<GCMS.Models.CaseTypeMaster>;
+    var CaseSubject = ViewBag.CaseSubjectList as List<GCMS.Models.CaseSubjectMaster>;
+    var CasePurpose = ViewBag.CasePurposeList as List<GCMS.Models.CasePurposeMaster>;
+    var Bench = ViewBag.BenchList as List<GCMS.Models.BenchTypeMaster>;
+    var District = ViewBag.DistrictList as List<GCMS.Models.DistrictMaster>;
+    var Designation = ViewBag.DesignationList as List<GCMS.Models.DesignationMaster>;
+    var AppleantAdv = ViewBag.AppleantAdvocateList as List<GCMS.Models.AdvocateMaster>;
+    var RespodentAdv = ViewBag.RespondentAdvocateList as List<GCMS.Models.AdvocateMaster>;
     var PrivateAdv = ViewBag.PrivateAdvocateList as List<GCMS.Models.AdvocateMaster>;
-}
+
+    // var PrivateAdv = ViewBag.PrivateAdvocateList as List<SelectListItem>;
+
 }
 
 <style>
 
-	body {
-		background: #f5f7fb;
-	}
+    body {
+        background: #f5f7fb;
+    }
 
-	.wizard {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 25px;
-		margin-left: 20px;
-	}
+    .wizard {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 25px;
+        margin-left: 20px;
+    }
 
-	.wizard-step {
-		flex: 1;
-		text-align: center;
-		padding: 14px;
-		/* background: #ececec; */
-		background: #dbf0ff;
-		margin-right: 5px;
-		border-radius: 6px;
-		font-weight: 600;
-		cursor: pointer;
-		margin-top: 12px;
-	}
+    .wizard-step {
+        flex: 1;
+        text-align: center;
+        padding: 14px;
+        /* background: #ececec; */
+        background: #dbf0ff;
+        margin-right: 5px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 12px;
+    }
 
-		.wizard-step.active {
-			/* background: #0d6efd; */
-			background: #437fa9;
-			color: white;
-			margin-top: 12px;
-		}
+        .wizard-step.active {
+            /* background: #0d6efd; */
+            background: #437fa9;
+            color: white;
+            margin-top: 12px;
+        }
 
-	.step-panel {
-		display: none;
-	}
+    .step-panel {
+        display: none;
+    }
 
-		.step-panel.active {
-			display: block;
-		}
+        .step-panel.active {
+            display: block;
+        }
 
-	.card {
-		border: none;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
-		margin-left: 20px;
-		margin-right: 10px;
-	}
+    .card {
+        border: none;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+        margin-left: 20px;
+        margin-right: 10px;
+    }
 
-	.card-header {
-		/* background: #0d6efd; */
-		background: #5097c9;
-		color: white;
-		font-size: 18px;
-		font-weight: 600;
-	}
+    .card-header {
+        /* background: #0d6efd; */
+        background: #5097c9;
+        color: white;
+        font-size: 18px;
+        font-weight: 600;
+    }
 
-	.required {
-		color: red;
-	}
+    .required {
+        color: red;
+    }
 
-	.save-btn-container {
-		position: fixed;
-		right: 65px;
-		z-index: 999;
-	}
+    .save-btn-container {
+        position: fixed;
+        right: 65px;
+        z-index: 999;
+    }
 
-	.btn-save-next {
-		width: 190px;
-		height: 40px;
-		font-size: 15px;
-		font-weight: 600;
-		border-radius: 10px;
-		box-shadow: 0 4px 12px rgba(0,0,0,.2);
-	}
+    .btn-save-next {
+        width: 190px;
+        height: 40px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.2);
+    }
 
 </style>
 <form id="frmCaseRegistration">
 
-	@Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
 
-	<div class="card mt-3">
+    <div class="card mt-3">
 
-		<div class="card-header">
+        <div class="card-header">
 
-			Case Registration
+            Case Registration
 
-		</div>
-	</div>
+        </div>
+    </div>
 
 
-	<input asp-for="Id" id="CaseId" type="hidden" />
-	<div class="wizard">
+    <input asp-for="Id" id="CaseId" type="hidden" />
+    <div class="wizard">
 
-		<div class="wizard-step active" id="wizard1">
+        <div class="wizard-step active" id="wizard1">
 
-			STEP 1
-			<br />
-			Basic Details
+            STEP 1
+            <br />
+            Basic Details
 
-		</div>
+        </div>
 
-		<div class="wizard-step" id="wizard2">
+        <div class="wizard-step" id="wizard2">
 
-			STEP 2
-			<br />
-			Appellant
+            STEP 2
+            <br />
+            Appellant
 
-		</div>
+        </div>
 
-		<div class="wizard-step" id="wizard3">
+        <div class="wizard-step" id="wizard3">
 
-			STEP 3
-			<br />
-			Respondent
+            STEP 3
+            <br />
+            Respondent
 
-		</div>
+        </div>
 
-		<div class="wizard-step" id="wizard4">
+        <div class="wizard-step" id="wizard4">
 
-			STEP 4
-			<br />
-			Private Party
+            STEP 4
+            <br />
+            Private Party
 
-		</div>
+        </div>
 
-	</div>
-	<div id="step1" class="step-panel active">
+    </div>
+    <div id="step1" class="step-panel active">
 
-		<div class="card">
+        <div class="card">
 
-			<div class="card-header">
+            <div class="card-header">
 
-				Basic Details
+                Basic Details
 
-			</div>
+            </div>
 
-			<div class="card-body">
+            <div class="card-body">
 
-				<div class="row">
-					@* <div class="col-md-6 mb-3">
+                <div class="row">
+                    @* <div class="col-md-6 mb-3">
 
                             <label>State</label>
 
@@ -178,39 +180,39 @@
 
                         </div> *@
 
-					<div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="InstitutionDate"></label>
+                        <label asp-for="InstitutionDate"></label>
 
-						<span class="required">*</span>
+                        <span class="required">*</span>
 
-						<input asp-for="InstitutionDate"
-							   class="form-control"
-							   type="date" />
+                        <input asp-for="InstitutionDate"
+                               class="form-control"
+                               type="date" />
 
-						<span asp-validation-for="InstitutionDate"
-							  class="text-danger"></span>
+                        <span asp-validation-for="InstitutionDate"
+                              class="text-danger"></span>
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="CaseNumber"></label>
-						<span class="required">*</span>
-						<input asp-for="CaseNumber"
-							   class="form-control" />
+                        <label asp-for="CaseNumber"></label>
+                        <span class="required">*</span>
+                        <input asp-for="CaseNumber"
+                               class="form-control" />
 
-					</div>
-					<div class="col-md-2 mb-4">
-						<div class="is-impugned-container">
-							<label class="form-label fw-semibold mb-2">Is Impungned</label>
+                    </div>
+                    <div class="col-md-2 mb-4">
+                        <div class="is-impugned-container">
+                            <label class="form-label fw-semibold mb-2">Is Impungned</label>
 
-							<div class="form-check form-switch">
-								@* <input class="form-check-input" type="checkbox" id="IsImpungned"> *@
-								<input asp-for="IsImpungned" class="form-check-input" type="checkbox" />
-							</div>
-						</div>
-					</div>
-					@*    <div class="col-md-4 mb-4">
+                            <div class="form-check form-switch">
+                                @* <input class="form-check-input" type="checkbox" id="IsImpungned"> *@
+                                <input asp-for="IsImpungned" class="form-check-input" type="checkbox" />
+                            </div>
+                        </div>
+                    </div>
+                    @*    <div class="col-md-4 mb-4">
 
                         <label asp-for="ManualCaseNumber"></label>
 
@@ -218,7 +220,7 @@
                                class="form-control" />
 
                     </div> *@
-					@*    <div class="col-md-4 mb-4">
+                    @*    <div class="col-md-4 mb-4">
 
                         <label asp-for="OrderNumber"></label>
 
@@ -226,34 +228,34 @@
                                class="form-control" />
 
                     </div> *@
-					<div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="DateofImpugnedOrder"></label>
+                        <label asp-for="DateofImpugnedOrder"></label>
 
-						<input asp-for="DateofImpugnedOrder"
-							   class="form-control"
-							   type="date" />
+                        <input asp-for="DateofImpugnedOrder"
+                               class="form-control"
+                               type="date" />
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="OrderIssuedById"></label>
-						<select asp-for="OrderIssuedById" class="form-select">
+                        <label asp-for="OrderIssuedById"></label>
+                        <select asp-for="OrderIssuedById" class="form-select">
 
-							<option value="">
-								Select
-							</option>
+                            <option value="">
+                                Select
+                            </option>
 
-							@foreach (var d in Department)
-							{
-								<option value="@d.CmRcsatDeptId">
-									@d.DepEngHi
-								</option>
-							}
+                            @foreach (var d in Department)
+                            {
+                                <option value="@d.CmRcsatDeptId">
+                                    @d.DepEngHi
+                                </option>
+                            }
 
-						</select>
+                        </select>
 
-						@*  <select asp-for="OrderIssuedById"
+                        @*  <select asp-for="OrderIssuedById"
                                 asp-items="Model.OrderIssuedByList"
                                 class="form-select">
 
@@ -262,8 +264,8 @@
                         </select> *@
 
 
-					</div>
-					@* <div class="col-md-4 mb-4">
+                    </div>
+                    @* <div class="col-md-4 mb-4">
 
                     <label asp-for="CourtCode"></label>
 
@@ -271,139 +273,139 @@
                             class="form-control" />
 
                 </div> *@
-					<div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="OldCaseNumber"></label>
+                        <label asp-for="OldCaseNumber"></label>
 
-						<input asp-for="OldCaseNumber"
-							   class="form-control" />
+                        <input asp-for="OldCaseNumber"
+                               class="form-control" />
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="CaseTypeId"></label>
+                        <label asp-for="CaseTypeId"></label>
 
-						<span class="required">*</span>
+                        <span class="required">*</span>
 
-						<select asp-for="CaseTypeId"
-								asp-items="Model.CaseTypes"
-								class="form-select">
+                        <select asp-for="CaseTypeId"
+                                asp-items="Model.CaseTypes"
+                                class="form-select">
 
-							<option value="">Select</option>
-							@foreach (var ct in CaseType)
-							{
-								<option value="@ct.CaseTypeMastId">
-									@ct.CaseType
-								</option>
-							}
+                            <option value="">Select</option>
+                            @foreach (var ct in CaseType)
+                            {
+                                <option value="@ct.CaseTypeMastId">
+                                    @ct.CaseType
+                                </option>
+                            }
 
-						</select>
+                        </select>
 
-						<span asp-validation-for="CaseTypeId"
-							  class="text-danger"></span>
+                        <span asp-validation-for="CaseTypeId"
+                              class="text-danger"></span>
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="CaseSubjectId"></label>
+                        <label asp-for="CaseSubjectId"></label>
 
-						<span class="required">*</span>
+                        <span class="required">*</span>
 
-						<select asp-for="CaseSubjectId"
-								asp-items="Model.CaseSubjects"
-								class="form-select">
+                        <select asp-for="CaseSubjectId"
+                                asp-items="Model.CaseSubjects"
+                                class="form-select">
 
-							<option value="">Select Case Subject</option>
-							@foreach (var cs in CaseSubject)
-							{
-								<option value="@cs.CaseSubjectId">
-									@cs.SubjectEngHi
-								</option>
-							}
+                            <option value="">Select Case Subject</option>
+                            @foreach (var cs in CaseSubject)
+                            {
+                                <option value="@cs.CaseSubjectId">
+                                    @cs.SubjectEngHi
+                                </option>
+                            }
 
-						</select>
+                        </select>
 
-						<span asp-validation-for="CaseSubjectId"
-							  class="text-danger"></span>
+                        <span asp-validation-for="CaseSubjectId"
+                              class="text-danger"></span>
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="CasePurposeId"></label>
+                        <label asp-for="CasePurposeId"></label>
 
-						<span class="required">*</span>
+                        <span class="required">*</span>
 
-						<select asp-for="CasePurposeId"
-								asp-items="Model.CasePurposes"
-								class="form-select">
+                        <select asp-for="CasePurposeId"
+                                asp-items="Model.CasePurposes"
+                                class="form-select">
 
-							<option value="">Select Case Purpose</option>
-							@foreach (var cp in CasePurpose)
-							{
-								<option value="@cp.CasePurposeMastId">
-									@cp.CasePurposeEng
-								</option>
-							}
+                            <option value="">Select Case Purpose</option>
+                            @foreach (var cp in CasePurpose)
+                            {
+                                <option value="@cp.CasePurposeMastId">
+                                    @cp.CasePurposeEng
+                                </option>
+                            }
 
 
-						</select>
+                        </select>
 
-						<span asp-validation-for="CasePurposeId"
-							  class="text-danger"></span>
+                        <span asp-validation-for="CasePurposeId"
+                              class="text-danger"></span>
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="HearingDate"></label>
-						<span class="required">*</span>
-						<input asp-for="HearingDate"
-							   type="date"
-							   class="form-control" />
+                        <label asp-for="HearingDate"></label>
+                        <span class="required">*</span>
+                        <input asp-for="HearingDate"
+                               type="date"
+                               class="form-control" />
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="BenchTypeId"></label>
-						<span class="required">*</span>
-						<select asp-for="BenchTypeId"
-								asp-items="Model.BenchTypes"
-								class="form-select">
+                        <label asp-for="BenchTypeId"></label>
+                        <span class="required">*</span>
+                        <select asp-for="BenchTypeId"
+                                asp-items="Model.BenchTypes"
+                                class="form-select">
 
-							<option value="">Select Bench</option>
-							@foreach (var b in Bench)
-							{
-								<option value="@b.BenchTypeMastId">
-									@b.BenchType
-								</option>
-							}
-						</select>
+                            <option value="">Select Bench</option>
+                            @foreach (var b in Bench)
+                            {
+                                <option value="@b.BenchTypeMastId">
+                                    @b.BenchType
+                                </option>
+                            }
+                        </select>
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="LinkedCaseNumber"></label>
+                        <label asp-for="LinkedCaseNumber"></label>
 
-						<input asp-for="LinkedCaseNumber"
-							   class="form-control" />
+                        <input asp-for="LinkedCaseNumber"
+                               class="form-control" />
 
-					</div>
-					<div class="col-md-4 mb-4">
-						<div class="save-btn-container">
-							@* <button type="submit" class="btn btn-primary btn-save-next">
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="save-btn-container">
+                            @* <button type="submit" class="btn btn-primary btn-save-next">
                             SAVE & NEXT <i class="bi bi-chevron-double-right"></i>
                         </button> *@
 
-							<button type="button" id="btnStep1" class="btn btn-primary btn-save-next">
-								NEXT <i class="bi bi-chevron-double-right"></i>
-							</button>
+                            <button type="button" id="btnStep1" class="btn btn-primary btn-save-next">
+                                NEXT <i class="bi bi-chevron-double-right"></i>
+                            </button>
 
-						</div>
-					</div>
-				</div>
+                        </div>
+                    </div>
+                </div>
 
 
 
-				@*  <div class="text-end">
+                @*  <div class="text-end">
 
                     <button type="button"
                             id="btnStep1"
@@ -415,75 +417,75 @@
 
                 </div> *@
 
-			</div>
+            </div>
 
-		</div>
+        </div>
 
-	</div>
-	<div id="step2" class="step-panel">
+    </div>
+    <div id="step2" class="step-panel">
 
-		<div class="card">
+        <div class="card">
 
-			<div class="card-header">
+            <div class="card-header">
 
-				Appellant Details
+                Appellant Details
 
-			</div>
+            </div>
 
-			<div class="card-body">
+            <div class="card-body">
 
-				<div class="row">
-					<div class="col-md-4 mb-4">
-						
-						<label asp-for="AppellantName"></label>
-						<span class="required">*</span>
-						<input asp-for="AppellantName"
-							   class="form-control" />
+                <div class="row">
+                    <div class="col-md-4 mb-4">
 
-					</div>
-					<div class="col-md-4 mb-4">
+                        <label asp-for="AppellantName"></label>
+                        <span class="required">*</span>
+                        <input asp-for="AppellantName"
+                               class="form-control" />
 
-						<label asp-for="DesignationId"></label>
-						<span class="required">*</span>
-						<select asp-for="DesignationId"								
-								class="form-select">
-							<option value="">Select Designation</option>
-							@foreach (var des in Designation)
-							{
-								<option value="@des.CmRcsatDesignTmpId">
-									@des.DesgEngHi
-								</option>
-							}
-							
-						</select>
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-					</div>
-					<div class="col-md-4 mb-4">
+                        <label asp-for="DesignationId"></label>
+                        <span class="required">*</span>
+                        <select asp-for="DesignationId"
+                                class="form-select">
+                            <option value="">Select Designation</option>
+                            @foreach (var des in Designation)
+                            {
+                                <option value="@des.CmRcsatDesignTmpId">
+                                    @des.DesgEngHi
+                                </option>
+                            }
 
-						<label asp-for="DistrictId"></label>
-						<span class="required">*</span>
-						<select asp-for="DistrictId"
-								class="form-select">
+                        </select>
 
-							<option value="">Select District</option>
-							@foreach (var d in District)
-							{
-								<option value="@d.DistrictMastId">
-									@d.DistNameHinEng
-								</option>
-							}
-						</select>
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-					</div>
-					<div class="col-md-4 mb-4">
+                        <label asp-for="DistrictId"></label>
+                        <span class="required">*</span>
+                        <select asp-for="DistrictId"
+                                class="form-select">
 
-						<label asp-for="MobileNumber"></label>
+                            <option value="">Select District</option>
+                            @foreach (var d in District)
+                            {
+                                <option value="@d.DistrictMastId">
+                                    @d.DistNameHinEng
+                                </option>
+                            }
+                        </select>
 
-						<input asp-for="MobileNumber"
-							   class="form-control" />
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-					</div>
-					@* <div class="col-md-4 mb-4">
+                        <label asp-for="MobileNumber"></label>
+
+                        <input asp-for="MobileNumber"
+                               class="form-control" />
+
+                    </div>
+                    @* <div class="col-md-4 mb-4">
 
 						<label asp-for="EmployeeId"></label>
 
@@ -491,108 +493,108 @@
 							   class="form-control" />
 
 					</div> *@
-					<div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="AdvocateId"></label>
+                        <label asp-for="AdvocateId"></label>
 
-						<select asp-for="AdvocateId"								
-								class="form-select">
-							@foreach (var adv in AppleantAdv)
-							{
-								<option value="@adv.MastRcsatAdvocateId">
-									@adv.AdvEngHi
-								</option>
-							}
-						</select>
+                        <select asp-for="AdvocateId"
+                                class="form-select">
+                            @foreach (var adv in AppleantAdv)
+                            {
+                                <option value="@adv.MastRcsatAdvocateId">
+                                    @adv.AdvEngHi
+                                </option>
+                            }
+                        </select>
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="AdvocateEmail"></label>
+                        <label asp-for="AdvocateEmail"></label>
 
-						<input asp-for="AdvocateEmail"
-							   class="form-control" />
+                        <input asp-for="AdvocateEmail"
+                               class="form-control" />
 
-					</div>
-					<div class="col-md-4 mb-4">
+                    </div>
+                    <div class="col-md-4 mb-4">
 
-						<label asp-for="AdvocateMobile"></label>
+                        <label asp-for="AdvocateMobile"></label>
 
-						<input asp-for="AdvocateMobile"
-							   class="form-control" />
+                        <input asp-for="AdvocateMobile"
+                               class="form-control" />
 
-					</div>
-				</div>
+                    </div>
+                </div>
 
-				<hr />
+                <hr />
 
-				<div class="text-end">
+                <div class="text-end">
 
-					<button type="button"
-							id="btnBack1"
-							class="btn btn-secondary">
+                    <button type="button"
+                            id="btnBack1"
+                            class="btn btn-secondary">
 
-						<< Previous
+                        << Previous
 
-					</button>
+                        </button>
 
-					<button type="button"
-							id="btnStep2"
-							class="btn btn-primary">
+                        <button type="button"
+                                id="btnStep2"
+                                class="btn btn-primary">
 
-						 Next >>
+                            Next >>
 
-					</button>
+                        </button>
 
-				</div>
+                    </div>
 
-			</div>
+                </div>
 
-		</div>
+            </div>
 
-	</div>
-	<div id="step3" class="step-panel">
+        </div>
+        <div id="step3" class="step-panel">
 
-		<div class="card">
+            <div class="card">
 
-			<div class="card-header">
+                <div class="card-header">
 
-				Respondent Details
+                    Respondent Details
 
-			</div>
+                </div>
 
-			<div class="card-body">
+                <div class="card-body">
 
-				<div class="row">
-					<div class="col-md-4 mb-4">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+
 					
+                            <label asp-for="DepartmentId"></label>
+                            <span class="required">*</span>
+                            <select asp-for="DepartmentId"
+                                    id="DepartmentId"
+                                    class="form-select">
 
-						<label asp-for="DepartmentId"></label>
-						<span class="required">*</span>
-						<select asp-for="DepartmentId"
-								id="DepartmentId"
-								class="form-select">
+                                <option value="">Select Department</option>
 
-							<option value="">Select Department</option>
+                                @foreach (var d in Department)
+                                {
+                                    <option value="@d.CmRcsatDeptId">
+                                        @d.DepEngHi
+                                    </option>
+                                }
+                            </select>
 
-							@foreach (var d in Department)
-							{
-								<option value="@d.CmRcsatDeptId">
-									@d.DepEngHi
-								</option>
-							}
-						</select>
+                        </div>
+                        <div class="col-md-4 mb-4">
 
-					</div>
-					<div class="col-md-4 mb-4">
+                            <label asp-for="RespondentAdvocateId"></label>
 
-						<label asp-for="RespondentAdvocateId"></label>
-
-						<select asp-for="RespondentAdvocateId"
-								id="RespondentAdvocateId"
-								class="form-select">
-							<option value="">Select Respondent Advocate</option>
-					@* 	@if (ViewBag.RespondentAdvocateList != null)
+                            <select asp-for="RespondentAdvocateId"
+                                    id="RespondentAdvocateId"
+                                    class="form-select">
+                                <option value="">Select Respondent Advocate</option>
+                                @* 	@if (ViewBag.RespondentAdvocateList != null)
 						{
 							foreach (var advocate in ViewBag.RespondentAdvocateList)
 							{
@@ -601,35 +603,130 @@
 								</option>
 							}
 						} *@
-						</select>
+                            </select>
 
 						
 
-					</div>
-					<div class="col-md-4 mb-4">
+                        </div>
+                        <div class="col-md-4 mb-4">
 
-						<label asp-for="RespondentAdvocateEmail"></label>
+                            <label asp-for="RespondentAdvocateEmail"></label>
 
-						<input asp-for="RespondentAdvocateEmail"
-							   class="form-control" />
+                            <input asp-for="RespondentAdvocateEmail"
+                                   class="form-control" />
 
-					</div>
-					<div class="col-md-4 mb-4">
+                        </div>
+                        <div class="col-md-4 mb-4">
 
-						<label asp-for="RespondentAdvocateMobile"></label>
+                            <label asp-for="RespondentAdvocateMobile"></label>
 
-						<input asp-for="RespondentAdvocateMobile"
-							   class="form-control" />
+                            <input asp-for="RespondentAdvocateMobile"
+                                   class="form-control" />
 
-					</div>
-				</div>
+                        </div>
+                    </div>
 
-				<hr />
+                    <hr />
 
-				<div class="text-end">
+                    <div class="text-end">
+
+                        <button type="button"
+                                id="btnBack2"
+                                class="btn btn-secondary">
+
+                            << Previous
+
+                            </button>
+
+                            <button type="button"
+                                    id="btnStep3"
+                                    class="btn btn-primary">
+
+                                Next >>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div id="step4" class="step-panel">
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        Private Party Details
+
+                    </div>
+
+                    <div class="card-body">
+                        <div class="case-grid-toolbar" aria-label="Private party grid actions">
+                            <button type="button" id="btnAddPrivateParty" class="btn" title="Add row">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+
+                            <button type="button" id="btnDeletePrivateParty" class="btn btn-secondary" title="Delete selected rows">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="private-party-grid table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;">
+                                            <input type="checkbox" id="chkAllPrivateParties" class="row-check" />
+                                        </th>
+                                        <th style="width: 52px;">S.no</th>
+                                        <th>Name</th>
+                                        <th>Designation</th>
+                                        <th>Private Advocate Name</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="privatePartyRows">
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="row-check private-party-select" />
+                                        </td>
+
+                                        <td class="serial-cell">1</td>
+
+                                        <td>
+                                            <input name="PrivateParties[0].PartyName" class="form-control" />
+                                        </td>
+
+                                        <td>
+                                            <input name="PrivateParties[0].Designation" class="form-control" />
+                                        </td>
+
+                                        <td>
+                                            <select asp-for="PrivateAdvocateId" class="form-select">
+                                                <option value="">Select Advocate</option>
+
+                                                @if (PrivateAdv != null)
+                                                {
+                                                    foreach (var advocate in PrivateAdv)
+                                                    {
+                                                        <option value="@advocate.MastRcsatAdvocateId">
+                                                            @advocate.AdvEngHi
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="text-end">
 
 					<button type="button"
-							id="btnBack2"
+							id="btnBack3"
 							class="btn btn-secondary">
 
 						<< Previous
@@ -637,85 +734,16 @@
 					</button>
 
 					<button type="button"
-							id="btnStep3"
-							class="btn btn-primary">
+							id="btnFinish"z
+							class="btn btn-success">
 
-						 Next >>
+						Finish Registration
 
 					</button>
 
 				</div>
-
-			</div>
-
-		</div>
-
-	</div>
-	<div id="step4" class="step-panel">
-
-		<div class="card">
-
-			<div class="card-header">
-
-				Private Party Details
-
-			</div>
-
-			<div class="card-body">
-				<div class="case-grid-toolbar" aria-label="Private party grid actions">
-					<button type="button" id="btnAddPrivateParty" class="btn" title="Add row">
-						<i class="bi bi-plus-lg"></i>
-					</button>
-
-					<button type="button" id="btnDeletePrivateParty" class="btn btn-secondary" title="Delete selected rows">
-						<i class="bi bi-trash"></i>
-					</button>
-				</div>
-
-				<div class="table-responsive">
-					<table class="private-party-grid table mb-0">
-						<thead>
-							<tr>
-								<th style="width: 40px;">
-									<input type="checkbox" id="chkAllPrivateParties" class="row-check" />
-								</th>
-								<th style="width: 52px;">S.no</th>
-								<th>Name</th>
-								<th>Designation</th>
-								<th>Private Advocate Name</th>
-							</tr>
-						</thead>
-
-						<tbody id="privatePartyRows">
-							<tr>
-								<td>
-									<input type="checkbox" class="row-check private-party-select" />
-								</td>
-
-								<td class="serial-cell">1</td>
-
-								<td>
-									<input name="PrivateParties[0].PartyName" class="form-control" />
-								</td>
-
-								<td>
-									<input name="PrivateParties[0].Designation" class="form-control" />
-								</td>
-
-								<td>
-									<select name="PrivateParties[0].AdvocateId" class="form-select">
-										<option value="">Select Advocate</option>
-										@foreach (var advocate in Model.Advocates)
-										{
-											<option value="@advocate.Value">@advocate.Text</option>
-										}
-									</select>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-@* 
+                        </div>
+                        @* 
 				<div class="row">
 					<div class="col-md-4 mb-4">
 
@@ -775,296 +803,296 @@
 
 				</div> *@
 
-			</div>
+                    </div>
 
-		</div>
+                </div>
 
-	</div>
-</form>
-@section Scripts {
+            </div>
+        </form>
+        @section Scripts {
 
-	<partial name="_ValidationScriptsPartial" />
+            <partial name="_ValidationScriptsPartial" />
 
-	<script>
-				$(document).ready(function () {
-			function showStep(step) {
-				$(".step-panel").removeClass("active");
-				$("#step" + step).addClass("active");
+            <script>
+                $(document).ready(function() {
+                    function showStep(step) {
+                        $(".step-panel").removeClass("active");
+                        $("#step" + step).addClass("active");
 
-				$(".wizard-step").removeClass("active");
-				$("#wizard" + step).addClass("active");
-			}
+                        $(".wizard-step").removeClass("active");
+                        $("#wizard" + step).addClass("active");
+                    }
 
-			function value(name) {
-				return $("[name='" + name + "']").val();
-			}
+                    function value(name) {
+                        return $("[name='" + name + "']").val();
+                    }
 
-			function isChecked(name) {
-				return $("[name='" + name + "']").is(":checked");
-			}
+                    function isChecked(name) {
+                        return $("[name='" + name + "']").is(":checked");
+                    }
 
-			function alertRequired(message) {
-				alert(message);
-				return false;
-			}
+                    function alertRequired(message) {
+                        alert(message);
+                        return false;
+                    }
 
-			function validateStep1() {
-				if (!value("InstitutionDate")) return alertRequired("Please enter Institution Date.");
-				if (!value("CaseNumber")) return alertRequired("Please enter Case Number.");
-				if (!value("CaseTypeId")) return alertRequired("Please select Case Type.");
-				if (!value("CaseSubjectId")) return alertRequired("Please select Case Subject.");
-				if (!value("CasePurposeId")) return alertRequired("Please select Case Purpose.");
-				if (!value("HearingDate")) return alertRequired("Please enter Hearing Date.");
-				if (!value("BenchTypeId")) return alertRequired("Please select Bench Type.");
+                    function validateStep1() {
+                        if (!value("InstitutionDate")) return alertRequired("Please enter Institution Date.");
+                        if (!value("CaseNumber")) return alertRequired("Please enter Case Number.");
+                        if (!value("CaseTypeId")) return alertRequired("Please select Case Type.");
+                        if (!value("CaseSubjectId")) return alertRequired("Please select Case Subject.");
+                        if (!value("CasePurposeId")) return alertRequired("Please select Case Purpose.");
+                        if (!value("HearingDate")) return alertRequired("Please enter Hearing Date.");
+                        if (!value("BenchTypeId")) return alertRequired("Please select Bench Type.");
 
-				var caseNo = value("CaseNumber");
-				if (caseNo.length !== 10 || caseNo.indexOf("/") === -1) {
-					return alertRequired("Please enter valid Case Number. Format should be 12345/2026.");
-				}
+                        var caseNo = value("CaseNumber");
+                        if (caseNo.length !== 10 || caseNo.indexOf("/") === -1) {
+                            return alertRequired("Please enter valid Case Number. Format should be 12345/2026.");
+                        }
 
-				var parts = caseNo.split("/");
-				if (parts[0].length !== 5 || parts[1].length !== 4) {
-					return alertRequired("Please enter valid Case Number. Format should be 12345/2026.");
-				}
+                        var parts = caseNo.split("/");
+                        if (parts[0].length !== 5 || parts[1].length !== 4) {
+                            return alertRequired("Please enter valid Case Number. Format should be 12345/2026.");
+                        }
 
-				if (isChecked("IsImpungned") && !value("DateofImpugnedOrder")) {
-					return alertRequired("Please enter Date of Impugned Order.");
-				}
+                        if (isChecked("IsImpungned") && !value("DateofImpugnedOrder")) {
+                            return alertRequired("Please enter Date of Impugned Order.");
+                        }
 
-				if (value("DateofImpugnedOrder") && value("InstitutionDate")) {
-					if (new Date(value("DateofImpugnedOrder")) > new Date(value("InstitutionDate"))) {
-						return alertRequired("Date of Impugned Order cannot be greater than Institution Date.");
-					}
-				}
+                        if (value("DateofImpugnedOrder") && value("InstitutionDate")) {
+                            if (new Date(value("DateofImpugnedOrder")) > new Date(value("InstitutionDate"))) {
+                                return alertRequired("Date of Impugned Order cannot be greater than Institution Date.");
+                            }
+                        }
 
-				if (value("InstitutionDate") && value("HearingDate")) {
-					if (new Date(value("InstitutionDate")) > new Date(value("HearingDate"))) {
-						return alertRequired("Hearing Date must be greater than or equal to Institution Date.");
-					}
-				}
+                        if (value("InstitutionDate") && value("HearingDate")) {
+                            if (new Date(value("InstitutionDate")) > new Date(value("HearingDate"))) {
+                                return alertRequired("Hearing Date must be greater than or equal to Institution Date.");
+                            }
+                        }
 
-				return true;
-			}
+                        return true;
+                    }
 
-			function validateStep2() {
-				if (!value("AppellantName")) return alertRequired("Please enter Appellant Name.");
-				if (!value("DesignationId")) return alertRequired("Please select Appellant Designation.");
-				if (!value("DistrictId")) return alertRequired("Please select Appellant District.");
+                    function validateStep2() {
+                        if (!value("AppellantName")) return alertRequired("Please enter Appellant Name.");
+                        if (!value("DesignationId")) return alertRequired("Please select Appellant Designation.");
+                        if (!value("DistrictId")) return alertRequired("Please select Appellant District.");
 
-				var mobile = value("MobileNumber");
-				if (mobile && mobile.length !== 10) return alertRequired("Please enter valid Appellant Mobile Number.");
+                        var mobile = value("MobileNumber");
+                        if (mobile && mobile.length !== 10) return alertRequired("Please enter valid Appellant Mobile Number.");
 
-				var advMobile = value("AdvocateMobile");
-				if (advMobile && advMobile.length !== 10) return alertRequired("Please enter valid Appellant Advocate Mobile Number.");
+                        var advMobile = value("AdvocateMobile");
+                        if (advMobile && advMobile.length !== 10) return alertRequired("Please enter valid Appellant Advocate Mobile Number.");
 
-				return true;
-			}
+                        return true;
+                    }
 
-			function validateStep3() {
-				if (!value("DepartmentId")) return alertRequired("Please select Respondent Department.");
+                    function validateStep3() {
+                        if (!value("DepartmentId")) return alertRequired("Please select Respondent Department.");
 
-				var respMobile = value("RespondentAdvocateMobile");
-				if (respMobile && respMobile.length !== 10) {
-					return alertRequired("Please enter valid Respondent Advocate Mobile Number.");
-				}
+                        var respMobile = value("RespondentAdvocateMobile");
+                        if (respMobile && respMobile.length !== 10) {
+                            return alertRequired("Please enter valid Respondent Advocate Mobile Number.");
+                        }
 
-				return true;
-			}
+                        return true;
+                    }
 
-			$("#DepartmentId").on("change", function () {
+                    $("#DepartmentId").on("change", function() {
 
-			var departmentId = $(this).val();
+                        var departmentId = $(this).val();
 
-			var respondentDropdown = $("#RespondentAdvocateId");
+                        var respondentDropdown = $("#RespondentAdvocateId");
 
-			respondentDropdown.empty();
-			respondentDropdown.append(
-				'<option value="">Select Respondent Advocate</option>'
-			);
+                        respondentDropdown.empty();
+                        respondentDropdown.append(
+                            '<option value="">Select Respondent Advocate</option>'
+                        );
 
-			if (!departmentId) {
-				console.log("No department selected");
-				return;
-			}
+                        if (!departmentId) {
+                            console.log("No department selected");
+                            return;
+                        }
 
-			$.ajax({
-				url: '@Url.Action("GetRespondentAdvocates", "CaseRegistration")',
-				type: 'GET',
-				data: {
-					departmentId: departmentId
-				},
+                        $.ajax({
+                            url: '@Url.Action("GetRespondentAdvocates", "CaseRegistration")',
+                            type: 'GET',
+                            data: {
+                                departmentId: departmentId
+                            },
 
-				beforeSend: function () {
-					console.log("Calling Controller...");
-				},
+                            beforeSend: function() {
+                                console.log("Calling Controller...");
+                            },
 
-				success: function (response) {
+                            success: function(response) {
 
-					console.log("Controller Response:", response);
+                                console.log("Controller Response:", response);
 
-					if (!isSuccess(response)) {
-						alert(getMessage(response));
-						return;
-					}
+                                if (!isSuccess(response)) {
+                                    alert(getMessage(response));
+                                    return;
+                                }
 
-					var data = getResponseValue(
-						response,
-						"data",
-						"Data"
-					);
+                                var data = getResponseValue(
+                                    response,
+                                    "data",
+                                    "Data"
+                                );
 
-					console.log("Advocate Data:", data);
+                                console.log("Advocate Data:", data);
 
-					if (!data || data.length === 0) {
-						respondentDropdown.append(
-							'<option value="">No Advocate Found</option>'
-						);
-						return;
-					}
+                                if (!data || data.length === 0) {
+                                    respondentDropdown.append(
+                                        '<option value="">No Advocate Found</option>'
+                                    );
+                                    return;
+                                }
 
-					$.each(data, function (index, advocate) {
+                                $.each(data, function(index, advocate) {
 
-						console.log("Advocate:", advocate);
+                                    console.log("Advocate:", advocate);
 
-						var advocateId = getResponseValue(
-							advocate,
-								"mastRcsatAdvocateId",
-								"mastRcsatAdvocateId"
-						);
+                                    var advocateId = getResponseValue(
+                                        advocate,
+                                        "mastRcsatAdvocateId",
+                                        "mastRcsatAdvocateId"
+                                    );
 
-						var advocateName = getResponseValue(
-							advocate,
-								"advEngHi",
-								"advEngHi"
-						);
+                                    var advocateName = getResponseValue(
+                                        advocate,
+                                        "advEngHi",
+                                        "advEngHi"
+                                    );
 
-						respondentDropdown.append(
-							$("<option></option>")
-								.val(advocateId)
-								.text(advocateName)
-						);
-					});
-				},
+                                    respondentDropdown.append(
+                                        $("<option></option>")
+                                            .val(advocateId)
+                                            .text(advocateName)
+                                    );
+                                });
+                            },
 
-				error: function (xhr, status, error) {
+                            error: function(xhr, status, error) {
 
-					console.log("AJAX Error");
-					console.log("Status:", status);
-					console.log("Error:", error);
-					console.log("Response:", xhr.responseText);
+                                console.log("AJAX Error");
+                                console.log("Status:", status);
+                                console.log("Error:", error);
+                                console.log("Response:", xhr.responseText);
 
-					alert("Unable to load Respondent Advocates.");
-				}
-			});
-		});
+                                alert("Unable to load Respondent Advocates.");
+                            }
+                        });
+                    });
 
-			function getResponseValue(response, camelCaseName, pascalCaseName) {
-				return response[camelCaseName] !== undefined
-					? response[camelCaseName]
-					: response[pascalCaseName];
-			}
+                    function getResponseValue(response, camelCaseName, pascalCaseName) {
+                        return response[camelCaseName] !== undefined
+                            ? response[camelCaseName]
+                            : response[pascalCaseName];
+                    }
 
-			function isSuccess(response) {
-				return getResponseValue(response, "success", "Success") === true;
-			}
+                    function isSuccess(response) {
+                        return getResponseValue(response, "success", "Success") === true;
+                    }
 
-			function getMessage(response) {
-				return getResponseValue(response, "message", "Message") || "Unable to process request.";
-			}
+                    function getMessage(response) {
+                        return getResponseValue(response, "message", "Message") || "Unable to process request.";
+                    }
 
-			$("#btnStep1").click(function () {
-				/* if (validateStep1()) */ showStep(2);
-			});
+                    $("#btnStep1").click(function() {
+                                /* if (validateStep1()) */ showStep(2);
+                    });
 
-			$("#btnStep2").click(function () {
-				/* if (validateStep2())  */showStep(3);
-			});
+                    $("#btnStep2").click(function() {
+                                /* if (validateStep2())  */showStep(3);
+                    });
 
-			$("#btnStep3").click(function () {
-				/* if (validateStep3())  */showStep(4);
-			});
+                    $("#btnStep3").click(function() {
+                                /* if (validateStep3())  */showStep(4);
+                    });
 
-			$("#btnFinish").click(function () {
-				if (!validateStep1() || !validateStep2() || !validateStep3()) {
-					return;
-				}
+                    $("#btnFinish").click(function() {
+                        if (!validateStep1() || !validateStep2() || !validateStep3()) {
+                            return;
+                        }
 
-				$.ajax({
-					url: "/CaseRegistration/SaveFullCaseRegistration",
-					type: "POST",
-					data: $("#frmCaseRegistration").serialize(),
-					success: function (res) {
-						if (isSuccess(res)) {
-							alert(getMessage(res));
-							window.location.href = "/CaseRegistration/Index";
-						} else {
-							alert(getMessage(res));
-						}
-					},
-					error: function () {
-						alert("Server Error");
-					}
-				});
-			});
+                        $.ajax({
+                            url: "/CaseRegistration/SaveFullCaseRegistration",
+                            type: "POST",
+                            data: $("#frmCaseRegistration").serialize(),
+                            success: function(res) {
+                                if (isSuccess(res)) {
+                                    alert(getMessage(res));
+                                    window.location.href = "/CaseRegistration/Index";
+                                } else {
+                                    alert(getMessage(res));
+                                }
+                            },
+                            error: function() {
+                                alert("Server Error");
+                            }
+                        });
+                    });
 
-			$("#btnBack1").click(function () { showStep(1); });
-			$("#btnBack2").click(function () { showStep(2); });
-			$("#btnBack3").click(function () { showStep(3); });
-		});
-	
-//Private Party
+                    $("#btnBack1").click(function() { showStep(1); });
+                    $("#btnBack2").click(function() { showStep(2); });
+                    $("#btnBack3").click(function() { showStep(3); });
+                });
 
-		function buildPrivatePartyRow(index) {
-			var rowNumber = index + 1;
-			var advocateOptions = $("#privatePartyRows select:first").html() || '<option value="">Select Advocate</option>';
+                //Private Party
 
-			return '<tr>'
-				+ '<td><input type="checkbox" class="row-check private-party-select" /></td>'
-				+ '<td class="serial-cell">' + rowNumber + '</td>'
-				+ '<td><input name="PrivateParties[' + index + '].PartyName" class="form-control" /></td>'
-				+ '<td><input name="PrivateParties[' + index + '].Designation" class="form-control" /></td>'
-				+ '<td><select name="PrivateParties[' + index + '].AdvocateId" class="form-select">' + advocateOptions + '</select></td>'
-				+ '</tr>';
-		}
+                    function buildPrivatePartyRow(index) {
+                        var rowNumber = index + 1;
+                        var advocateOptions = $("#privatePartyRows select:first").html() || '<option value="">Select Advocate</option>';
 
-		function refreshPrivatePartyRows() {
-			$("#privatePartyRows tr").each(function (index) {
-				$(this).find(".serial-cell").text(index + 1);
-				$(this).find("input[name$='.PartyName']").attr("name", "PrivateParties[" + index + "].PartyName");
-				$(this).find("input[name$='.Designation']").attr("name", "PrivateParties[" + index + "].Designation");
-				$(this).find("select[name$='.AdvocateId']").attr("name", "PrivateParties[" + index + "].AdvocateId");
-			});
-		}
+                        return '<tr>'
+                            + '<td><input type="checkbox" class="row-check private-party-select" /></td>'
+                            + '<td class="serial-cell">' + rowNumber + '</td>'
+                            + '<td><input name="PrivateParties[' + index + '].PartyName" class="form-control" /></td>'
+                                + '<td><input name="PrivateParties[' + index + '].Designation" class="form-control" /></td>'
+                            + '<td><select name="PrivateParties[' + index + '].AdvocateId" class="form-select">' + advocateOptions + '</select></td>'
+                            + '</tr>';
+                    }
 
-		$("#btnAddPrivateParty").click(function () {
-			$("#privatePartyRows").append(buildPrivatePartyRow($("#privatePartyRows tr").length));
-		});
+                    function refreshPrivatePartyRows() {
+                        $("#privatePartyRows tr").each(function (index) {
+                            $(this).find(".serial-cell").text(index + 1);
+                                $(this).find("input[name$='.PartyName']").attr("name", "PrivateParties[" + index + "].PartyName");
+                            $(this).find("input[name$='.Designation']").attr("name", "PrivateParties[" + index + "].Designation");
+                            $(this).find("select[name$='.AdvocateId']").attr("name", "PrivateParties[" + index + "].AdvocateId");
+                        });
+                        }
 
-		$("#chkAllPrivateParties").change(function () {
-			$(".private-party-select").prop("checked", $(this).prop("checked"));
-		});
+                    $("#btnAddPrivateParty").click(function () {
+                        $("#privatePartyRows").append(buildPrivatePartyRow($("#privatePartyRows tr").length));
+                        });
 
-		$("#btnDeletePrivateParty").click(function () {
-			var selectedRows = $("#privatePartyRows .private-party-select:checked").closest("tr");
+                    $("#chkAllPrivateParties").change(function () {
+                        $(".private-party-select").prop("checked", $(this).prop("checked"));
+                        });
 
-			if (selectedRows.length === 0) {
-				return;
-			}
+                    $("#btnDeletePrivateParty").click(function () {
+                        var selectedRows = $("#privatePartyRows .private-party-select:checked").closest("tr");
 
-			if ($("#privatePartyRows tr").length === selectedRows.length) {
-				selectedRows.not(":first").remove();
-				selectedRows.first().find("input, select").val("");
-				selectedRows.first().find(".private-party-select").prop("checked", false);
-			}
-			else {
-				selectedRows.remove();
-			}
+                        if (selectedRows.length === 0) {
+                            return;
+                            }
 
-			$("#chkAllPrivateParties").prop("checked", false);
-			refreshPrivatePartyRows();
-		});
+                        if ($("#privatePartyRows tr").length === selectedRows.length) {
+                            selectedRows.not(":first").remove();
+                            selectedRows.first().find("input, select").val("");
+                            selectedRows.first().find(".private-party-select").prop("checked", false);
+                        }
+                        else {
+                            selectedRows.remove();
+                        }
+
+                        $("#chkAllPrivateParties").prop("checked", false);
+                        refreshPrivatePartyRows();
+                    });
 
 
-	</script>
-	
-}
+            </script>
+
+        }

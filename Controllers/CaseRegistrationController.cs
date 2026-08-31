@@ -28,9 +28,9 @@ namespace GCMS.Controllers
         private readonly IDesignationService _DesignationService;
         private readonly IAdvocateService _AdvocateService;
         private readonly ILogger<CaseRegistrationController> _logger;
-        
 
-        public CaseRegistrationController(IDepartmentService service,IRcsatDepartmentService rcsatDeptservice, ICaseService caseService, ICaseTypeService caseTypeService, ICaseSubjectService caseSubjectService,ICasePurposeService casePurposeService,IBenchTypeService benchTypeService,IDistrictService districtService,IDesignationService designationService,IAdvocateService advocateService,ILogger<CaseRegistrationController> logger)
+
+        public CaseRegistrationController(IDepartmentService service, IRcsatDepartmentService rcsatDeptservice, ICaseService caseService, ICaseTypeService caseTypeService, ICaseSubjectService caseSubjectService, ICasePurposeService casePurposeService, IBenchTypeService benchTypeService, IDistrictService districtService, IDesignationService designationService, IAdvocateService advocateService, ILogger<CaseRegistrationController> logger)
         {
             _service = service;
             _RcsatDeptservice = rcsatDeptservice;
@@ -50,7 +50,7 @@ namespace GCMS.Controllers
         {
             var vm = new CaseRegistrationWizardViewModel();
 
-            await  BindDropdowns(vm);
+            await BindDropdowns(vm);
 
             return View(vm);
         }
@@ -347,7 +347,7 @@ namespace GCMS.Controllers
 
             return View(data);
         }
-        private async Task BindDropdowns(CaseRegistrationWizardViewModel vm )
+        private async Task BindDropdowns(CaseRegistrationWizardViewModel vm)
         {
 
             //Department
@@ -357,7 +357,7 @@ namespace GCMS.Controllers
             var casetype = await _CaseTypeservice.GetCaseTypeAsync(1, 1000);
             ViewBag.CaseTypeList = casetype;
 
-            
+
             var casesubject = await _CaseSubjectService.GetCaseSubjectAsync(1, 1000);
             ViewBag.CaseSubjectList = casesubject;
 
@@ -374,12 +374,23 @@ namespace GCMS.Controllers
             ViewBag.DesignationList = Designation;
 
             var courtCode = HttpContext.Session.GetString("CourtCode") ?? "0";
-          
+
             var AppleantAdvocate = await _AdvocateService.GetAdvocatesByCourtCodeAsync(courtCode.ToString());
             ViewBag.AppleantAdvocateList = AppleantAdvocate;
 
             var PrivateAdvocate = await _AdvocateService.GetPrivateAdvocatesAsync();
             ViewBag.PrivateAdvocateList = PrivateAdvocate;
+
+    //        ViewBag.PrivateAdvocateList = PrivateAdvocate
+    //.Where(a => a.InActive != "1") // agar inactive filter chahiye
+    //.Select(a => new SelectListItem
+    //{
+    //    Value = a.MastRcsatAdvocateId.ToString(),
+    //    Text = a.AdvName
+    //})
+    //.ToList();
+
+
 
 
         }

@@ -295,7 +295,8 @@ namespace GCMS.Controllers
                 return Json(new AjaxResponse
                 {
                     Success = false,
-                    Message = SaveErrorMessage
+                    // TEMPORARY — debug ke baad hata dena
+                    Message = ex.InnerException?.Message ?? ex.Message
                 });
             }
         }

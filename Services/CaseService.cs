@@ -16,85 +16,26 @@ namespace GCMS.Services
         }
 
         // FINAL SUBMIT
-        // Saves Step 1 + Step 2 + Step 3 + Step 4 using one Oracle stored procedure.
+        // FIX: Previously this method manually built 4 separate EF entities
+        // (CaseRegistration, CaseAppellant, CaseRespondent, CasePrivateParty)
+        // and called 4 separate EF SaveChangesAsync inserts. That path hit
+        // ORA-00904 because the CaseRegistration entity's [Column] mapping for
+        // the "Impugned" flag didn't match the real Oracle column name, and it
+        // did not correctly handle MULTIPLE private party rows (Step 4).
+        //
+        // Now delegates the entire save (Step 1 + 2 + 3 + 4) to the single
+        // Oracle stored procedure PROC_TRN_RCSAT_CASEREG_FULL, which:
+        //   - inserts into TRN_RCSAT_CASEREG / TRN_RCSAT_APPELLANT /
+        //     TRN_RCSAT_RESPONDENT with its own known-good column names
+        //     (sidesteps the EF column-mapping bug entirely), and
+        //   - natively supports multiple private parties via comma-separated
+        //     p_private_name / p_private_designation / p_privadvocatee params
+        //     (built from model.PrivateParties in the repository).
         public async Task<long> SaveFullCaseRegistrationAsync(
-      CaseRegistrationWizardViewModel model,
-      string createdBy)
+            CaseRegistrationWizardViewModel model,
+            string createdBy)
         {
-            long caseId = 0;
-
-            var caseEntity = new CaseRegistration
-            {
-                InstitutionDate = model.InstitutionDate,
-                CaseNo = model.CaseNumber,
-                OrderNo = model.OrderNumber,
-                DateOfOrder = model.DateofImpugnedOrder,
-                OrderIssuedById = model.OrderIssuedById,
-                CourtCode = model.CourtCode,
-                CaseTypeId = model.CaseTypeId,
-                CaseSubjectId = model.CaseSubjectId,
-                CasePurposeId = model.CasePurposeId,
-                HearingDate = model.HearingDate,
-                BenchTypeId = model.BenchTypeId,
-                LinkedCase = model.LinkedCaseNumber,
-                OldCaseNo = model.OldCaseNumber,
-                CreatedBy = createdBy
-            };
-
-            caseId = await _repository.SaveCaseAsync(caseEntity);
-
-            var appellantEntity = new CaseAppellant
-            {
-                CaseId = caseId,
-                AppellantName = model.AppellantName,
-                Designation = model.DesignationId?.ToString(),
-                District = model.DistrictId?.ToString(),
-                MobileNo = model.MobileNumber,
-                EmployeeId = model.EmployeeId,
-                AdvocateId = model.AdvocateId,
-                AdvocateEmail = model.AdvocateEmail,
-                AdvocateMobile = model.AdvocateMobile?.ToString()
-            };
-
-            await _repository.SaveAppellantAsync(appellantEntity);
-
-            var respondentEntity = new CaseRespondent
-            {
-                CaseId = caseId,
-                DepartmentId = model.DepartmentId,
-                AdvocateId = model.RespondentAdvocateId,
-                AdvocateEmail = model.RespondentAdvocateEmail,
-                AdvocateMobile = model.RespondentAdvocateMobile,
-                CreatedBy = createdBy
-            };
-
-            await _repository.SaveRespondentAsync(respondentEntity);
-
-            if (model.PrivateParties != null && model.PrivateParties.Any())
-            {
-                foreach (var party in model.PrivateParties)
-                {
-                    if (string.IsNullOrWhiteSpace(party.PartyName)
-                        && string.IsNullOrWhiteSpace(party.Designation)
-                        && party.AdvocateId == null)
-                    {
-                        continue;
-                    }
-
-                    var privatePartyEntity = new CasePrivateParty
-                    {
-                        CaseId = caseId,
-                        PartyName = party.PartyName,
-                        Designation = party.Designation,
-                        AdvocateId = party.AdvocateId,
-                        CreatedBy = createdBy
-                    };
-
-                    await _repository.SavePrivatePartyAsync(privatePartyEntity);
-                }
-            }
-
-            return caseId;
+            return await _repository.SaveFullCaseRegistrationAsync(model, createdBy);
         }
 
         // CASE READ / DELETE

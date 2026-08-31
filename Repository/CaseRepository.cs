@@ -23,14 +23,18 @@ namespace GCMS.Repository
             CaseRegistrationWizardViewModel model,
             string createdBy)
         {
-            using var conn = (OracleConnection)_context.Database.GetDbConnection();
+            // FIX: Do NOT wrap the DbContext's own connection in a `using` block.
+            // Disposing it here can break later calls on the same DbContext
+            // within the same request/scope (ObjectDisposedException).
+            var conn = (OracleConnection)_context.Database.GetDbConnection();
 
             if (conn.State != ConnectionState.Open)
                 await conn.OpenAsync();
 
             using var cmd = new OracleCommand("PROC_TRN_RCSAT_CASEREG_FULL", conn)
             {
-                CommandType = CommandType.StoredProcedure
+                CommandType = CommandType.StoredProcedure,
+                BindByName = true // FIX: always bind by name, never rely on positional order
             };
 
             cmd.Parameters.Add("p_institutiondate", OracleDbType.Date).Value =
@@ -108,14 +112,57 @@ namespace GCMS.Repository
             cmd.Parameters.Add("p_respadvmobile", OracleDbType.Int64).Value =
                 model.RespondentAdvocateMobile ?? (object)DBNull.Value;
 
+            // FIX: Step 4 supports MULTIPLE private parties (model.PrivateParties).
+            // The SP expects p_private_name / p_private_designation / p_privadvocatee
+            // as comma-separated lists, split positionally via REGEXP_SUBSTR + LEVEL.
+            // IMPORTANT: REGEXP_SUBSTR('[^,]+', ...) does NOT match an empty segment
+            // between two commas — a blank Designation/AdvocateId would silently
+            // shift the index and attach the WRONG value to the wrong party.
+            // So every blank field is replaced with a single-space placeholder
+            // to keep all three lists the same length/position.
+            var privateNames = new List<string>();
+            var privateDesignations = new List<string>();
+            var privateAdvocateIds = new List<string>();
+
+            foreach (var party in model.PrivateParties ?? new List<PrivatePartyRowViewModel>())
+            {
+                bool isFullyBlank =
+                    string.IsNullOrWhiteSpace(party.PartyName)
+                    && string.IsNullOrWhiteSpace(party.Designation)
+                    && party.AdvocateId == null;
+
+                if (isFullyBlank)
+                    continue; // skip completely empty rows (e.g. unused extra row)
+
+                privateNames.Add(
+                    string.IsNullOrWhiteSpace(party.PartyName) ? " " : party.PartyName.Trim());
+
+                privateDesignations.Add(
+                    string.IsNullOrWhiteSpace(party.Designation) ? " " : party.Designation.Trim());
+
+                privateAdvocateIds.Add(
+                    party.AdvocateId.HasValue ? party.AdvocateId.Value.ToString() : " ");
+            }
+
+            string? privateNameList = privateNames.Count > 0
+                ? string.Join(",", privateNames) : null;
+
+            string? privateDesignationList = privateDesignations.Count > 0
+                ? string.Join(",", privateDesignations) : null;
+
+            string? privateAdvocateList = privateAdvocateIds.Count > 0
+                ? string.Join(",", privateAdvocateIds) : null;
+
             cmd.Parameters.Add("p_private_name", OracleDbType.Varchar2).Value =
-                model.PrivatePartyName ?? (object)DBNull.Value;
+                (object?)privateNameList ?? DBNull.Value;
 
             cmd.Parameters.Add("p_private_designation", OracleDbType.Varchar2).Value =
-                model.PrivateDesignation ?? (object)DBNull.Value;
+                (object?)privateDesignationList ?? DBNull.Value;
 
-            cmd.Parameters.Add("p_privadvocatee", OracleDbType.Int64).Value =
-                model.PrivateAdvocateId ?? (object)DBNull.Value;
+            // FIX: SP defines p_privadvocatee as VARCHAR2 (comma-separated list,
+            // parsed with REGEXP_SUBSTR + TO_NUMBER per private party), not NUMBER.
+            cmd.Parameters.Add("p_privadvocatee", OracleDbType.Varchar2).Value =
+                (object?)privateAdvocateList ?? DBNull.Value;
 
             var outCaseId = new OracleParameter("p_caseid", OracleDbType.Int64)
             {
@@ -124,7 +171,19 @@ namespace GCMS.Repository
 
             cmd.Parameters.Add(outCaseId);
 
-            await cmd.ExecuteNonQueryAsync();
+            try
+            {
+                await cmd.ExecuteNonQueryAsync();
+            }
+            catch (OracleException ex)
+            {
+                // FIX: surface the SP's RAISE_APPLICATION_ERROR message
+                // (e.g. -20001..-20011 validation errors, -20999 generic)
+                // as a clean exception instead of letting a raw OracleException
+                // bubble up to the Service/Controller layer.
+                throw new InvalidOperationException(
+                    $"Case registration failed: {ex.Message}", ex);
+            }
 
             if (outCaseId.Value == null || outCaseId.Value == DBNull.Value)
                 return 0;
@@ -257,6 +316,10 @@ namespace GCMS.Repository
             //    .ToListAsync();
         }
 
+        // NOTE: no "Order Type Master" module mentioned in your recent work.
+        // Left pointing at DepartmentMasters as a placeholder — replace with
+        // the correct table/entity once that master exists, or remove this
+        // method if p_desiofforder actually maps to something else entirely.
         public async Task<IEnumerable<SelectListItem>> GetOrderTypesAsync()
         {
             return await _context.DepartmentMasters

@@ -662,7 +662,60 @@
 			</div>
 
 			<div class="card-body">
+				<div class="case-grid-toolbar" aria-label="Private party grid actions">
+					<button type="button" id="btnAddPrivateParty" class="btn" title="Add row">
+						<i class="bi bi-plus-lg"></i>
+					</button>
 
+					<button type="button" id="btnDeletePrivateParty" class="btn btn-secondary" title="Delete selected rows">
+						<i class="bi bi-trash"></i>
+					</button>
+				</div>
+
+				<div class="table-responsive">
+					<table class="private-party-grid table mb-0">
+						<thead>
+							<tr>
+								<th style="width: 40px;">
+									<input type="checkbox" id="chkAllPrivateParties" class="row-check" />
+								</th>
+								<th style="width: 52px;">S.no</th>
+								<th>Name</th>
+								<th>Designation</th>
+								<th>Private Advocate Name</th>
+							</tr>
+						</thead>
+
+						<tbody id="privatePartyRows">
+							<tr>
+								<td>
+									<input type="checkbox" class="row-check private-party-select" />
+								</td>
+
+								<td class="serial-cell">1</td>
+
+								<td>
+									<input name="PrivateParties[0].PartyName" class="form-control" />
+								</td>
+
+								<td>
+									<input name="PrivateParties[0].Designation" class="form-control" />
+								</td>
+
+								<td>
+									<select name="PrivateParties[0].AdvocateId" class="form-select">
+										<option value="">Select Advocate</option>
+										@foreach (var advocate in Model.Advocates)
+										{
+											<option value="@advocate.Value">@advocate.Text</option>
+										}
+									</select>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+@* 
 				<div class="row">
 					<div class="col-md-4 mb-4">
 
@@ -720,7 +773,7 @@
 
 					</button>
 
-				</div>
+				</div> *@
 
 			</div>
 
@@ -958,161 +1011,60 @@
 			$("#btnBack2").click(function () { showStep(2); });
 			$("#btnBack3").click(function () { showStep(3); });
 		});
-	// $(document).ready(function () {
+	
+//Private Party
 
-	// 	function getResponseValue(response, camelCaseName, pascalCaseName) {
-	// 		if (!response) {
-	// 			return null;
-	// 		}
+		function buildPrivatePartyRow(index) {
+			var rowNumber = index + 1;
+			var advocateOptions = $("#privatePartyRows select:first").html() || '<option value="">Select Advocate</option>';
 
-	// 		return response[camelCaseName] !== undefined
-	// 			? response[camelCaseName]
-	// 			: response[pascalCaseName];
-	// 	}
+			return '<tr>'
+				+ '<td><input type="checkbox" class="row-check private-party-select" /></td>'
+				+ '<td class="serial-cell">' + rowNumber + '</td>'
+				+ '<td><input name="PrivateParties[' + index + '].PartyName" class="form-control" /></td>'
+				+ '<td><input name="PrivateParties[' + index + '].Designation" class="form-control" /></td>'
+				+ '<td><select name="PrivateParties[' + index + '].AdvocateId" class="form-select">' + advocateOptions + '</select></td>'
+				+ '</tr>';
+		}
 
-	// 	function isSaveSuccess(response) {
-	// 		return getResponseValue(response, "success", "Success") === true;
-	// 	}
+		function refreshPrivatePartyRows() {
+			$("#privatePartyRows tr").each(function (index) {
+				$(this).find(".serial-cell").text(index + 1);
+				$(this).find("input[name$='.PartyName']").attr("name", "PrivateParties[" + index + "].PartyName");
+				$(this).find("input[name$='.Designation']").attr("name", "PrivateParties[" + index + "].Designation");
+				$(this).find("select[name$='.AdvocateId']").attr("name", "PrivateParties[" + index + "].AdvocateId");
+			});
+		}
 
-	// 	function getMessage(response) {
-	// 		return getResponseValue(response, "message", "Message") || "Unable to process request.";
-	// 	}
+		$("#btnAddPrivateParty").click(function () {
+			$("#privatePartyRows").append(buildPrivatePartyRow($("#privatePartyRows tr").length));
+		});
 
-	// 	function getCaseId(response) {
-	// 		return getResponseValue(response, "caseId", "CaseId") || 0;
-	// 	}
+		$("#chkAllPrivateParties").change(function () {
+			$(".private-party-select").prop("checked", $(this).prop("checked"));
+		});
 
-	// 	function ShowStep(step) {
-	// 		$(".step-panel").removeClass("active");
-	// 		$("#step" + step).addClass("active");
+		$("#btnDeletePrivateParty").click(function () {
+			var selectedRows = $("#privatePartyRows .private-party-select:checked").closest("tr");
 
-	// 		$(".wizard-step").removeClass("active");
-	// 		$("#wizard" + step).addClass("active");
-	// 	}
-
-	// 	$("#btnStep1").click(function () {
-	// 		ShowStep(2);
-	// 		// $.ajax({
-	// 		// 	url: '/CaseRegistration/SaveStep1',
-	// 		// 	type: 'POST',
-	// 		// 	data: $("#frmCaseRegistration").serialize(),
-
-	// 		// 	success: function (res) {
-	// 		// 		if (isSaveSuccess(res)) {
-	// 		// 			$("#CaseId").val(getCaseId(res));
-	// 		// 			ShowStep(2);
-	// 		// 		}
-	// 		// 		else {
-	// 		// 			alert(getMessage(res));
-	// 		// 		}
-	// 		// 	},
-
-	// 		// 	error: function () {
-	// 		// 		alert("Server Error");
-	// 		// 	}
-	// 		// });
-	// 	});
-
-	// 	$("#btnStep2").click(function () {
-	// 		ShowStep(3);
-	// 		// $.ajax({
-	// 		// 	url: '/CaseRegistration/SaveStep2',
-	// 		// 	type: 'POST',
-	// 		// 	data: $("#frmCaseRegistration").serialize(),
-
-	// 		// 	success: function (res) {
-	// 		// 		if (isSaveSuccess(res)) {
-	// 		// 			ShowStep(3);
-	// 		// 		}
-	// 		// 		else {
-	// 		// 			alert(getMessage(res));
-	// 		// 		}
-	// 		// 	},
-
-	// 		// 	error: function () {
-	// 		// 		alert("Server Error");
-	// 		// 	}
-	// 		// });
-	// 	});
-
-	// 	$("#btnStep3").click(function () {
-	// 		$.ajax({
-	// 			url: '/CaseRegistration/SaveStep3',
-	// 			type: 'POST',
-	// 			data: $("#frmCaseRegistration").serialize(),
-
-	// 			success: function (res) {
-	// 				if (isSaveSuccess(res)) {
-	// 					ShowStep(4);
-	// 				}
-	// 				else {
-	// 					alert(getMessage(res));
-	// 				}
-	// 			},
-
-	// 			error: function () {
-	// 				alert("Server Error");
-	// 			}
-	// 		});
-	// 	});
-
-	// 	$("#btnFinish").click(function () {
-	// 		$.ajax({
-	// 			url: '/CaseRegistration/SaveStep4',
-	// 			type: 'POST',
-	// 			data: $("#frmCaseRegistration").serialize(),
-
-	// 			success: function (res) {
-	// 				if (isSaveSuccess(res)) {
-	// 					alert(getMessage(res));
-	// 					location.reload();
-	// 				}
-	// 				else {
-	// 					alert(getMessage(res));
-	// 				}
-	// 			},
-
-	// 			error: function () {
-	// 				alert("Server Error");
-	// 			}
-	// 		});
-	// 	});
-
-	// 	$("#btnBack1").click(function () {
-	// 		ShowStep(1);
-	// 	});
-
-	// 	$("#btnBack2").click(function () {
-	// 		ShowStep(2);
-	// 	});
-
-	// 	$("#btnBack3").click(function () {
-	// 		ShowStep(3);
-	// 	});
-	// });
-	</script>
-	@* <script>
-		document.addEventListener("DOMContentLoaded", function () {
-
-			alert("DOM Loaded");
-
-			var department = document.getElementById("DepartmentId");
-
-			console.log("Department element:", department);
-
-			if (!department) {
-				console.error("DepartmentId element NOT FOUND");
+			if (selectedRows.length === 0) {
 				return;
 			}
 
-			department.addEventListener("change", function () {
+			if ($("#privatePartyRows tr").length === selectedRows.length) {
+				selectedRows.not(":first").remove();
+				selectedRows.first().find("input, select").val("");
+				selectedRows.first().find(".private-party-select").prop("checked", false);
+			}
+			else {
+				selectedRows.remove();
+			}
 
-				alert("Department changed!");
-
-				console.log("Selected DepartmentId:", this.value);
-				alert("Department ID: " + this.value);
-			});
-
+			$("#chkAllPrivateParties").prop("checked", false);
+			refreshPrivatePartyRows();
 		});
-	</script> *@
+
+
+	</script>
+	
 }

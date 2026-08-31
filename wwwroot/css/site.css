@@ -1682,3 +1682,58 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
     transform: rotate(180deg);
     transition: transform .2s ease;
 }*/
+
+
+.case-grid-toolbar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+    .case-grid-toolbar .btn {
+        width: 32px;
+        height: 30px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+    }
+
+.private-party-grid {
+    min-width: 980px;
+    border: 1px solid #d8dce4;
+}
+
+    .private-party-grid th,
+    .private-party-grid td {
+        border: 1px solid #d8dce4;
+        padding: 6px;
+        vertical-align: middle;
+    }
+
+    .private-party-grid th {
+        color: #1d2850;
+        font-size: 14px;
+        font-weight: 600;
+        background: #f7f8fb;
+    }
+
+    .private-party-grid .row-check,
+    .private-party-grid .private-party-select,
+    .private-party-grid #chkAllPrivateParties {
+        width: 20px;
+        height: 20px;
+    }
+
+    .private-party-grid .serial-cell {
+        width: 44px;
+        text-align: center;
+    }
+
+    .private-party-grid .form-control,
+    .private-party-grid .form-select {
+        border-radius: 0;
+        min-height: 34px;
+        font-size: 14px;
+    }

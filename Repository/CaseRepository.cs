@@ -269,5 +269,37 @@ namespace GCMS.Repository
                 })
                 .ToListAsync();
         }
+
+        public async Task<long> SaveCaseAsync(CaseRegistration caseRegistration)
+        {
+            await _context.CaseRegistrations.AddAsync(caseRegistration);
+            await _context.SaveChangesAsync();
+
+            return caseRegistration.CaseId;
+        }
+
+        public async Task<long> SaveAppellantAsync(CaseAppellant appellant)
+        {
+            await _context.CaseAppellants.AddAsync(appellant);
+            await _context.SaveChangesAsync();
+
+            return appellant.AppellantId;
+        }
+
+        public async Task<long> SaveRespondentAsync(CaseRespondent respondent)
+        {
+            await _context.CaseRespondents.AddAsync(respondent);
+            await _context.SaveChangesAsync();
+
+            return respondent.RespondentId;
+        }
+
+        public async Task<long> SavePrivatePartyAsync(CasePrivateParty privateParty)
+        {
+            await _context.CasePrivateParties.AddAsync(privateParty);
+            await _context.SaveChangesAsync();
+
+            return privateParty.PrivatePartyId;
+        }
     }
 }

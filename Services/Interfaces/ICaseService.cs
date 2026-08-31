@@ -11,6 +11,7 @@ namespace GCMS.Services.Interfaces
         Task<long> SaveFullCaseRegistrationAsync(
             CaseRegistrationWizardViewModel model,
             string createdBy);
+      
 
         // CASE READ / DELETE
         Task<CaseRegistration?> GetCaseAsync(long caseId);

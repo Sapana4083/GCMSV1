@@ -18,12 +18,83 @@ namespace GCMS.Services
         // FINAL SUBMIT
         // Saves Step 1 + Step 2 + Step 3 + Step 4 using one Oracle stored procedure.
         public async Task<long> SaveFullCaseRegistrationAsync(
-            CaseRegistrationWizardViewModel model,
-            string createdBy)
+      CaseRegistrationWizardViewModel model,
+      string createdBy)
         {
-            return await _repository.SaveFullCaseRegistrationAsync(
-                model,
-                createdBy);
+            long caseId = 0;
+
+            var caseEntity = new CaseRegistration
+            {
+                InstitutionDate = model.InstitutionDate,
+                CaseNo = model.CaseNumber,
+                OrderNo = model.OrderNumber,
+                DateOfOrder = model.DateofImpugnedOrder,
+                OrderIssuedById = model.OrderIssuedById,
+                CourtCode = model.CourtCode,
+                CaseTypeId = model.CaseTypeId,
+                CaseSubjectId = model.CaseSubjectId,
+                CasePurposeId = model.CasePurposeId,
+                HearingDate = model.HearingDate,
+                BenchTypeId = model.BenchTypeId,
+                LinkedCase = model.LinkedCaseNumber,
+                OldCaseNo = model.OldCaseNumber,
+                CreatedBy = createdBy
+            };
+
+            caseId = await _repository.SaveCaseAsync(caseEntity);
+
+            var appellantEntity = new CaseAppellant
+            {
+                CaseId = caseId,
+                AppellantName = model.AppellantName,
+                Designation = model.DesignationId?.ToString(),
+                District = model.DistrictId?.ToString(),
+                MobileNo = model.MobileNumber,
+                EmployeeId = model.EmployeeId,
+                AdvocateId = model.AdvocateId,
+                AdvocateEmail = model.AdvocateEmail,
+                AdvocateMobile = model.AdvocateMobile?.ToString()
+            };
+
+            await _repository.SaveAppellantAsync(appellantEntity);
+
+            var respondentEntity = new CaseRespondent
+            {
+                CaseId = caseId,
+                DepartmentId = model.DepartmentId,
+                AdvocateId = model.RespondentAdvocateId,
+                AdvocateEmail = model.RespondentAdvocateEmail,
+                AdvocateMobile = model.RespondentAdvocateMobile,
+                CreatedBy = createdBy
+            };
+
+            await _repository.SaveRespondentAsync(respondentEntity);
+
+            if (model.PrivateParties != null && model.PrivateParties.Any())
+            {
+                foreach (var party in model.PrivateParties)
+                {
+                    if (string.IsNullOrWhiteSpace(party.PartyName)
+                        && string.IsNullOrWhiteSpace(party.Designation)
+                        && party.AdvocateId == null)
+                    {
+                        continue;
+                    }
+
+                    var privatePartyEntity = new CasePrivateParty
+                    {
+                        CaseId = caseId,
+                        PartyName = party.PartyName,
+                        Designation = party.Designation,
+                        AdvocateId = party.AdvocateId,
+                        CreatedBy = createdBy
+                    };
+
+                    await _repository.SavePrivatePartyAsync(privatePartyEntity);
+                }
+            }
+
+            return caseId;
         }
 
         // CASE READ / DELETE

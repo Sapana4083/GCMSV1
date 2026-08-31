@@ -128,6 +128,11 @@ namespace GCMS.Models.ViewModels
         [Display(Name = "Private Advocate")]
         public string? PrivateAdvocateName { get; set; }
 
+        public List<PrivatePartyRowViewModel> PrivateParties { get; set; } = new()
+{
+    new PrivatePartyRowViewModel()
+};
+
         #endregion
 
         #region ===== COMMON =====
@@ -160,5 +165,12 @@ namespace GCMS.Models.ViewModels
 
         #endregion
     }
+    public class PrivatePartyRowViewModel
+    {
+        public string? PartyName { get; set; }
 
+        public string? Designation { get; set; }
+
+        public long? AdvocateId { get; set; }
+    }
 }

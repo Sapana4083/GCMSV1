@@ -94,5 +94,15 @@ namespace GCMS.Services
         {
             return await _repository.GetOrderTypesAsync();
         }
+
+        public async Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt)
+        {
+            return await _repository.GetCaseListAsync(pageNo, rowCnt);
+        }
+
+        public async Task<CaseRegistrationWizardViewModel?> GetFullCaseByIdAsync(long caseId)
+        {
+            return await _repository.GetFullCaseByIdAsync(caseId);
+        }
     }
 }

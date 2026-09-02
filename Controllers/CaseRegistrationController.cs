@@ -45,222 +45,40 @@ namespace GCMS.Controllers
             _AdvocateService = advocateService;
         }
 
+        #region View Page Case Registration
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> CaseRegistrationList(int pageNo = 1, int rowCnt = 100)
         {
-            var vm = new CaseRegistrationWizardViewModel();
+            var data = await _caseService.GetCaseListAsync(pageNo, rowCnt);
+
+            ViewBag.PageNo = pageNo;
+            ViewBag.RowCnt = rowCnt;
+
+            return View(data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(long? id)
+        {
+            CaseRegistrationWizardViewModel vm;
+
+            if (id.HasValue && id.Value > 0)
+            {
+                vm = await _caseService.GetFullCaseByIdAsync(id.Value)
+                     ?? new CaseRegistrationWizardViewModel();
+            }
+            else
+            {
+                vm = new CaseRegistrationWizardViewModel();
+            }
 
             await BindDropdowns(vm);
 
             return View(vm);
         }
-        //=========================
-        // STEP 1 
-        //=========================
-        //[HttpPost]
-        //public async Task<JsonResult> SaveStep1(CaseRegistrationWizardViewModel model)
-        //{
-        //    try
-        //    {
-        //        if (!ModelState.IsValid)
-        //        {
-        //            return Json(new AjaxResponse
-        //            {
-        //                Success = false,
-        //                Message = string.Join("<br/>",
-        //                ModelState.Values
-        //                .SelectMany(v => v.Errors)
-        //                .Select(e => e.ErrorMessage))
-        //            });
-        //        }
+        #endregion
 
-        //        var entity = new CaseRegistration
-        //        {
-        //            InstitutionDate = model.InstitutionDate,
-        //            CaseNo = model.CaseNumber,
-        //            //ManualCaseNo = model.ManualCaseNumber,
-        //            OrderNo = model.OrderNumber,
-        //            DateOfOrder = model.DateofImpugnedOrder,
-        //            OrderIssuedById = model.OrderIssuedById,
-        //            CourtCode = model.CourtCode,
-        //            CaseTypeId = model.CaseTypeId,
-        //            CaseSubjectId = model.CaseSubjectId,
-        //            CasePurposeId = model.CasePurposeId,
-        //            HearingDate = model.HearingDate,
-        //            BenchTypeId = model.BenchTypeId,
-        //            LinkedCase = model.LinkedCaseNumber,
-        //            OldCaseNo = model.OldCaseNumber,
-        //            CreatedBy = User.Identity?.Name ?? "ADMIN"
-        //        };
-        //        long caseId = SessionHelper.GetCaseId(HttpContext);
-
-        //        if (caseId == 0)
-        //        {
-        //            caseId = await _caseService.SaveCaseAsync(entity);
-        //            SessionHelper.SetCaseId(HttpContext, caseId);
-        //        }
-        //        else
-        //        {
-        //            entity.CaseId = caseId;
-        //            await _caseService.UpdateCaseAsync(entity);
-        //        }
-
-        //        //long caseId = await _caseService.SaveCaseAsync(entity);
-
-        //        SessionHelper.SetCaseId(HttpContext, caseId);
-
-        //        return Json(new AjaxResponse
-        //        {
-        //            Success = true,
-        //            CaseId = caseId,
-        //            Message = "Step1 Saved Successfully"
-        //        });
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error saving case registration step 1.");
-        //        return Json(new AjaxResponse
-        //        {
-        //            Success = false,
-        //            Message = SaveErrorMessage
-        //        });
-        //    }
-        //}
-
-        //[HttpPost]
-        //public async Task<JsonResult> SaveStep2(CaseRegistrationWizardViewModel model)
-        //{
-        //    try
-        //    {
-        //        long caseId = SessionHelper.GetCaseId(HttpContext);
-
-        //        if (caseId == 0)
-        //        {
-        //            return Json(new AjaxResponse
-        //            {
-        //                Success = false,
-        //                Message = "Session Expired"
-        //            });
-        //        }
-
-        //        var entity = new CaseAppellant
-        //        {
-        //            CaseId = caseId,
-        //            AppellantName = model.AppellantName,
-        //            Designation = model.DesignationId?.ToString(),
-        //            District = model.DistrictId?.ToString(),
-        //            MobileNo = model.MobileNumber,
-        //            EmployeeId = model.EmployeeId,
-        //            AdvocateId = model.AdvocateId,
-        //            AdvocateEmail = model.AdvocateEmail,
-        //            AdvocateMobile = model.AdvocateMobile?.ToString()
-        //        };
-
-        //        await _caseService.SaveAppellantAsync(entity);
-
-        //        return Json(new AjaxResponse
-        //        {
-        //            Success = true,
-        //            Message = "Step2 Saved Successfully"
-        //        });
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error saving case registration step 1.");
-        //        return Json(new AjaxResponse
-        //        {
-        //            Success = false,
-        //            Message = SaveErrorMessage
-        //        });
-        //    }
-        //}
-
-        //[HttpPost]
-        //public async Task<JsonResult> SaveStep3(CaseRegistrationWizardViewModel model)
-        //{
-        //    try
-        //    {
-        //        long caseId = SessionHelper.GetCaseId(HttpContext);
-
-        //        if (caseId == 0)
-        //        {
-        //            return Json(new AjaxResponse
-        //            {
-        //                Success = false,
-        //                Message = "Session Expired"
-        //            });
-        //        }
-
-        //        var entity = new CaseRespondent
-        //        {
-        //            CaseId = caseId,
-        //            DepartmentId = model.DepartmentId,
-        //            AdvocateId = model.RespondentAdvocateId,
-        //            AdvocateEmail = model.RespondentAdvocateEmail,
-        //            AdvocateMobile = model.RespondentAdvocateMobile,
-        //            CreatedBy = "ADMIN"
-        //        };
-
-        //        await _caseService.SaveRespondentAsync(entity);
-
-        //        return Json(new AjaxResponse
-        //        {
-        //            Success = true,
-        //            Message = "Step3 Saved Successfully"
-        //        });
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error saving case registration step 1.");
-        //        return Json(new AjaxResponse
-        //        {
-        //            Success = false,
-        //            Message = SaveErrorMessage
-        //        });
-        //    }
-        //}
-
-        //[HttpPost]
-        //public async Task<JsonResult> SaveStep4(CaseRegistrationWizardViewModel model)
-        //{
-        //    try
-        //    {
-        //        long caseId = SessionHelper.GetCaseId(HttpContext);
-
-        //        var entity = new CasePrivateParty
-        //        {
-        //            CaseId = caseId,
-        //            PartyName = model.PrivatePartyName,
-        //            Designation = model.PrivateDesignation,
-        //            Advocate = model.AdvocateId,
-        //            CreatedBy = User.Identity?.Name ?? "ADMIN"
-        //        };
-
-        //        await _caseService.SavePrivatePartyAsync(entity);
-
-        //        SessionHelper.Clear(HttpContext);
-
-        //        return Json(new AjaxResponse
-        //        {
-        //            Success = true,
-        //            Message = "Case Registration Completed Successfully"
-        //        });
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error saving case registration step 1.");
-        //        return Json(new AjaxResponse
-        //        {
-        //            Success = false,
-        //            Message = SaveErrorMessage
-        //        });
-        //    }
-        //}
-
+        #region SaveFullCaseRegistration
         [HttpPost]
         public async Task<JsonResult> SaveFullCaseRegistration(CaseRegistrationWizardViewModel model)
         {
@@ -300,7 +118,9 @@ namespace GCMS.Controllers
                 });
             }
         }
+        #endregion
 
+        #region ValidateFullCaseRegistration
         private static List<string> ValidateFullCaseRegistration(CaseRegistrationWizardViewModel model)
         {
             var errors = new List<string>();
@@ -335,7 +155,9 @@ namespace GCMS.Controllers
 
             return errors;
         }
+        #endregion
 
+        #region StateList
         public async Task<IActionResult> StateList(int pageNo = 1, int rowCnt = 999999999)
         {
             var data =
@@ -348,6 +170,9 @@ namespace GCMS.Controllers
 
             return View(data);
         }
+        #endregion
+
+        #region BindDropdowns
         private async Task BindDropdowns(CaseRegistrationWizardViewModel vm)
         {
 
@@ -396,6 +221,9 @@ namespace GCMS.Controllers
 
         }
 
+        #endregion
+
+        #region GetRespondentAdvocates
         [HttpGet]
         public async Task<IActionResult> GetRespondentAdvocates(long departmentId)
         {
@@ -436,5 +264,7 @@ namespace GCMS.Controllers
                 });
             }
         }
+
+        #endregion
     }
 }

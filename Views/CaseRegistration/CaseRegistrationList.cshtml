@@ -1,0 +1,155 @@
+﻿@model List<GCMS.Models.ViewModels.CaseRegistrationListItem>
+
+@{
+    ViewData["Title"] = "Case Registration List";
+    var srNo = 1;
+}
+
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container-fluid bg-light rounded-4 m-auto shadow mt-3 py-4 px-3">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h4>Case Registration List</h4>
+
+        <div class="d-flex gap-2">
+            <a href="@Url.Action("Index", "CaseRegistration")" class="btn btn-primary" title="Click to add new case.">
+                Add Case Registration
+            </a>
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+    <div class="table-responsive">
+        <!-- Data Table -->
+        <table id="tblCaseRegistration" class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Case No</th>
+                    <th>Institution Date</th>
+                    <th>Case Type</th>
+                    <th>Case Subject</th>
+                    <th>Case Purpose</th>
+                    <th>Hearing Date</th>
+                    <th>Bench Type</th>
+                    <th>Created By</th>
+                    <th>Modified Date</th>
+
+                    <th width="100">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.MCaseNoo</td>
+                        <td>@item.InstitutionDate?.ToString("dd/MM/yyyy")</td>
+                        <td>@item.CaseType</td>
+                        <td>@item.CaseSubject</td>
+                        <td>@item.CasePurposeName</td>
+                        <td>@item.HearingDate?.ToString("dd/MM/yyyy")</td>
+                        <td>@item.BenchType</td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.ModifiedOn</td>
+
+                        <td>
+                            <a href="@Url.Action("Index", "CaseRegistration", new { id = item.RecordId })"
+                               class="btn btn-default waves-effect waves-light" title="Click to edit record.">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+<!-- ========== SCRIPTS ========== -->
+@section Scripts {
+    <script>
+
+        // ── Init ─────────────────────────────────────────────
+        $(document).ready(function() {
+
+            $('#tblCaseRegistration').DataTable({
+
+                dom: 'lBfrtip',
+
+                responsive: true,
+                autoWidth: false,
+
+                pageLength: 10,
+
+                lengthMenu: [
+                    [10, 25, 50, 100],
+                    [10, 25, 50, 100]
+                ],
+
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+
+                columnDefs: [{
+                    responsivePriority: 1,
+                    targets: 10
+                },
+                {
+                    responsivePriority: 2,
+                    targets: 0
+                }
+                ],
+
+                buttons: [{
+                    extend: 'print',
+                    title: 'Case Registration List'
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: 'Case Registration List'
+                }
+                ]
+            });
+
+            $('.dt-buttons').hide();
+        });
+        $("#btnPrint").click(function() {
+
+            window.print();
+
+        });
+
+        $("#btnExcel").click(function() {
+
+            let table = document.getElementById("tblCaseRegistration");
+
+            let html = table.outerHTML;
+
+            let url = 'data:application/vnd.ms-excel,' +
+                encodeURIComponent(html);
+
+            let a = document.createElement('a');
+
+            a.href = url;
+            a.download = 'CaseRegistrationList.xls';
+
+            a.click();
+
+        });
+
+    </script>
+}

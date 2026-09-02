@@ -364,5 +364,128 @@ namespace GCMS.Repository
 
             return privateParty.PrivatePartyId;
         }
+
+        // ───────────────────────────────────────────────
+        // LIST (V_INPUT = 4) — paginated
+        // ───────────────────────────────────────────────
+        public async Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt)
+        {
+            var list = new List<CaseRegistrationListItem>();
+
+            var conn = (OracleConnection)_context.Database.GetDbConnection();
+
+            if (conn.State != ConnectionState.Open)
+                await conn.OpenAsync();
+
+            using var cmd = new OracleCommand("PROC_TRN_RCSAT_CASEREG_FULL", conn)
+            {
+                CommandType = CommandType.StoredProcedure,
+                BindByName = true
+            };
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 4;
+
+            cmd.Parameters.Add("P_ROW_CNT", OracleDbType.Int32).Value = rowCnt;
+            cmd.Parameters.Add("P_PAGE_NO", OracleDbType.Int32).Value = pageNo;
+
+            var caseIdParam = new OracleParameter("p_caseid", OracleDbType.Int64)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Value = DBNull.Value
+            };
+            cmd.Parameters.Add(caseIdParam);
+
+            cmd.Parameters.Add("P_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                list.Add(new CaseRegistrationListItem
+                {
+                    RecordId = Convert.ToInt64(reader["RECORDID"]),
+                    MCaseNoo = reader["MCASE_NOO"]?.ToString(),
+                    InstitutionDate = reader["INSTITUTIONDATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["INSTITUTIONDATE"]),
+                    CaseType = reader["CASETYPE"]?.ToString(),
+                    CaseSubject = reader["CASESUBJECT"]?.ToString(),
+                    CasePurposeName = reader["CASE_PURPOSE_NAME"]?.ToString(),
+                    HearingDate = reader["HEARINGDATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["HEARINGDATE"]),
+                    BenchType = reader["BENCH_TYPE"]?.ToString(),
+                    CreatedBy = reader["CREATEDBY"]?.ToString(),
+                    CreatedOn = reader["CREATEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["CREATEDON"]),
+                    ModifiedBy = reader["MODIFIEDBY"]?.ToString(),
+                    ModifiedOn = reader["MODIFIEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["MODIFIEDON"])
+                });
+            }
+
+            return list;
+        }
+
+        // ───────────────────────────────────────────────
+        // GET BY ID (V_INPUT = 3) — Edit ke liye poora wizard model bharega
+        // ───────────────────────────────────────────────
+        public async Task<CaseRegistrationWizardViewModel?> GetFullCaseByIdAsync(long caseId)
+        {
+            CaseRegistrationWizardViewModel? model = null;
+
+            var conn = (OracleConnection)_context.Database.GetDbConnection();
+
+            if (conn.State != ConnectionState.Open)
+                await conn.OpenAsync();
+
+            using var cmd = new OracleCommand("PROC_TRN_RCSAT_CASEREG_FULL", conn)
+            {
+                CommandType = CommandType.StoredProcedure,
+                BindByName = true
+            };
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 3;
+
+            var caseIdParam = new OracleParameter("p_caseid", OracleDbType.Int64)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Value = caseId
+            };
+            cmd.Parameters.Add(caseIdParam);
+
+            cmd.Parameters.Add("P_CURSOR", OracleDbType.RefCursor, ParameterDirection.Output);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                model = new CaseRegistrationWizardViewModel
+                {
+                    Id = Convert.ToInt64(reader["RECORDID"]),
+                    InstitutionDate = reader["INSTITUTIONDATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["INSTITUTIONDATE"]),
+                    CaseNumber = reader["MCASE_NOO"]?.ToString(),
+                    IsImpungned = reader["ISIMPNULL"]?.ToString() == "T",
+                    DateofImpugnedOrder = reader["DATE_OF_ORDER"] == DBNull.Value ? null : Convert.ToDateTime(reader["DATE_OF_ORDER"]),
+                    HearingDate = reader["HEARINGDATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["HEARINGDATE"]),
+                    LinkedCaseNumber = reader["LINKED_CASE"]?.ToString(),
+
+                    AppellantName = reader["APPELLANT_NAME"]?.ToString(),
+                    MobileNumber = reader["MOBILENO"] == DBNull.Value ? null : Convert.ToInt64(reader["MOBILENO"]),
+                    AdvocateId = reader["APP_ADVOCATE"] == DBNull.Value ? null : Convert.ToInt64(reader["APP_ADVOCATE"]),
+                    AdvocateEmail = reader["APPADV_EMAIL"]?.ToString(),
+                    EmployeeId = reader["EMPLOYEEID"]?.ToString(),
+
+                    RespondentAdvocateId = reader["RESP_ADVOCATE"] == DBNull.Value ? null : Convert.ToInt64(reader["RESP_ADVOCATE"]),
+                    RespondentAdvocateEmail = reader["RESP_ADVEMAIL"]?.ToString(),
+                    RespondentAdvocateMobile = reader["RESP_ADVMOBILE"] == DBNull.Value ? null : Convert.ToInt64(reader["RESP_ADVMOBILE"]),
+
+                    PrivatePartyName = reader["PRIVATE_NAME"]?.ToString(),
+                    PrivateDesignation = reader["PRIVATE_DESIGNATION"]?.ToString()
+                };
+
+                // Note: CaseType, CaseSubject, CasePurposeName, BenchType, DesignationId,
+                // DistrictId, DepartmentId columns SP se text/description ke roop me aate
+                // hain (join se), IDs nahi — dropdown me pre-select karne ke liye inhe
+                // wapas ID me convert karna hoga (ya SP query me ID columns bhi add
+                // karwane honge). Filhal in fields ko display-only rakha hai.
+            }
+
+            return model;
+        }
     }
 }

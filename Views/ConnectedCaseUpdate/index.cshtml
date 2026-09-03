@@ -1,7 +1,9 @@
 ﻿@model GCMS.Models.RcsatCaseUpdateViewModel
+
 @{
 	ViewData["Title"] = "Connected Case Update";
 	Layout = "~/Views/Shared/_Layout.cshtml";
+	var CaseType = ViewBag.CaseTypeList as List<GCMS.Models.CaseTypeMaster>;
 }
 
 <title>Connected Case Update</title>
@@ -11,13 +13,6 @@
 	* {
 		box-sizing: border-box;
 	}
-
-	/*  body {
-				font-family: 'Segoe UI', Arial, sans-serif;
-				background: linear-gradient(160deg, #eaf6ff 0%, #cfeaff 100%);
-				margin: 0;
-				padding: 24px;
-			} */
 
 	.page-wrapper {
 		max-width: 99%;
@@ -238,6 +233,15 @@
 
 <body>
 
+	<!-- caseTypeOptions must be declared before addRow()/buildCaseTypeOptionsHtml() are ever called -->
+	<script>
+		const caseTypeOptions = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+						CaseType != null
+								? CaseType.Select(ct => new { value = ct.CaseTypeMastId, text = ct.CaseType })
+								: Enumerable.Empty<object>()
+				));
+	</script>
+
 	<div class="loading-overlay" id="loadingOverlay">Loading…</div>
 
 	<div class="page-wrapper">
@@ -254,11 +258,20 @@
 			<div class="form-grid">
 				<div class="form-group">
 					<label>Case Type <span class="required">*</span></label>
-					<select id="caseType" class="form-control">
-						<option value="">Select an option</option>
-						@* <option value="RCSAT">RCSAT</option> *@
-						<option value="1000531">अपील</option>
+
+					<select asp-for="CaseTypeId" class="form-select" id="CaseTypeId">
+						<option value="">Select</option>
+						@if (CaseType != null)
+						{
+							foreach (var ct in CaseType)
+							{
+								<option value="@ct.CaseTypeMastId">
+									@ct.CaseType
+								</option>
+							}
+						}
 					</select>
+					<span asp-validation-for="CaseTypeId" class="text-danger"></span>
 				</div>
 
 				<div class="form-group">
@@ -305,6 +318,11 @@
 					<label>Court Code</label>
 					<input type="text" id="courtCode" class="form-control" value="@(Context.Session.GetString("CourtCode") ?? "N/A")" readonly />
 				</div>
+
+				<div class="form-group">
+					<label>Case Update ID</label>
+					<input type="text" id="caseUpdateID" class="form-control" readonly />
+				</div>
 			</div>
 
 			<div id="notFoundMsg" class="alert-warning">
@@ -314,7 +332,7 @@
 
 		<div class="linked-cases-panel">
 			<div class="linked-cases-header">
-				<i class="fa-solid fa-chevron-up"></i> Linked Cases
+				@* <i class="fa-solid fa-chevron-up"></i> *@ Linked Cases
 			</div>
 			<div class="toolbar">
 				<button type="button" id="btnAddRow" class="btn-icon" title="Add new linked case"><i class="fa-solid fa-plus"></i></button>
@@ -355,38 +373,59 @@
 		const showLoading = () => el('loadingOverlay').classList.add('active');
 		const hideLoading = () => el('loadingOverlay').classList.remove('active');
 
+		// Builds <option> list for a case-type <select> from the server-supplied caseTypeOptions array,
+		// marking whichever option matches selectedValue as selected.
+		// function buildCaseTypeOptionsHtml(selectedValue) {
+		// 	let html = `<option value="" ${!selectedValue ? 'selected' : ''}>Select an option</option>`;
+		// 	caseTypeOptions.forEach(ct => {
+		// 		const isSelected = String(selectedValue) === String(ct.value);
+		// 		html += `<option value="${ct.value}" ${isSelected ? 'selected' : ''}>${ct.text}</option>`;
+		// 	});
+		// 	return html;
+		// }
+
+
+		function buildCaseTypeOptionsHtml(selectedValue) {
+			let html = `<option value="" ${!selectedValue ? 'selected' : ''}>Select an option</option>`;
+			caseTypeOptions.forEach(ct => {
+				const isSelected = String(selectedValue).trim() === String(ct.text).trim();
+				html += `<option value="${ct.value}" ${isSelected ? 'selected' : ''}>${ct.text}</option>`;
+			});
+			return html;
+		}
+
+
+		// Shared helper — used by both the top-level Linked Case field and every row's Child Case field
+		async function fetchCaseDetails(linkCase, caseType, courtCode) {
+			const res = await fetch(`/ConnectedCaseUpdate/GetCaseDetails?linkCase=${encodeURIComponent(linkCase)}&caseType=${encodeURIComponent(caseType)}&courtCode=${encodeURIComponent(courtCode)}`);
+
+			if (!res.ok) {
+				const text = await res.text();
+				console.error('Server error:', res.status, text);
+				throw new Error(`Request failed with status ${res.status}`);
+			}
+
+			const text = await res.text();
+			return text ? JSON.parse(text) : { found: false };
+		}
+
 		// ---------- TAB 1: autofill on Linked Case (Main Case) selection ----------
 		el('linkedCaseNo').addEventListener('blur', async function () {
 			const linkCase = this.value.trim();
 			const courtCode = el('courtCode').value.trim();
-		
-		
-					const caseTypeSelect = el('caseType');
-		const caseType = caseTypeSelect.options[caseTypeSelect.selectedIndex].text.trim();
 
-			
+			const caseTypeSelect = el('CaseTypeId');
+			const caseType = caseTypeSelect.selectedOptions[0]?.text.trim() ?? '';
+
 			if (!linkCase) return;
 
 			showLoading();
 			try {
-						const res = await fetch(`/ConnectedCaseUpdate/GetCaseDetails?linkCase=${encodeURIComponent(linkCase)}&caseType=${encodeURIComponent(caseType)}&courtCode=${encodeURIComponent(courtCode)}`);
-
-						if (!res.ok) {
-							const text = await res.text();
-							console.error('Server error:', res.status, text);
-							throw new Error(`Request failed with status ${res.status}`);
-						}
-
-						const text = await res.text();
-						if (!text) {
-							throw new Error('Empty response body from GetCaseDetails');
-						}
-						const data = JSON.parse(text);
+				const data = await fetchCaseDetails(linkCase, caseType, courtCode);
 
 				el('notFoundMsg').style.display = data.found ? 'none' : 'block';
 
 				if (data.found) {
-					//el('caseType').value = data.caseType || '';
 					el('appellantName').value = data.appellantName || '';
 					el('respondentName').value = data.respondentName || '';
 					el('institutionDate').value = data.institutionDate || '';
@@ -395,16 +434,18 @@
 					el('purposeName').value = data.purposeName || '';
 					el('courtCode').value = data.courtCode || courtCode || '';
 					currentCaseUpdateId = data.caseUpdateId || null;
+					el('caseUpdateID').value = data.caseUpdateId || caseUpdateId || '';
 				} else {
 					['appellantName','respondentName','institutionDate','hearingDate','district','purposeName','connectedCaseNo']
 						.forEach(id => el(id).value = '');
 					currentCaseUpdateId = null;
 				}
 
-				//await loadLinkedCaseFamily(linkCase, linkCase, el('courtCode').value.trim());
+				loadLinkedCaseFamily(linkCase, linkCase, courtCode);
+
+
 			} catch (err) {
 				console.error(err);
-				
 				alert('Failed to load case details.');
 			} finally {
 				hideLoading();
@@ -429,18 +470,19 @@
 				el('linkedCasesBody').innerHTML = '';
 				rowCounter = 0;
 				rows.forEach(r => addRow({
-					caseId: r.caseRegId,
-					caseType: r.casePurposeName,
-					childCase: r.caseNo,
+					 TRN_RCSAT_CASEREGID: r.TRN_RCSAT_CASEREGID,
+					 caseType: r.caseType,
+					childCase:r.childCase,
+					parent: r.ParentCaseNo,
+
 					hearingDate: r.hearingDate ? r.hearingDate.substring(0, 10) : '',
-					appellantName: r.primaryAppellant,
-					respondentName: r.primaryRespondent,
-					district: r.districtName,
-					purpose: r.casePurposeName
+					appellantName: r.appellantName,
+					respondentName: r.respondentName,
+					district: r.district,
+					purpose: r.purposeName
 				}, false));
 			} catch (err) {
 				console.error(err);
-				alert(err);
 				alert('Failed to load linked cases.');
 			} finally {
 				hideLoading();
@@ -448,81 +490,127 @@
 		}
 
 		// ---------- Add row ----------
+		// function addRow(existing = null, isNew = true) {
+		// 	debugger;
+		// 	rowCounter++;
+		// 	const mainCaseNo = el('linkedCaseNo').value.trim();
+		// 	const tbody = el('linkedCasesBody');
+
+		// 	const tr = document.createElement('tr');
+		// 	tr.className = isNew ? 'row-new' : 'row-linked';
+		// 	if (existing?.caseId) tr.dataset.caseId = existing.caseId;
+		// 	//alert(existing);
+		// 	tr.innerHTML = `
+		// 		<td><input type="checkbox" class="row-check" /></td>
+		// 		<td>${rowCounter}</td>
+		// 		<td><select class="row-caseType form-control">
+		// 			${buildCaseTypeOptionsHtml(existing?.caseType)}
+		// 		</select></td>
+		// 		<td><input type="text" class="row-childCase" readonly value="${existing?.childCase ?? ''}" placeholder="Existing or new case no." /></td>
+		// 		<td><input type="text" class="row-parentCase" readonly value="${mainCaseNo}" readonly /></td>
+		// 		<td><input type="date" class="row-hearingDate" readonly value="${existing?.hearingDate ?? ''}" /></td>
+		// 		<td><input type="text" class="row-appellantName" readonly value="${existing?.appellantName ?? ''}" /></td>
+		// 		<td><input type="text" class="row-respondentName" readonly value="${existing?.respondentName ?? ''}" /></td>
+		// 		<td><input type="text" class="row-district" readonly value="${existing?.district ?? ''}" /></td>
+		// 		<td><input type="text" class="row-purpose" readonly value="${existing?.purpose ?? ''}" /></td>
+		// 	`;
+			
+		// 	tbody.appendChild(tr);
+
+		// 	const childCaseInput = tr.querySelector('.row-childCase');
+		// 	childCaseInput.addEventListener('blur', async function () {
+		// 		const childCaseNo = this.value.trim();
+		// 		const caseTypeSelect = tr.querySelector('.row-caseType');
+		// 		const caseType = caseTypeSelect.selectedOptions[0]?.text.trim() ?? '';
+		// 		const courtCode = el('courtCode').value.trim();
+
+		// 		if (!childCaseNo || !caseTypeSelect.value) return;
+
+		// 		try {
+		// 			const data = await fetchCaseDetails(childCaseNo, caseType, courtCode);
+
+		// 			if (data.found) {
+		// 				tr.className = 'row-linked';
+		// 				tr.dataset.caseId = (data.caseUpdateId && data.caseUpdateId !== 'NA') ? data.caseUpdateId : '';
+		// 				tr.querySelector('.row-hearingDate').value = data.hearingDate ? data.hearingDate.substring(0, 10) : '';
+		// 				tr.querySelector('.row-appellantName').value = data.appellantName || '';
+		// 				tr.querySelector('.row-respondentName').value = data.respondentName || '';
+		// 				tr.querySelector('.row-district').value = data.district || '';
+		// 				tr.querySelector('.row-purpose').value = data.purposeName || '';
+		// 			} else {
+		// 				tr.className = 'row-new';
+		// 				delete tr.dataset.caseId;
+		// 				['row-hearingDate','row-appellantName','row-respondentName','row-district','row-purpose']
+		// 					.forEach(cls => {
+		// 						const field = tr.querySelector(`.${cls}`);
+		// 						if (field) field.value = '';
+		// 					});
+		// 			}
+		// 		} catch (err) {
+		// 			console.error(err);
+		// 			alert('Failed to load case details for this row.');
+		// 		}
+		// 	});
+		// }
+
 		function addRow(existing = null, isNew = true) {
+			debugger;
 			rowCounter++;
 			const mainCaseNo = el('linkedCaseNo').value.trim();
 			const tbody = el('linkedCasesBody');
-
 			const tr = document.createElement('tr');
 			tr.className = isNew ? 'row-new' : 'row-linked';
 			if (existing?.caseId) tr.dataset.caseId = existing.caseId;
 
+			// Lock Case Type / Child Case for backend-loaded rows; keep editable for new user-added rows
+			const lockFields = !isNew;
+
 			tr.innerHTML = `
 				<td><input type="checkbox" class="row-check" /></td>
 				<td>${rowCounter}</td>
-					<td><select class="row-caseType form-control">
-			<option value="" ${!existing?.caseType ? 'selected' : ''}>Select an option</option>
-			<option value="1000531" ${String(existing?.caseType) === '1000531' ? 'selected' : ''}>अपील</option>
-		</select></td>
-				<td><input type="text" class="row-childCase" value="${existing?.childCase ?? ''}" placeholder="Existing or new case no." /></td>
-				<td><input type="text" class="row-parentCase" value="${mainCaseNo}" readonly /></td>
-				<td><input type="date" class="row-hearingDate" value="${existing?.hearingDate ?? ''}" /></td>
-				<td><input type="text" class="row-appellantName" value="${existing?.appellantName ?? ''}" /></td>
-				<td><input type="text" class="row-respondentName" value="${existing?.respondentName ?? ''}" /></td>
-				<td><input type="text" class="row-district" value="${existing?.district ?? ''}" /></td>
-				<td><input type="text" class="row-purpose" value="${existing?.purpose ?? ''}" /></td>
+				<td><select class="row-caseType form-control" ${lockFields ? 'disabled' : ''}>
+					${buildCaseTypeOptionsHtml(existing?.caseType)}
+				</select></td>
+				<td><input type="text" class="row-childCase" value="${existing?.childCase ?? ''}" placeholder="Existing or new case no." ${lockFields ? 'readonly' : ''} /></td>
+				<td><input type="text" class="row-parentCase" readonly value="${mainCaseNo}" readonly /></td>
+				<td><input type="date" class="row-hearingDate" readonly value="${existing?.hearingDate ?? ''}" /></td>
+				<td><input type="text" class="row-appellantName" readonly value="${existing?.appellantName ?? ''}" /></td>
+				<td><input type="text" class="row-respondentName" readonly value="${existing?.respondentName ?? ''}" /></td>
+				<td><input type="text" class="row-district" readonly value="${existing?.district ?? ''}" /></td>
+				<td><input type="text" class="row-purpose" readonly value="${existing?.purpose ?? ''}" /></td>
 			`;
-			tbody.appendChild(tr);
 
+			tbody.appendChild(tr);
 			const childCaseInput = tr.querySelector('.row-childCase');
 			childCaseInput.addEventListener('blur', async function () {
-				debugger;
-				
+				if (lockFields) return; // skip lookup logic for locked/backend-loaded rows
 				const childCaseNo = this.value.trim();
-				//const caseType = tr.querySelector('.row-caseType').value;
-						const caseTypeSelect = tr.querySelector('.row-caseType');
-		const caseType = caseTypeSelect.options[caseTypeSelect.selectedIndex].text.trim();
+				const caseTypeSelect = tr.querySelector('.row-caseType');
+				const caseType = caseTypeSelect.selectedOptions[0]?.text.trim() ?? '';
 				const courtCode = el('courtCode').value.trim();
-				if (!childCaseNo) return;
-
+				if (!childCaseNo || !caseTypeSelect.value) return;
 				try {
-					const res = await fetch(`/ConnectedCaseUpdate/CheckCaseExists?caseNo=${encodeURIComponent(childCaseNo)}`);
-					const data = await res.json();
-
-					if (data.exists) {
+					const data = await fetchCaseDetails(childCaseNo, caseType, courtCode);
+					if (data.found) {
 						tr.className = 'row-linked';
-						const detailsRes = await fetch(`/ConnectedCaseUpdate/GetCaseByNo?caseNo=${encodeURIComponent(childCaseNo)}`);
-						const details = await detailsRes.json();
-						if (details.found) {
-							tr.querySelector('.row-caseType').value = details.data.caseTypee || tr.querySelector('.row-caseType').value;
-							tr.querySelector('.row-hearingDate').value = details.data.hearingDate ? details.data.hearingDate.substring(0,10) : '';
-							tr.querySelector('.row-appellantName').value = details.data.appellantName || '';
-							tr.querySelector('.row-respondentName').value = details.data.respondentName || '';
-							tr.querySelector('.row-district').value = details.data.districtName || '';
-							tr.querySelector('.row-purpose').value = details.data.purpose || '';
-						}
-					} 
-					else // If data not exist in linked case table then fetch details from Main table
-					{
-						debugger;
-						// const detailsRes = await fetch(`/ConnectedCaseUpdate/GetCaseByNo?caseNo=${encodeURIComponent(childCaseNo)}&caseType=${encodeURIComponent(caseType)}`);
-						const detailsRes = await fetch(`/ConnectedCaseUpdate/GetCaseDetails?linkCase=${encodeURIComponent(childCaseNo)}&caseType=${encodeURIComponent(caseType)}&courtCode=${encodeURIComponent(courtCode)}`);
-						const details = await detailsRes.json();
-						if (details.found) {
-							tr.querySelector('.row-caseType').value = details.caseTypee || tr.querySelector('.row-caseType').value;
-							tr.querySelector('.row-hearingDate').value = details.hearingDate ? details.hearingDate.substring(0,10) : '';
-							tr.querySelector('.row-appellantName').value = details.appellantName || '';
-							tr.querySelector('.row-respondentName').value = details.respondentName || '';
-							tr.querySelector('.row-district').value = details.district || '';
-							tr.querySelector('.row-purpose').value = details.purposeName || '';
-
-							
-						}
-
+						tr.dataset.caseId = (data.caseUpdateId && data.caseUpdateId !== 'NA') ? data.caseUpdateId : '';
+						tr.querySelector('.row-hearingDate').value = data.hearingDate ? data.hearingDate.substring(0, 10) : '';
+						tr.querySelector('.row-appellantName').value = data.appellantName || '';
+						tr.querySelector('.row-respondentName').value = data.respondentName || '';
+						tr.querySelector('.row-district').value = data.district || '';
+						tr.querySelector('.row-purpose').value = data.purposeName || '';
+					} else {
 						tr.className = 'row-new';
+						delete tr.dataset.caseId;
+						['row-hearingDate','row-appellantName','row-respondentName','row-district','row-purpose']
+							.forEach(cls => {
+								const field = tr.querySelector(`.${cls}`);
+								if (field) field.value = '';
+							});
 					}
 				} catch (err) {
 					console.error(err);
+					alert('Failed to load case details for this row.');
 				}
 			});
 		}
@@ -532,14 +620,52 @@
 				alert('Please enter the Linked Case (Main Case) number first.');
 				return;
 			}
-			addRow(null, true);
+			if (!el('appellantName').value.trim() || !el('institutionDate').value.trim()) {
+			alert('No existing case found for this number !!');
+			return;
+			}
+
+
+		if (!validateLastRow()) return; // block adding a new row until the current last row is complete
+		addRow(null, true);
+			
+			
 		});
 
+		function validateLastRow() {
+			const rows = document.querySelectorAll('#linkedCasesBody tr');
+			if (rows.length === 0) return true; // no rows yet, nothing to validate
 
+			const lastRow = rows[rows.length - 1];
 
+			const caseType = lastRow.querySelector('.row-caseType').value;
+			const childCase = lastRow.querySelector('.row-childCase').value.trim();
+			const hearingDate = lastRow.querySelector('.row-hearingDate').value.trim();
+			const appellantName = lastRow.querySelector('.row-appellantName').value.trim();
 
+			if (!caseType) {
+				alert('Please select Case Type for the current row before adding a new one.');
+				lastRow.querySelector('.row-caseType').focus();
+				return false;
+			}
+			if (!childCase) {
+				alert('Please enter Child Case number for the current row before adding a new one.');
+				lastRow.querySelector('.row-childCase').focus();
+				return false;
+			}
+			if (!hearingDate) {
+				alert('Please enter Hearing Date for the current row before adding a new one.');
+				lastRow.querySelector('.row-hearingDate').focus();
+				return false;
+			}
+			if (!appellantName) {
+				alert('Please enter Appellant Name for the current row before adding a new one.');
+				lastRow.querySelector('.row-appellantName').focus();
+				return false;
+			}
 
-		
+			return true;
+		}
 
 		el('btnDeleteRow').addEventListener('click', async () => {
 			const checked = [...document.querySelectorAll('.row-check:checked')];
@@ -570,7 +696,7 @@
 				alert('Please enter the Linked Case (Main Case) number first.');
 				return;
 			}
-			if (!el('caseType').value) {
+			if (!el('CaseTypeId').value) {
 				alert('Please select a Case Type.');
 				return;
 			}
@@ -591,7 +717,7 @@
 				caseUpdateId: currentCaseUpdateId,
 				courtName: el('courtCode').value,
 				courtCode: el('courtCode').value,
-				caseType: el('caseType').value,
+				caseType: el('CaseTypeId').value,
 				linkCase: mainCaseNo,
 				appellantName: el('appellantName').value,
 				respondentName: el('respondentName').value,

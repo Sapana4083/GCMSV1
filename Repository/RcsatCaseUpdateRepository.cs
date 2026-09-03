@@ -19,12 +19,7 @@ namespace GCMS.Repository.Implementations
 
         public async Task<RcsatCaseUpdateViewModel> GetByLinkCaseAsync(string linkCase, string casetype, string court_code)
         {
-            //const string sql = @"
-            //    SELECT TRN_RCSAT_CASEUPDATEID, COURT_NAME, COURT_CODE, CASETYPE, LINK_CASE,
-            //    APP_NAME, RESP_NAME, INST_DATE, HDATE,
-            //    LINKCASENO, DISTRICT, PURPOSE_NAME, CASE_TYPE FROM TRN_RCSAT_CASEUPDATE
-            //    WHERE LINK_CASE = :linkCase and CASETYPE = :casetype
-            //    AND ROWNUM = 1";
+           
             const string sql = @"
                 SELECT A.APPELLANT_NAMEE APP_NAME,
        H.dept_namehi  RESP_NAME,
@@ -41,8 +36,11 @@ A.LINKED_CASE as ParentCaseNo,
      WHERE COURT_CODE = :court_code
        AND CASETYPE = (SELECT CASE_TYPE_MASTID FROM case_type_mast WHERE CASE_TYPE = :casetype)
        AND LINK_CASE = :link_case
+     ORDER BY TRN_RCSAT_CASEUPDATEID DESC
+     FETCH FIRST 1 ROW ONLY
     ), 'FM99999999999999'), null
-) AS TRN_RCSAT_CASEUPDATEID 
+) AS TRN_RCSAT_CASEUPDATEID
+
   FROM trn_rcsat_casereg a,
        case_type_mast c,
        mast_rcsat_cspurpose d,

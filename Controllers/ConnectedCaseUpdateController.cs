@@ -1,5 +1,8 @@
 ﻿using GCMS.Models;
+using GCMS.Models.ViewModels;
 using GCMS.Repository.Interfaces;
+using GCMS.Services;
+using GCMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GCMS.Controllers
@@ -9,18 +12,27 @@ namespace GCMS.Controllers
         private readonly IRcsatCaseUpdateRepository _repo;
         private readonly ILinkedCaseFamilyRepository _familyRepo;
         private readonly ILinkedCaseRepository _linkedRepo;
+        private readonly ICaseTypeService _CaseTypeservice;
 
         public ConnectedCaseUpdateController(
             IRcsatCaseUpdateRepository repo,
             ILinkedCaseFamilyRepository familyRepo,
-            ILinkedCaseRepository linkedRepo)
+            ILinkedCaseRepository linkedRepo,
+            ICaseTypeService caseTypeService)
         {
             _repo = repo;
             _familyRepo = familyRepo;
             _linkedRepo = linkedRepo;
+            _CaseTypeservice = caseTypeService;
         }
 
-        public IActionResult Index() => View(new RcsatCaseUpdateViewModel());
+        //public IActionResult Index() => View(new RcsatCaseUpdateViewModel());
+        public async Task<IActionResult> Index()
+        {
+            await BindDropdowns();
+            return View(new RcsatCaseUpdateViewModel());
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetCaseDetails(string linkCase , string casetype, string courtcode)
@@ -90,6 +102,14 @@ namespace GCMS.Controllers
             {
                 return Json(new { success = false, message = ex.Message });
             }
+        }
+
+     
+        private async Task BindDropdowns()
+        {
+            var casetype = await _CaseTypeservice.GetCaseTypeAsync(1, 1000);
+            ViewBag.CaseTypeList = casetype;
+            
         }
     }
 }

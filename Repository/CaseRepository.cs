@@ -368,7 +368,7 @@ namespace GCMS.Repository
         // ───────────────────────────────────────────────
         // LIST (V_INPUT = 4) — paginated
         // ───────────────────────────────────────────────
-        public async Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt)
+        public async Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt, string? searchText = null)
         {
             var list = new List<CaseRegistrationListItem>();
 
@@ -387,6 +387,9 @@ namespace GCMS.Repository
 
             cmd.Parameters.Add("P_ROW_CNT", OracleDbType.Int32).Value = rowCnt;
             cmd.Parameters.Add("P_PAGE_NO", OracleDbType.Int32).Value = pageNo;
+
+            cmd.Parameters.Add("P_SEARCH_TEXT", OracleDbType.Varchar2).Value =
+                string.IsNullOrWhiteSpace(searchText) ? (object)DBNull.Value : searchText.Trim();
 
             var caseIdParam = new OracleParameter("p_caseid", OracleDbType.Int64)
             {
@@ -414,12 +417,14 @@ namespace GCMS.Repository
                     CreatedBy = reader["CREATEDBY"]?.ToString(),
                     CreatedOn = reader["CREATEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["CREATEDON"]),
                     ModifiedBy = reader["MODIFIEDBY"]?.ToString(),
-                    ModifiedOn = reader["MODIFIEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["MODIFIEDON"])
+                    ModifiedOn = reader["MODIFIEDON"] == DBNull.Value ? null : Convert.ToDateTime(reader["MODIFIEDON"]),
+                    TotalCount = reader["TOTAL_COUNT"] == DBNull.Value ? 0 : Convert.ToInt64(reader["TOTAL_COUNT"])
                 });
             }
 
             return list;
         }
+
 
         // ───────────────────────────────────────────────
         // GET BY ID (V_INPUT = 3) — Edit ke liye poora wizard model bharega
@@ -457,35 +462,86 @@ namespace GCMS.Repository
                 model = new CaseRegistrationWizardViewModel
                 {
                     Id = Convert.ToInt64(reader["RECORDID"]),
+
+                    // ── Step 1: Basic Details ──
                     InstitutionDate = reader["INSTITUTIONDATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["INSTITUTIONDATE"]),
                     CaseNumber = reader["MCASE_NOO"]?.ToString(),
                     IsImpungned = reader["ISIMPNULL"]?.ToString() == "T",
                     DateofImpugnedOrder = reader["DATE_OF_ORDER"] == DBNull.Value ? null : Convert.ToDateTime(reader["DATE_OF_ORDER"]),
+                    OrderIssuedById = reader["DESIOFFORDER"] == DBNull.Value ? null : Convert.ToInt64(reader["DESIOFFORDER"]),
+                    CaseTypeId = reader["CASETYPE"] == DBNull.Value ? null : Convert.ToInt64(reader["CASETYPE"]),
+                    CaseSubjectId = reader["CASESUBJECT"] == DBNull.Value ? null : Convert.ToInt64(reader["CASESUBJECT"]),
+                    CasePurposeId = reader["CASE_PURPOSE_NAME"] == DBNull.Value ? null : Convert.ToInt64(reader["CASE_PURPOSE_NAME"]),
                     HearingDate = reader["HEARINGDATE"] == DBNull.Value ? null : Convert.ToDateTime(reader["HEARINGDATE"]),
+                    BenchTypeId = reader["BENCH_TYPE"] == DBNull.Value ? null : Convert.ToInt64(reader["BENCH_TYPE"]),
                     LinkedCaseNumber = reader["LINKED_CASE"]?.ToString(),
+                    OldCaseNumber = reader["PRVCASENO"]?.ToString(),
 
+                    // ── Step 2: Appellant ──
                     AppellantName = reader["APPELLANT_NAME"]?.ToString(),
+                    DesignationId = ParseNullableLong(reader["DESIGNATION"]),
+                    DistrictId = ParseNullableLong(reader["ADISTRICT_NAME"]),
                     MobileNumber = reader["MOBILENO"] == DBNull.Value ? null : Convert.ToInt64(reader["MOBILENO"]),
                     AdvocateId = reader["APP_ADVOCATE"] == DBNull.Value ? null : Convert.ToInt64(reader["APP_ADVOCATE"]),
                     AdvocateEmail = reader["APPADV_EMAIL"]?.ToString(),
+                    AdvocateMobile = ParseNullableLong(reader["APP_ADVMOBILE"]),
                     EmployeeId = reader["EMPLOYEEID"]?.ToString(),
 
+                    // ── Step 3: Respondent ──
+                    DepartmentId = reader["RESPONDENT_DEPARTMENT"] == DBNull.Value ? null : Convert.ToInt64(reader["RESPONDENT_DEPARTMENT"]),
                     RespondentAdvocateId = reader["RESP_ADVOCATE"] == DBNull.Value ? null : Convert.ToInt64(reader["RESP_ADVOCATE"]),
                     RespondentAdvocateEmail = reader["RESP_ADVEMAIL"]?.ToString(),
                     RespondentAdvocateMobile = reader["RESP_ADVMOBILE"] == DBNull.Value ? null : Convert.ToInt64(reader["RESP_ADVMOBILE"]),
 
+                    // ── Step 4: Private Party ──
                     PrivatePartyName = reader["PRIVATE_NAME"]?.ToString(),
                     PrivateDesignation = reader["PRIVATE_DESIGNATION"]?.ToString()
                 };
 
-                // Note: CaseType, CaseSubject, CasePurposeName, BenchType, DesignationId,
-                // DistrictId, DepartmentId columns SP se text/description ke roop me aate
-                // hain (join se), IDs nahi — dropdown me pre-select karne ke liye inhe
-                // wapas ID me convert karna hoga (ya SP query me ID columns bhi add
-                // karwane honge). Filhal in fields ko display-only rakha hai.
+                // Multiple private parties ko wapas rows me split karna
+                var names = SplitCsv(reader["PRIVATE_NAME"]?.ToString());
+                var designations = SplitCsv(reader["PRIVATE_DESIGNATION"]?.ToString());
+                var advocateIds = SplitCsv(reader["PRIVADVOCATEE"]?.ToString());
+
+                var rows = new List<PrivatePartyRowViewModel>();
+                int maxCount = Math.Max(names.Count, Math.Max(designations.Count, advocateIds.Count));
+
+                for (int i = 0; i < maxCount; i++)
+                {
+                    rows.Add(new PrivatePartyRowViewModel
+                    {
+                        PartyName = i < names.Count ? names[i] : null,
+                        Designation = i < designations.Count ? designations[i] : null,
+                        AdvocateId = i < advocateIds.Count ? ParseNullableLong(advocateIds[i]) : null
+                    });
+                }
+
+                if (rows.Count > 0)
+                {
+                    model.PrivateParties = rows;
+                }
             }
 
             return model;
+        }
+
+        // ── Helpers ──
+        private static long? ParseNullableLong(object value)
+        {
+            if (value == null || value == DBNull.Value) return null;
+            return ParseNullableLong(value.ToString());
+        }
+
+        private static long? ParseNullableLong(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            return long.TryParse(value.Trim(), out var result) ? result : (long?)null;
+        }
+
+        private static List<string> SplitCsv(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return new List<string>();
+            return value.Split(',').Select(x => x.Trim()).ToList();
         }
     }
 }

@@ -47,14 +47,35 @@ namespace GCMS.Controllers
 
         #region View Page Case Registration
         [HttpGet]
-        public async Task<IActionResult> CaseRegistrationList(int pageNo = 1, int rowCnt = 100)
+        public async Task<IActionResult> CaseRegistrationList()
         {
-            var data = await _caseService.GetCaseListAsync(pageNo, rowCnt);
+            // Sirf shell view — data DataTables khud AJAX se lega
+            return View();
+        }
 
-            ViewBag.PageNo = pageNo;
-            ViewBag.RowCnt = rowCnt;
+        [HttpPost]
+        public async Task<IActionResult> GetCaseRegistrationListData()
+        {
+            int draw = Convert.ToInt32(Request.Form["draw"]);
+            int start = Convert.ToInt32(Request.Form["start"]);
+            int length = Convert.ToInt32(Request.Form["length"]);
 
-            return View(data);
+            string? searchText = Request.Form["search[value]"];
+
+            int rowCnt = length <= 0 ? 10 : length;
+            int pageNo = (start / rowCnt) + 1;
+
+            var data = await _caseService.GetCaseListAsync(pageNo, rowCnt, searchText);
+
+            long totalRecords = data.Count > 0 ? data[0].TotalCount : 0;
+
+            return Json(new
+            {
+                draw = draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = data
+            });
         }
 
         [HttpGet]

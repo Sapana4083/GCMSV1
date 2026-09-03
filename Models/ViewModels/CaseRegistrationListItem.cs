@@ -2,6 +2,7 @@
 {
     public class CaseRegistrationListItem
     {
+        public long TotalCount { get; set; }
         public long RecordId { get; set; }
         public string? MCaseNoo { get; set; }
         public DateTime? InstitutionDate { get; set; }

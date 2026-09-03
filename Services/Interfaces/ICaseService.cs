@@ -37,7 +37,7 @@ namespace GCMS.Services.Interfaces
 
         Task<IEnumerable<SelectListItem>> GetOrderTypesAsync();
 
-        Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt);
+        Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt, string? searchText = null);
 
         Task<CaseRegistrationWizardViewModel?> GetFullCaseByIdAsync(long caseId);
     }

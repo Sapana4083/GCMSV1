@@ -95,9 +95,9 @@ namespace GCMS.Services
             return await _repository.GetOrderTypesAsync();
         }
 
-        public async Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt)
+        public async Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt, string? searchText = null)
         {
-            return await _repository.GetCaseListAsync(pageNo, rowCnt);
+            return await _repository.GetCaseListAsync(pageNo, rowCnt, searchText);
         }
 
         public async Task<CaseRegistrationWizardViewModel?> GetFullCaseByIdAsync(long caseId)

@@ -7,6 +7,7 @@ namespace GCMS.Models
 {
     public class RcsatCaseUpdateViewModel
     {
+        public long TotalCount { get; set; }
         public long? CaseUpdateId { get; set; }   // TRN_RCSAT_CASEUPDATEID - PK
         //public string CourtName { get; set; }
         public string CourtCode { get; set; }

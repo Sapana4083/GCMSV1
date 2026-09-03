@@ -1737,3 +1737,9 @@ table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting
         min-height: 34px;
         font-size: 14px;
     }
+table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    background: #416aad !important;
+    color: #fff !important;
+}

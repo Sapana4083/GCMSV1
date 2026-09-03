@@ -368,7 +368,7 @@ namespace GCMS.Repository
         // ───────────────────────────────────────────────
         // LIST (V_INPUT = 4) — paginated
         // ───────────────────────────────────────────────
-        public async Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt)
+        public async Task<List<CaseRegistrationListItem>> GetCaseListAsync(int pageNo, int rowCnt, string? searchText = null)
         {
             var list = new List<CaseRegistrationListItem>();
 
@@ -387,6 +387,9 @@ namespace GCMS.Repository
 
             cmd.Parameters.Add("P_ROW_CNT", OracleDbType.Int32).Value = rowCnt;
             cmd.Parameters.Add("P_PAGE_NO", OracleDbType.Int32).Value = pageNo;
+
+            cmd.Parameters.Add("P_SEARCH_TEXT", OracleDbType.Varchar2).Value =
+                string.IsNullOrWhiteSpace(searchText) ? (object)DBNull.Value : searchText.Trim();
 
             var caseIdParam = new OracleParameter("p_caseid", OracleDbType.Int64)
             {

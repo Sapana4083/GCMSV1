@@ -60,10 +60,12 @@ namespace GCMS.Controllers
             int start = Convert.ToInt32(Request.Form["start"]);
             int length = Convert.ToInt32(Request.Form["length"]);
 
+            string? searchText = Request.Form["search[value]"];
+
             int rowCnt = length <= 0 ? 10 : length;
             int pageNo = (start / rowCnt) + 1;
 
-            var data = await _caseService.GetCaseListAsync(pageNo, rowCnt);
+            var data = await _caseService.GetCaseListAsync(pageNo, rowCnt, searchText);
 
             long totalRecords = data.Count > 0 ? data[0].TotalCount : 0;
 

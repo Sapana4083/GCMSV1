@@ -1,13 +1,10 @@
-﻿@model List<GCMS.Models.ViewModels.CaseRegistrationListItem>
-
-@{
+﻿@{
     ViewData["Title"] = "Case Registration List";
-    var srNo = 1;
 }
 
 <!-- ========== PAGE CONTAINER ========== -->
-<div class="container-fluid bg-light rounded-4 m-auto shadow mt-3 py-4 px-3">
-
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3">
+    @Html.AntiForgeryToken()
     <!-- Header -->
     <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
 
@@ -32,7 +29,7 @@
 
             <thead>
                 <tr>
-                    <td width="50">S. No.</td>
+                    <th>S. No.</th>
                     <th>Case No</th>
                     <th>Institution Date</th>
                     <th>Case Type</th>
@@ -42,36 +39,11 @@
                     <th>Bench Type</th>
                     <th>Created By</th>
                     <th>Modified Date</th>
-
                     <th width="100">Action</th>
                 </tr>
             </thead>
 
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@srNo</td>
-                        <td>@item.MCaseNoo</td>
-                        <td>@item.InstitutionDate?.ToString("dd/MM/yyyy")</td>
-                        <td>@item.CaseType</td>
-                        <td>@item.CaseSubject</td>
-                        <td>@item.CasePurposeName</td>
-                        <td>@item.HearingDate?.ToString("dd/MM/yyyy")</td>
-                        <td>@item.BenchType</td>
-                        <td>@item.CreatedBy</td>
-                        <td>@item.ModifiedOn</td>
-
-                        <td>
-                            <a href="@Url.Action("Index", "CaseRegistration", new { id = item.RecordId })"
-                               class="btn btn-default waves-effect waves-light" title="Click to edit record.">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    srNo++;
-                }
-            </tbody>
+            <tbody></tbody>
 
         </table>
     </div>
@@ -82,12 +54,17 @@
 @section Scripts {
     <script>
 
-        // ── Init ─────────────────────────────────────────────
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        // ── Init — Server-Side DataTable ──────────────────────
         $(document).ready(function() {
 
             $('#tblCaseRegistration').DataTable({
 
                 dom: 'lBfrtip',
+
+                processing: true,
+                serverSide: true,     // ✅ dynamic pagination server se
 
                 responsive: true,
                 autoWidth: false,
@@ -100,18 +77,52 @@
                 ],
 
                 paging: true,
-                searching: true,
-                ordering: true,
+                searching: false,     // server-side search abhi disable (SP support nahi karta)
+                ordering: false,      // server-side sort SP me implement nahi hai
                 info: true,
 
-                columnDefs: [{
-                    responsivePriority: 1,
-                    targets: 10
+                ajax: {
+                    url: '/CaseRegistration/GetCaseRegistrationListData',
+                    type: 'POST',
+                    data: function(d) {
+                        d.__RequestVerificationToken = token;
+                    }
                 },
-                {
-                    responsivePriority: 2,
-                    targets: 0
-                }
+
+                columns: [
+                    {
+                        data: null,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    { data: 'mCaseNoo' },
+                    {
+                        data: 'institutionDate',
+                        render: function(data) {
+                            return data ? new Date(data).toLocaleDateString('en-GB') : '';
+                        }
+                    },
+                    { data: 'caseType' },
+                    { data: 'caseSubject' },
+                    { data: 'casePurposeName' },
+                    {
+                        data: 'hearingDate',
+                        render: function(data) {
+                            return data ? new Date(data).toLocaleDateString('en-GB') : '';
+                        }
+                    },
+                    { data: 'benchType' },
+                    { data: 'createdBy' },
+                    { data: 'modifiedOn' },
+                    {
+                        data: 'recordId',
+                        render: function(data) {
+                            return '<a href="/CaseRegistration/Index?id=' + data +
+                                '" class="btn btn-default waves-effect waves-light" title="Click to edit record.">' +
+                                '<i class="bi bi-pencil-square"></i></a>';
+                        }
+                    }
                 ],
 
                 buttons: [{
@@ -127,28 +138,19 @@
 
             $('.dt-buttons').hide();
         });
+
         $("#btnPrint").click(function() {
-
             window.print();
-
         });
 
         $("#btnExcel").click(function() {
-
             let table = document.getElementById("tblCaseRegistration");
-
             let html = table.outerHTML;
-
-            let url = 'data:application/vnd.ms-excel,' +
-                encodeURIComponent(html);
-
+            let url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
             let a = document.createElement('a');
-
             a.href = url;
             a.download = 'CaseRegistrationList.xls';
-
             a.click();
-
         });
 
     </script>

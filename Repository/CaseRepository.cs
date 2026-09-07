@@ -479,12 +479,12 @@ namespace GCMS.Repository
 
                     // ── Step 2: Appellant ──
                     AppellantName = reader["APPELLANT_NAME"]?.ToString(),
-                    DesignationId = ParseNullableLong(reader["DESIGNATION"]),
-                    DistrictId = ParseNullableLong(reader["ADISTRICT_NAME"]),
+                    DesignationId = reader["DESIGNATION"] == DBNull.Value ? null : Convert.ToInt64(reader["DESIGNATION"]),
+                    DistrictId = reader["ADISTRICT_NAME"] == DBNull.Value ? null : Convert.ToInt64(reader["ADISTRICT_NAME"]),
                     MobileNumber = reader["MOBILENO"] == DBNull.Value ? null : Convert.ToInt64(reader["MOBILENO"]),
                     AdvocateId = reader["APP_ADVOCATE"] == DBNull.Value ? null : Convert.ToInt64(reader["APP_ADVOCATE"]),
                     AdvocateEmail = reader["APPADV_EMAIL"]?.ToString(),
-                    AdvocateMobile = ParseNullableLong(reader["APP_ADVMOBILE"]),
+                    AdvocateMobile = reader["APP_ADVMOBILE"] == DBNull.Value ? null : ParseNullableLong(reader["APP_ADVMOBILE"]?.ToString()),
                     EmployeeId = reader["EMPLOYEEID"]?.ToString(),
 
                     // ── Step 3: Respondent ──
@@ -526,12 +526,6 @@ namespace GCMS.Repository
         }
 
         // ── Helpers ──
-        private static long? ParseNullableLong(object value)
-        {
-            if (value == null || value == DBNull.Value) return null;
-            return ParseNullableLong(value.ToString());
-        }
-
         private static long? ParseNullableLong(string? value)
         {
             if (string.IsNullOrWhiteSpace(value)) return null;
@@ -543,5 +537,8 @@ namespace GCMS.Repository
             if (string.IsNullOrWhiteSpace(value)) return new List<string>();
             return value.Split(',').Select(x => x.Trim()).ToList();
         }
+
+      
+       
     }
 }

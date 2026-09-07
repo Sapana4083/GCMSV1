@@ -29,7 +29,7 @@ namespace GCMS.Repository
                 await conn.OpenAsync();
 
             using var cmd = new OracleCommand(
-                "PROC_TRN_RCSAT_CASEREG_FULL",
+                "PROC_TRN_RCSAT_CASEREG",
                 conn)
             {
                 CommandType = CommandType.StoredProcedure,
@@ -445,7 +445,7 @@ namespace GCMS.Repository
             if (conn.State != ConnectionState.Open)
                 await conn.OpenAsync();
 
-            using var cmd = new OracleCommand("PROC_TRN_RCSAT_CASEREG_FULL", conn)
+            using var cmd = new OracleCommand("PROC_TRN_RCSAT_CASEREG", conn)
             {
                 CommandType = CommandType.StoredProcedure,
                 BindByName = true
@@ -506,7 +506,7 @@ namespace GCMS.Repository
             if (conn.State != ConnectionState.Open)
                 await conn.OpenAsync();
 
-            using var cmd = new OracleCommand("PROC_TRN_RCSAT_CASEREG_FULL", conn)
+            using var cmd = new OracleCommand("PROC_TRN_RCSAT_CASEREG", conn)
             {
                 CommandType = CommandType.StoredProcedure,
                 BindByName = true

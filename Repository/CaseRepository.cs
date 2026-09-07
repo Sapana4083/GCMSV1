@@ -20,8 +20,8 @@ namespace GCMS.Repository
         }
 
         public async Task<long> SaveFullCaseRegistrationAsync(
-    CaseRegistrationWizardViewModel model,
-    string createdBy)
+     CaseRegistrationWizardViewModel model,
+     string createdBy)
         {
             var conn = (OracleConnection)_context.Database.GetDbConnection();
 
@@ -36,10 +36,10 @@ namespace GCMS.Repository
                 BindByName = true
             };
 
-            // =========================================================
-            // REQUIRED: V_INPUT = 1 => INSERT
-            // =========================================================
-            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 1;
+            // ✅ Id > 0 hai to UPDATE (V_INPUT=2), warna INSERT (V_INPUT=1)
+            bool isUpdate = model.Id > 0;
+
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = isUpdate ? 2 : 1;
 
 
             // =========================================================
@@ -195,9 +195,8 @@ namespace GCMS.Repository
 
             // =========================================================
             // CASE ID
-            //
-            // SP definition:
-            // p_caseid IN OUT NUMBER
+            // ✅ Update ke liye existing Id INPUT ke roop me bhejni hai,
+            //    Insert ke liye NULL (SP khud generate karega)
             // =========================================================
 
             var caseIdParam = new OracleParameter(
@@ -205,7 +204,7 @@ namespace GCMS.Repository
                 OracleDbType.Int64)
             {
                 Direction = ParameterDirection.InputOutput,
-                Value = DBNull.Value
+                Value = isUpdate ? model.Id : (object)DBNull.Value
             };
 
             cmd.Parameters.Add(caseIdParam);
@@ -213,9 +212,6 @@ namespace GCMS.Repository
 
             // =========================================================
             // CURSOR
-            //
-            // SP definition:
-            // P_CURSOR OUT SYS_REFCURSOR
             // =========================================================
 
             cmd.Parameters.Add(
@@ -241,8 +237,13 @@ namespace GCMS.Repository
 
 
             // =========================================================
-            // GET GENERATED CASE ID
+            // GET CASE ID (Insert ke liye SP-generated, Update ke liye same Id)
             // =========================================================
+
+            if (isUpdate)
+            {
+                return model.Id;
+            }
 
             if (caseIdParam.Value == null ||
                 caseIdParam.Value == DBNull.Value)
@@ -257,7 +258,7 @@ namespace GCMS.Repository
 
             return Convert.ToInt64(caseIdParam.Value);
         }
-      
+
 
         public async Task<CaseRegistration?> GetCaseAsync(long caseId)
         {

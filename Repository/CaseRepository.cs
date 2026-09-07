@@ -20,22 +20,31 @@ namespace GCMS.Repository
         }
 
         public async Task<long> SaveFullCaseRegistrationAsync(
-            CaseRegistrationWizardViewModel model,
-            string createdBy)
+    CaseRegistrationWizardViewModel model,
+    string createdBy)
         {
-            // FIX: Do NOT wrap the DbContext's own connection in a `using` block.
-            // Disposing it here can break later calls on the same DbContext
-            // within the same request/scope (ObjectDisposedException).
             var conn = (OracleConnection)_context.Database.GetDbConnection();
 
             if (conn.State != ConnectionState.Open)
                 await conn.OpenAsync();
 
-            using var cmd = new OracleCommand("PROC_TRN_RCSAT_CASEREG_FULL", conn)
+            using var cmd = new OracleCommand(
+                "PROC_TRN_RCSAT_CASEREG_FULL",
+                conn)
             {
                 CommandType = CommandType.StoredProcedure,
-                BindByName = true // FIX: always bind by name, never rely on positional order
+                BindByName = true
             };
+
+            // =========================================================
+            // REQUIRED: V_INPUT = 1 => INSERT
+            // =========================================================
+            cmd.Parameters.Add("V_INPUT", OracleDbType.Int32).Value = 1;
+
+
+            // =========================================================
+            // STEP 1: BASIC DETAILS
+            // =========================================================
 
             cmd.Parameters.Add("p_institutiondate", OracleDbType.Date).Value =
                 model.InstitutionDate ?? (object)DBNull.Value;
@@ -74,7 +83,12 @@ namespace GCMS.Repository
                 model.OldCaseNumber ?? (object)DBNull.Value;
 
             cmd.Parameters.Add("p_createdby", OracleDbType.Varchar2).Value =
-                createdBy;
+                createdBy ?? (object)DBNull.Value;
+
+
+            // =========================================================
+            // STEP 2: APPELLANT
+            // =========================================================
 
             cmd.Parameters.Add("p_appellant_name", OracleDbType.Varchar2).Value =
                 model.AppellantName ?? (object)DBNull.Value;
@@ -100,6 +114,11 @@ namespace GCMS.Repository
             cmd.Parameters.Add("p_employeeid", OracleDbType.Varchar2).Value =
                 model.EmployeeId ?? (object)DBNull.Value;
 
+
+            // =========================================================
+            // STEP 3: RESPONDENT
+            // =========================================================
+
             cmd.Parameters.Add("p_respondent_department", OracleDbType.Int64).Value =
                 model.DepartmentId ?? (object)DBNull.Value;
 
@@ -112,46 +131,57 @@ namespace GCMS.Repository
             cmd.Parameters.Add("p_respadvmobile", OracleDbType.Int64).Value =
                 model.RespondentAdvocateMobile ?? (object)DBNull.Value;
 
-            // FIX: Step 4 supports MULTIPLE private parties (model.PrivateParties).
-            // The SP expects p_private_name / p_private_designation / p_privadvocatee
-            // as comma-separated lists, split positionally via REGEXP_SUBSTR + LEVEL.
-            // IMPORTANT: REGEXP_SUBSTR('[^,]+', ...) does NOT match an empty segment
-            // between two commas — a blank Designation/AdvocateId would silently
-            // shift the index and attach the WRONG value to the wrong party.
-            // So every blank field is replaced with a single-space placeholder
-            // to keep all three lists the same length/position.
+
+            // =========================================================
+            // STEP 4: MULTIPLE PRIVATE PARTIES
+            // =========================================================
+
             var privateNames = new List<string>();
             var privateDesignations = new List<string>();
             var privateAdvocateIds = new List<string>();
 
-            foreach (var party in model.PrivateParties ?? new List<PrivatePartyRowViewModel>())
+            foreach (var party in model.PrivateParties
+                     ?? new List<PrivatePartyRowViewModel>())
             {
                 bool isFullyBlank =
-                    string.IsNullOrWhiteSpace(party.PartyName)
-                    && string.IsNullOrWhiteSpace(party.Designation)
-                    && party.AdvocateId == null;
+                    string.IsNullOrWhiteSpace(party.PartyName) &&
+                    string.IsNullOrWhiteSpace(party.Designation) &&
+                    party.AdvocateId == null;
 
                 if (isFullyBlank)
-                    continue; // skip completely empty rows (e.g. unused extra row)
+                    continue;
 
                 privateNames.Add(
-                    string.IsNullOrWhiteSpace(party.PartyName) ? " " : party.PartyName.Trim());
+                    string.IsNullOrWhiteSpace(party.PartyName)
+                        ? " "
+                        : party.PartyName.Trim());
 
                 privateDesignations.Add(
-                    string.IsNullOrWhiteSpace(party.Designation) ? " " : party.Designation.Trim());
+                    string.IsNullOrWhiteSpace(party.Designation)
+                        ? " "
+                        : party.Designation.Trim());
 
                 privateAdvocateIds.Add(
-                    party.AdvocateId.HasValue ? party.AdvocateId.Value.ToString() : " ");
+                    party.AdvocateId.HasValue
+                        ? party.AdvocateId.Value.ToString()
+                        : " ");
             }
 
-            string? privateNameList = privateNames.Count > 0
-                ? string.Join(",", privateNames) : null;
+            string? privateNameList =
+                privateNames.Count > 0
+                    ? string.Join(",", privateNames)
+                    : null;
 
-            string? privateDesignationList = privateDesignations.Count > 0
-                ? string.Join(",", privateDesignations) : null;
+            string? privateDesignationList =
+                privateDesignations.Count > 0
+                    ? string.Join(",", privateDesignations)
+                    : null;
 
-            string? privateAdvocateList = privateAdvocateIds.Count > 0
-                ? string.Join(",", privateAdvocateIds) : null;
+            string? privateAdvocateList =
+                privateAdvocateIds.Count > 0
+                    ? string.Join(",", privateAdvocateIds)
+                    : null;
+
 
             cmd.Parameters.Add("p_private_name", OracleDbType.Varchar2).Value =
                 (object?)privateNameList ?? DBNull.Value;
@@ -159,17 +189,44 @@ namespace GCMS.Repository
             cmd.Parameters.Add("p_private_designation", OracleDbType.Varchar2).Value =
                 (object?)privateDesignationList ?? DBNull.Value;
 
-            // FIX: SP defines p_privadvocatee as VARCHAR2 (comma-separated list,
-            // parsed with REGEXP_SUBSTR + TO_NUMBER per private party), not NUMBER.
             cmd.Parameters.Add("p_privadvocatee", OracleDbType.Varchar2).Value =
                 (object?)privateAdvocateList ?? DBNull.Value;
 
-            var outCaseId = new OracleParameter("p_caseid", OracleDbType.Int64)
+
+            // =========================================================
+            // CASE ID
+            //
+            // SP definition:
+            // p_caseid IN OUT NUMBER
+            // =========================================================
+
+            var caseIdParam = new OracleParameter(
+                "p_caseid",
+                OracleDbType.Int64)
             {
-                Direction = ParameterDirection.Output
+                Direction = ParameterDirection.InputOutput,
+                Value = DBNull.Value
             };
 
-            cmd.Parameters.Add(outCaseId);
+            cmd.Parameters.Add(caseIdParam);
+
+
+            // =========================================================
+            // CURSOR
+            //
+            // SP definition:
+            // P_CURSOR OUT SYS_REFCURSOR
+            // =========================================================
+
+            cmd.Parameters.Add(
+                "P_CURSOR",
+                OracleDbType.RefCursor,
+                ParameterDirection.Output);
+
+
+            // =========================================================
+            // EXECUTE
+            // =========================================================
 
             try
             {
@@ -177,19 +234,30 @@ namespace GCMS.Repository
             }
             catch (OracleException ex)
             {
-                // FIX: surface the SP's RAISE_APPLICATION_ERROR message
-                // (e.g. -20001..-20011 validation errors, -20999 generic)
-                // as a clean exception instead of letting a raw OracleException
-                // bubble up to the Service/Controller layer.
                 throw new InvalidOperationException(
-                    $"Case registration failed: {ex.Message}", ex);
+                    $"Case registration failed: {ex.Message}",
+                    ex);
             }
 
-            if (outCaseId.Value == null || outCaseId.Value == DBNull.Value)
-                return 0;
 
-            return ((OracleDecimal)outCaseId.Value).ToInt64();
+            // =========================================================
+            // GET GENERATED CASE ID
+            // =========================================================
+
+            if (caseIdParam.Value == null ||
+                caseIdParam.Value == DBNull.Value)
+            {
+                return 0;
+            }
+
+            if (caseIdParam.Value is OracleDecimal oracleDecimal)
+            {
+                return oracleDecimal.ToInt64();
+            }
+
+            return Convert.ToInt64(caseIdParam.Value);
         }
+      
 
         public async Task<CaseRegistration?> GetCaseAsync(long caseId)
         {

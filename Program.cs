@@ -135,6 +135,9 @@ builder.Services.AddScoped<IAdvocateService, AdvocateService>();
 builder.Services.AddScoped<IRcsatDepartmentRepository, RcsatDepartmentRepository>();
 builder.Services.AddScoped<IRcsatDepartmentService, RcsatDepartmentService>();
 
+builder.Services.AddScoped<ICauseListConfigurationRepository, CauseListConfigurationRepository>();
+builder.Services.AddScoped<ICauseListConfigurationService,CauseListConfigurationService>();
+
 
 // ============================================================
 // AUTHENTICATION

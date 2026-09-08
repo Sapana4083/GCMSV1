@@ -16,7 +16,7 @@ namespace GCMS.Data
         public DbSet<Users> AxUsers { get; set; }
 
         public DbSet<AxCourts> AxCourts { get; set; }
-        
+
         public DbSet<DepartmentMaster> DepartmentMasters { get; set; }
 
         public DbSet<CourtNameMaster> CourtNameMasters { get; set; }
@@ -50,6 +50,8 @@ namespace GCMS.Data
         public DbSet<BenchTypeMaster> BenchTypes { get; set; }
 
         public DbSet<CourtTypeMaster> CourtType { get; set; }
+
+        public DbSet<CasePurposeMaster> CasePurposeMasters { get; set; }
 
     }
 }

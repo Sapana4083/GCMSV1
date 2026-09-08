@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Entities\CasePurposeMaster.cs" />
     <Compile Remove="Models\LinkedCaseFamilyViewModel.cs" />
     <Compile Remove="Repository\CaseService.cs" />
     <Compile Remove="Repository\Interfaces\ICaseService.cs" />

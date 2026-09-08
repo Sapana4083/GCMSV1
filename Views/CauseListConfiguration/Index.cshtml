@@ -1,605 +1,194 @@
 ﻿@model GCMS.Models.ViewModels.CauseListConfigurationViewModel
 @{
     ViewData["Title"] = "RCSAT Cause List Configuration";
-    var CasePurpose = ViewBag.CasePurposeList as List<GCMS.Models.CasePurposeMaster>;
     var index = 1;
 }
 
-<style>
-    .page-header {
-        background: linear-gradient(90deg, #9edcf2, #0698dc);
-        color: #1d3c5c;
-        font-size: 20px;
-        font-weight: 600;
-        padding: 7px 18px;
-        height: 42px;
-    }
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 mt-3 px-3">
 
-    .header-icons {
-        float: right;
-        display: flex;
-        gap: 5px;
-    }
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
 
-    .header-icon {
-        width: 34px;
-        height: 30px;
-        background: #116f9b;
-        color: white;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
+        <h4>RCSAT Cause List Configuration</h4>
 
-    .form-section {
-        padding: 12px 20px 10px 20px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .form-label {
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 6px;
-        display: block;
-    }
-
-    .form-control,
-    .form-select {
-        height: 46px;
-        border: 1px solid #d6dce1;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    .auto-box {
-        background: #eef1f4;
-        color: #123a61;
-    }
-
-    .active-section {
-        margin-top: 10px;
-    }
-
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 46px;
-        height: 25px;
-    }
-
-        .switch input {
-            display: none;
-        }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        inset: 0;
-        background-color: #ccc;
-        border-radius: 25px;
-        transition: .3s;
-    }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 19px;
-            width: 19px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            border-radius: 50%;
-            transition: .3s;
-        }
-
-    input:checked + .slider {
-        background-color: #087df5;
-    }
-
-        input:checked + .slider:before {
-            transform: translateX(21px);
-        }
-
-    .case-header {
-        height: 48px;
-        background: linear-gradient(90deg, #a9e2f6, #0097dc);
-        margin-top: 15px;
-        position: relative;
-    }
-
-    .case-tab {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 48px;
-        width: 145px;
-        background: white;
-        border-radius: 0 18px 0 0;
-        padding: 15px 15px 0 42px;
-        font-weight: 600;
-        color: #27435f;
-    }
-
-        .case-tab:before {
-            content: "⌃";
-            position: absolute;
-            left: 12px;
-            font-size: 20px;
-        }
-
-    .toolbar {
-        padding: 7px 8px;
-        display: flex;
-        gap: 6px;
-        border-bottom: 1px solid #ddd;
-    }
-
-        .toolbar button {
-            width: 31px;
-            height: 30px;
-            border: none;
-            border-radius: 5px;
-            background: #096b8b;
-            color: white;
-            cursor: pointer;
-        }
-
-    .table-container {
-        height: 455px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .cause-table {
-        width: 76%;
-        min-width: 950px;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-        .cause-table th {
-            background: #f5f7f9;
-            color: #193b60;
-            font-weight: 600;
-            border: 1px solid #dce1e5;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .cause-table td {
-            border: 1px solid #e0e4e8;
-            padding: 5px;
-        }
-
-        .cause-table input[type="text"],
-        .cause-table input[type="number"] {
-            width: 100%;
-            height: 27px;
-            border: 1px solid #e1e5e9;
-            padding: 3px 8px;
-            font-size: 14px;
-            color: #163b63;
-        }
-
-    .check-col {
-        width: 45px;
-        text-align: center !important;
-    }
-
-    .sno-col {
-        width: 55px;
-    }
-
-    .purpose-col {
-        width: 490px;
-    }
-
-    .priority-col {
-        width: 180px;
-    }
-
-    .bench-col {
-        width: 185px;
-    }
-
-    .footer-buttons {
-        position: fixed;
-        right: 18px;
-        bottom: 10px;
-        display: flex;
-        gap: 10px;
-    }
-
-    .btn-submit,
-    .btn-new {
-        border: none;
-        color: white;
-        padding: 9px 18px;
-        border-radius: 5px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .btn-submit {
-        background: #076b80;
-    }
-
-    .btn-new {
-        background: #176d89;
-    }
-
-        .btn-submit:hover,
-        .btn-new:hover {
-            opacity: .9;
-        }
-
-    @@media (max-width: 1200px) {
-        .cause-table {
-            width: 100%;
-        }
-    }
-</style>
-
-<div class="page-header">
-    <span>▪ RCSAT Cause List Configuration</span>
-
-    <div class="header-icons">
-        <div class="header-icon" title="Refresh">
-            <i class="fa fa-refresh"></i>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
         </div>
-        <div class="header-icon" title="Search">
-            <i class="fa fa-search"></i>
-        </div>
-        <div class="header-icon" title="List">
-            <i class="fa fa-list"></i>
-        </div>
-        <div class="header-icon" title="Grid">
-            <i class="fa fa-th"></i>
-        </div>
+
     </div>
-</div>
 
+    <!-- ========== FORM ========== -->
+    <form asp-action="Save" asp-controller="CauseListConfiguration" method="post" id="causeListForm">
 
-<form asp-action="Save" asp-controller="CauseListConfiguration"
-      method="post" id="causeListForm">
-
-    <!-- TOP FORM -->
-    <div class="form-section">
+        @Html.AntiForgeryToken()
 
         <div class="row">
 
             <!-- CLP NO -->
-            <div class="col-md-3">
+            <div class="col-md-3 mb-3">
                 <label class="form-label">C.L.P No.</label>
-
-                <input type="text"
-                       class="form-control auto-box"
-                       value="Auto"
-                       readonly />
+                <input type="text" class="form-control" value="Auto" readonly />
             </div>
 
             <!-- REMARKS -->
-            <div class="col-md-3">
-                <label asp-for="Remarks"
-                       class="form-label">
-                    Remarks
-                </label>
-
-                <input asp-for="Remarks"
-                       class="form-control"
-                       placeholder="" />
+            <div class="col-md-3 mb-3">
+                <label asp-for="Remarks" class="form-label">Remarks</label>
+                <input asp-for="Remarks" class="form-control" placeholder="" />
             </div>
 
             <!-- CAUSE LIST TYPE -->
-            <div class="col-md-3">
-                <label asp-for="CauseListType"
-                       class="form-label">
-                    Cause List Type
-                </label>
-
-                <select asp-for="CauseListType"
-                        asp-items="Model.CauseListTypes"
-                        class="form-select">
+            <div class="col-md-3 mb-3">
+                <label asp-for="CauseListType" class="form-label">Cause List Type</label>
+                <select asp-for="CauseListType" asp-items="Model.CauseListTypes" class="form-select">
                     <option value="">Select</option>
                 </select>
             </div>
 
             <!-- CASE COUNT LIMIT -->
-            <div class="col-md-3">
-                <label asp-for="CaseCountLimit"
-                       class="form-label">
-                    Case Count Limit
-                </label>
+            <div class="col-md-3 mb-3">
+                <label asp-for="CaseCountLimit" class="form-label">Case Count Limit</label>
+                <input asp-for="CaseCountLimit" type="number" class="form-control" />
+            </div>
 
-                <input asp-for="CaseCountLimit"
-                       type="number"
-                       class="form-control" />
+            <!-- ACTIVE -->
+            <div class="col-md-3 mb-3">
+                <label class="form-label">Active</label>
+                <div class="form-check form-switch">
+                    <input asp-for="Active" class="form-check-input" type="checkbox" role="switch" />
+                </div>
             </div>
 
         </div>
 
-        <!-- ACTIVE -->
-        <div class="active-section">
-
-            <label class="form-label">Active</label>
-
-            <label class="switch">
-                <input asp-for="Active"
-                       type="checkbox" />
-
-                <span class="slider"></span>
-            </label>
-
+        <!-- ========== CASE DETAILS TABLE ========== -->
+        <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-3 pb-3">
+            <h5 class="mb-0">Case Details</h5>
         </div>
 
-    </div>
+        <div class="table-responsive">
+            <table id="tblCauseListRows" class="table table-bordered table-striped">
 
-
-    <!-- CASE DETAILS HEADER -->
-    <div class="case-header">
-        <div class="case-tab">
-            Case Details
-        </div>
-    </div>
-
-
-    <!-- TOOLBAR -->
-    <div class="toolbar">
-
-        <button type="button"
-                title="Add">
-            <i class="fa fa-table"></i>
-        </button>
-
-        <button type="button"
-                title="Copy">
-            <i class="fa fa-copy"></i>
-        </button>
-
-        <button type="button"
-                title="List">
-            <i class="fa fa-list"></i>
-        </button>
-
-        <button type="button"
-                title="Grid">
-            <i class="fa fa-th"></i>
-        </button>
-
-    </div>
-
-
-    <!-- CASE DETAILS TABLE -->
-    <div class="table-container">
-
-        <table class="cause-table">
-
-            <thead>
-                <tr>
-
-                    <th class="check-col">
-                        <input type="checkbox"
-                               id="selectAll" />
-                    </th>
-
-                    <th class="sno-col">
-                        S.no
-                    </th>
-
-                    <th class="purpose-col">
-                        Case Purpose
-                    </th>
-
-                    <th class="priority-col">
-                        Purpose Priority
-                    </th>
-
-                    <th class="bench-col">
-                        DB Bench One
-                    </th>
-
-                    <th class="bench-col">
-                        DB Bench Two
-                    </th>
-
-                </tr>
-            </thead>
-
-            <tbody>
-
-               @*  @if (Model.CasePurposes != null)
-                {
-                    var index = 1; *@
-
-                   @*  @foreach (var cp in CasePurpose)
-                            {
-                                <option value="@cp.CasePurposeMastId">
-                                    @cp.CasePurposeEng
-                                </option>
-                            } *@
-
-
-                  @*   @foreach (var item in CasePurpose)
-                    {
-                    var index = 1;
-                        <tr>
-
-                            <td class="check-col">
-                                <input type="checkbox"
-                                       class="row-check"
-                                       name="SelectedIds"
-                                       value="@item.CasePurposeMastId" />
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       value="@index"
-                                       readonly
-                                       style="text-align:center;" />
-                            </td>
-
-                            <td>
-                                <input type="text"
-                                       name="CasePurposes[@(index - 1)].PurposeName"
-                                       value="@item.CasePurposeMastId" />
-                               
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       name="CasePurposes[@(index - 1)].PurposePriority"
-                                       value="@item.CasePurposeEng"
-                                       style="text-align:right;" />
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       name="CasePurposes[@(index - 1)].DBBenchOne"
-                                       style="text-align:right;" />
-                            </td>
-
-                            <td>
-                                <input type="number"
-                                       name="CasePurposes[@(index - 1)].DBBenchTwo"
-                                       style="text-align:right;" />
-                            </td>
-
-                        </tr>
-
-                        index++;
-                    } *@
-
-                @foreach (var row in ViewBag.CauseListRows)
-                {
-                    
+                <thead>
                     <tr>
-                        <td class="check-col">
-                            <input type="checkbox"
-                                   class="row-check"
-                                   name="SelectedIds"
-                                   value="@row" />
+                        <td width="45">
+                            <input type="checkbox" id="selectAll" />
                         </td>
-                        <td>
-                            @index
-                        </td>
-
-
-                        <td>
-                            <select class="form-control"
-                                    name="CasePurposeId">
-
-                                <option value="">-- Select Case Purpose --</option>
-
-                                @foreach (var purpose in ViewBag.CasePurposeList)
-                                {
-                                    <option value="@purpose.CasePurposeMastId" selected="@(row.CasePurposeId == purpose.CasePurposeMastId)">
-                                        @purpose.CasePurposeEng
-                                    </option>
-                                }
-
-                            </select>
-                        </td>
-
-                        <td>
-                            <input type="number"
-                                   class="form-control"
-                                   name="PurposePriority"
-                                   value="@row.PurposePriority" />
-                        </td>
-
-                        <td>
-                            <input type="number"
-                                   class="form-control"
-                                   name="DBBenchOne"
-                                   value="@row.DBBenchOne" />
-                        </td>
-
-                        <td>
-                            <input type="number"
-                                   class="form-control"
-                                   name="DBBenchTwo"
-                                   value="@row.DBBenchTwo" />
-                        </td>
-                      
+                        <td width="55">S.no</td>
+                        <th>Case Purpose</th>
+                        <th width="180">Purpose Priority</th>
+                        <th width="185">DB Bench One</th>
+                        <th width="185">DB Bench Two</th>
                     </tr>
-                    index++;
-                }
-               
+                </thead>
 
-            </tbody>
+                <tbody>
 
-        </table>
+                    @foreach (var row in ViewBag.CauseListRows)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="row-check" name="SelectedIds" value="@row" />
+                            </td>
+                            <td>@index</td>
 
-    </div>
+                            <td>
+                                <select class="form-select" name="CasePurposeId">
+                                    <option value="">-- Select Case Purpose --</option>
+
+                                    @foreach (var purpose in ViewBag.CasePurposeList)
+                                    {
+                                        <option value="@purpose.CasePurposeMastId" selected="@(row.CasePurposeId == purpose.CasePurposeMastId)">
+                                            @purpose.CasePurposeEng
+                                        </option>
+                                    }
+                                </select>
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control" name="PurposePriority" value="@row.PurposePriority" />
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control" name="DBBenchOne" value="@row.DBBenchOne" />
+                            </td>
+
+                            <td>
+                                <input type="number" class="form-control" name="DBBenchTwo" value="@row.DBBenchTwo" />
+                            </td>
+                        </tr>
+                        index++;
+                    }
+
+                </tbody>
+
+            </table>
+        </div>
+
+        <!-- ========== BUTTONS ========== -->
+        <div class="d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Submit
+            </button>
+            <button type="button" class="btn btn-success" id="btnNew">
+                <i class="bi bi-plus-circle"></i> New
+            </button>
+        </div>
+
+    </form>
+</div>
 
 
-    <!-- BUTTONS -->
-    <div class="footer-buttons">
-
-        <button type="submit"
-                class="btn-submit">
-            <i class="fa fa-save"></i>
-            &nbsp; SUBMIT
-        </button>
-
-        <button type="button"
-                class="btn-new"
-                id="btnNew">
-            <i class="fa fa-plus-circle"></i>
-            &nbsp; NEW
-        </button>
-
-    </div>
-
-</form>
-
-
+<!-- ========== SCRIPTS ========== -->
 @section Scripts {
-
     <script>
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             // Select / Unselect all
-            $("#selectAll").on("change", function () {
-
-                $(".row-check").prop(
-                    "checked",
-                    $(this).prop("checked")
-                );
-
+            $("#selectAll").on("change", function() {
+                $(".row-check").prop("checked", $(this).prop("checked"));
             });
 
-
             // If individual checkbox unchecked
-            $(document).on("change", ".row-check", function () {
+            $(document).on("change", ".row-check", function() {
 
                 if (!$(this).prop("checked")) {
                     $("#selectAll").prop("checked", false);
                 }
 
-                if ($(".row-check:checked").length ===
-                    $(".row-check").length) {
-
+                if ($(".row-check:checked").length === $(".row-check").length) {
                     $("#selectAll").prop("checked", true);
                 }
 
             });
 
-
             // New button
-            $("#btnNew").on("click", function () {
-
+            $("#btnNew").on("click", function() {
                 $("#causeListForm")[0].reset();
-
                 $(".row-check").prop("checked", false);
                 $("#selectAll").prop("checked", false);
-
             });
 
+        });
+
+        $("#btnPrint").click(function() {
+            window.print();
+        });
+
+        $("#btnExcel").click(function() {
+            let table = document.getElementById("tblCauseListRows");
+            let html = table.outerHTML;
+            let url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'CauseListConfiguration.xls';
+            a.click();
         });
 
     </script>

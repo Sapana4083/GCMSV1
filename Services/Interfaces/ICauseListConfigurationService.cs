@@ -10,5 +10,7 @@ namespace GCMS.Services.Interfaces
         Task<List<CauseListParamsListItem>> GetCauseListAsync();
 
         Task<CauseListConfigurationViewModel?> GetCauseListByIdAsync(long id);
+
+        Task<long> SaveCauseListAsync(CauseListConfigurationViewModel model, string createdBy);
     }
 }

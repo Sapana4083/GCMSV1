@@ -138,6 +138,9 @@ builder.Services.AddScoped<IRcsatDepartmentService, RcsatDepartmentService>();
 builder.Services.AddScoped<ICauseListConfigurationRepository, CauseListConfigurationRepository>();
 builder.Services.AddScoped<ICauseListConfigurationService,CauseListConfigurationService>();
 
+builder.Services.AddScoped<ICauseListProcessRepository, CauseListProcessRepository>();
+builder.Services.AddScoped<ICauseListProcessService, CauseListProcessService>();
+
 
 // ============================================================
 // AUTHENTICATION

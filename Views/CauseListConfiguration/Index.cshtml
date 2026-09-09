@@ -27,6 +27,7 @@
     <form asp-action="Save" asp-controller="CauseListConfiguration" method="post" id="causeListForm">
 
         @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="CLPNo" />
 
         <div class="row">
 
@@ -89,16 +90,20 @@
 
                 <tbody>
 
+                    @{
+                        int rowIndex = 0;
+                    }
+
                     @foreach (var row in ViewBag.CauseListRows)
                     {
                         <tr>
                             <td>
-                                <input type="checkbox" class="row-check" name="SelectedIds" value="@row" />
+                                <input type="checkbox" class="row-check" name="SelectedIds" value="@row.Id" />
                             </td>
                             <td>@index</td>
 
                             <td>
-                                <select class="form-select" name="CasePurposeId">
+                                <select class="form-select" name="CasePurposes[@rowIndex].CasePurposeId">
                                     <option value="">-- Select Case Purpose --</option>
 
                                     @foreach (var purpose in ViewBag.CasePurposeList)
@@ -111,18 +116,19 @@
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" name="PurposePriority" value="@row.PurposePriority" />
+                                <input type="number" class="form-control" name="CasePurposes[@rowIndex].PurposePriority" value="@row.PurposePriority" />
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" name="DBBenchOne" value="@row.DBBenchOne" />
+                                <input type="number" class="form-control" name="CasePurposes[@rowIndex].DBBenchOne" value="@row.DBBenchOne" />
                             </td>
 
                             <td>
-                                <input type="number" class="form-control" name="DBBenchTwo" value="@row.DBBenchTwo" />
+                                <input type="number" class="form-control" name="CasePurposes[@rowIndex].DBBenchTwo" value="@row.DBBenchTwo" />
                             </td>
                         </tr>
                         index++;
+                        rowIndex++;
                     }
 
                 </tbody>

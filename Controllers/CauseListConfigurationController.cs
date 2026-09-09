@@ -66,16 +66,34 @@ namespace GCMS.Controllers
             }
 
             model.CauseListTypes = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "R", Text = "R" },
-        new SelectListItem { Value = "F", Text = "F" }
-    };
+            {
+                new SelectListItem { Value = "R", Text = "R" },
+                new SelectListItem { Value = "F", Text = "F" }
+            };
 
             return View(model);
         }
-        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Save(CauseListConfigurationViewModel model)
+        {
+            try
+            {
+                var username = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                var id = await _service.SaveCauseListAsync(model, username);
+
+                TempData["SuccessMessage"] = "Cause List Configuration saved successfully.";
+
+                return RedirectToAction("CauseList");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index", new { id = model.CLPNo });
+            }
+        }
+
     }
 }
-
-
-

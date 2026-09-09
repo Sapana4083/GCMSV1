@@ -1,0 +1,226 @@
+﻿@model GCMS.Models.ViewModels.CauseListGenerateViewModel
+
+@{
+    ViewData["Title"] = "Generate Cause List";
+}
+
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3 mt-3">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h4>Generate Cause List</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ========== FORM ========== -->
+    <form method="post" id="generateForm">
+
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+
+            <div class="col-md-3 mb-3">
+                <label asp-for="DocId" class="form-label">Doc ID</label>
+                <input asp-for="DocId" class="form-control" />
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <label asp-for="HearingDate" class="form-label">Hearing Date<span class="text-danger">*</span></label>
+                <input asp-for="HearingDate" type="date" class="form-control" />
+                <span class="text-danger" id="errHearingDate"></span>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <label asp-for="CauseListType" class="form-label">Cause List Type<span class="text-danger">*</span></label>
+                <select asp-for="CauseListType" class="form-select">
+                    <option value="">Select</option>
+                    <option value="R">R</option>
+                    <option value="F">F</option>
+                </select>
+                <span class="text-danger" id="errCauseListType"></span>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <label asp-for="DocDate" class="form-label">Doc Date<span class="text-danger">*</span></label>
+                <input asp-for="DocDate" type="date" class="form-control" />
+                <span class="text-danger" id="errDocDate"></span>
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 border-top pt-3">
+            <button type="button" class="btn btn-primary" id="btnGenerate">
+                <i class="bi bi-gear"></i> Generate
+            </button>
+        </div>
+
+    </form>
+
+    <hr class="my-4" />
+
+    <!-- ========== GENERATED LIST ========== -->
+    <div class="table-responsive">
+        <table id="tblCauseListResult" class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Case No</th>
+                    <th>Case Purpose</th>
+                    <th>Priority</th>
+                    <th>Bench No</th>
+                    <th>Appellant Name</th>
+                    <th>Respondent Name</th>
+                    <th>Appellant Advocate</th>
+                    <th>Respondent Advocate</th>
+                    <th>Case Type</th>
+                    <th>District</th>
+                </tr>
+            </thead>
+
+            <tbody></tbody>
+
+        </table>
+    </div>
+
+</div>
+
+
+<!-- ========== SCRIPTS ========== -->
+@section Scripts {
+    <script>
+
+        var causeListTable;
+
+        $(document).ready(function() {
+
+            causeListTable = $('#tblCauseListResult').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                autoWidth: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                buttons: [
+                    { extend: 'print', title: 'Generated Cause List' },
+                    { extend: 'excelHtml5', title: 'Generated Cause List' }
+                ]
+            });
+
+            $('.dt-buttons').hide();
+        });
+
+        $("#btnPrint").click(function() {
+            window.print();
+        });
+
+        $("#btnExcel").click(function() {
+            let table = document.getElementById("tblCauseListResult");
+            let html = table.outerHTML;
+            let url = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'GeneratedCauseList.xls';
+            a.click();
+        });
+
+        // ── Generate ────────────────────────────────────
+        $("#btnGenerate").click(function() {
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            let isValid = true;
+
+            $("#errHearingDate").text('');
+            $("#errCauseListType").text('');
+            $("#errDocDate").text('');
+
+            var hearingDate = $("#HearingDate").val();
+            var causeListType = $("#CauseListType").val();
+            var docDate = $("#DocDate").val();
+
+            if (!hearingDate) {
+                $("#errHearingDate").text("Hearing Date is required");
+                isValid = false;
+            }
+
+            if (!causeListType) {
+                $("#errCauseListType").text("Cause List Type is required");
+                isValid = false;
+            }
+
+            if (!docDate) {
+                $("#errDocDate").text("Doc Date is required");
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            $.ajax({
+                url: '/CauseListProcess/Generate',
+                type: 'POST',
+                headers: { RequestVerificationToken: token },
+                data: {
+                    DocId: $("#DocId").val(),
+                    HearingDate: hearingDate,
+                    CauseListType: causeListType,
+                    DocDate: docDate
+                },
+                success: function(r) {
+                    if (r.success) {
+                        alert(r.message);
+                        loadGeneratedList(hearingDate);
+                    } else {
+                        alert(r.message);
+                    }
+                },
+                error: function() {
+                    alert("Generation Failed");
+                }
+            });
+        });
+
+        function loadGeneratedList(hearingDate) {
+            $.ajax({
+                url: '/CauseListProcess/GetGeneratedList',
+                type: 'GET',
+                data: { hearingDate: hearingDate },
+                success: function(data) {
+                    causeListTable.clear();
+
+                    $.each(data, function(i, row) {
+                        causeListTable.row.add([
+                            i + 1,
+                            row.caseNo,
+                            row.casePurpose,
+                            row.priority,
+                            row.benchNumber,
+                            row.appellantName,
+                            row.respondentName,
+                            row.appellantAdvocate,
+                            row.respondentAdvocate,
+                            row.caseType,
+                            row.district
+                        ]);
+                    });
+
+                    causeListTable.draw();
+                }
+            });
+        }
+
+    </script>
+}

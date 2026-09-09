@@ -31,5 +31,10 @@ namespace GCMS.Services
             return await _repository.GetCauseListByIdAsync(id);
         }
 
+        public async Task<long> SaveCauseListAsync(CauseListConfigurationViewModel model, string createdBy)
+        {
+            return await _repository.SaveCauseListAsync(model, createdBy);
+        }
+
     }
 }

@@ -8,6 +8,8 @@ namespace GCMS.Models.ViewModels
     {
         public long Id { get; set; }
 
+        public long? CLPNo { get; set; }
+
         #region ===== STEP 1 : BASIC DETAILS =====
 
         [Display(Name = "Institution Date")]

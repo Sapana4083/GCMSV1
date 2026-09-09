@@ -4,7 +4,7 @@ namespace GCMS.Models.ViewModels
 {
     public class CauseListConfigurationViewModel
     {
-        public int? CLPNo { get; set; }
+        public long? CLPNo { get; set; }
 
         public string? Remarks { get; set; }
 

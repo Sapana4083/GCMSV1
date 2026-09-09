@@ -19,103 +19,60 @@ namespace GCMS.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> CauseList()
         {
-            var model = new CauseListConfigurationViewModel();
-
-            // Cause List Type
-            model.CauseListTypes = new List<SelectListItem>
-    {
-        new SelectListItem
-        {
-            Value = "R",
-            Text = "R"
-        },
-        new SelectListItem
-        {
-            Value = "F",
-            Text = "F"
+            var data = await _service.GetCauseListAsync();
+            return View(data);
         }
-    };
 
-            // Get Case Purpose from Oracle
-            var casepurpose = await _CasePurposeService
-                .GetCasePurposeAsync(1, 1000);
-
-            // Convert to List
+        [HttpGet]
+        public async Task<IActionResult> Index(long? id)
+        {
+            var casepurpose = await _CasePurposeService.GetCasePurposeAsync(1, 1000);
             var casePurposeList = casepurpose.ToList();
-
-            // Dropdown data
             ViewBag.CasePurposeList = casePurposeList;
 
-            // Grid rows
-            var causeListRows = new List<CauseListCasePurposeViewModel>();
+            CauseListConfigurationViewModel model;
 
-            for (int i = 0; i < 21; i++)
+            if (id.HasValue && id.Value > 0)
             {
-                causeListRows.Add(new CauseListCasePurposeViewModel
+                // ✅ EDIT — existing config load karo
+                model = await _service.GetCauseListByIdAsync(id.Value)
+                        ?? new CauseListConfigurationViewModel();
+
+                ViewBag.CauseListRows = model.CasePurposes;
+            }
+            else
+            {
+                // ✅ ADD — default 21 rows
+                model = new CauseListConfigurationViewModel();
+
+                var causeListRows = new List<CauseListCasePurposeViewModel>();
+
+                for (int i = 0; i < 21; i++)
                 {
-                    Id = i + 1,
+                    causeListRows.Add(new CauseListCasePurposeViewModel
+                    {
+                        Id = i + 1,
+                        CasePurposeId = i < casePurposeList.Count ? Convert.ToInt64(casePurposeList[i].CasePurposeMastId) : null,
+                        PurposePriority = 0,
+                        DBBenchOne = 50,
+                        DBBenchTwo = 50
+                    });
+                }
 
-                    // ⭐ Automatically select Case Purpose
-                    CasePurposeId = i < casePurposeList.Count ? Convert.ToInt64(casePurposeList[i].CasePurposeMastId) : null,
-
-                    PurposePriority = 0,
-                    DBBenchOne = 50,
-                    DBBenchTwo = 50
-                });
+                ViewBag.CauseListRows = causeListRows;
             }
 
-            ViewBag.CauseListRows = causeListRows;
+            model.CauseListTypes = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "R", Text = "R" },
+        new SelectListItem { Value = "F", Text = "F" }
+    };
 
             return View(model);
         }
-        //public async Task<IActionResult> Index()
-        //{
-        //    var model = new CauseListConfigurationViewModel();
-
-        //    // Cause List Type
-        //    model.CauseListTypes = new List<SelectListItem>
-        //{
-        //    new SelectListItem
-        //    {
-        //        Value = "R",
-        //        Text = "R"
-        //    },
-        //    new SelectListItem
-        //    {
-        //        Value = "F",
-        //        Text = "F"
-        //    }
-        //};
-
-
-        //    // Get Case Purpose from Oracle            
-
-        //    var casepurpose = await _CasePurposeService.GetCasePurposeAsync(1, 1000);
-
-        //    // Dropdown data from database
-        //    ViewBag.CasePurposeList = casepurpose;
-
-        //    // Grid rows
-        //    var causeListRows = new List<CauseListCasePurposeViewModel>();
-
-        //    for (int i = 0; i < 11; i++)
-        //    {
-        //        causeListRows.Add(new CauseListCasePurposeViewModel
-        //        {
-        //            Id = i + 1,
-        //            CasePurposeId = null,
-        //            PurposePriority = 0,
-        //            DBBenchOne = 50,
-        //            DBBenchTwo = 50
-        //        });
-        //    }
-
-        //    ViewBag.CauseListRows = causeListRows;            
-
-        //    return View(model);
-        //}
+        
     }
 }
 

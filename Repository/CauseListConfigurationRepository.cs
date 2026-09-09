@@ -28,7 +28,7 @@ namespace GCMS.Repository
         }
 
         // ───────────────────────────────────────────────
-        // LIST — direct query (koi List SP diya nahi gaya)
+        // LIST — direct query (koi List SP diya nahi gaya)--Naveen Sharma
         // ───────────────────────────────────────────────
         public async Task<List<CauseListParamsListItem>> GetCauseListAsync()
         {

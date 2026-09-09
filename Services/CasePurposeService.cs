@@ -27,5 +27,10 @@ namespace GCMS.Services
 
         public Task<List<CasePurposeMaster>> GetCasePurposeAsync(int pageNo, int rowCnt) =>
           _repository.GetDropDownAsync(pageNo, rowCnt);
+
+        public Task<List<CasePurposeMaster>> GetCauseListPriority(int pageNo, int rowCnt) =>
+         _repository.GetDropDownAsyncCauseListPriority(pageNo, rowCnt);
+
+
     }
 }

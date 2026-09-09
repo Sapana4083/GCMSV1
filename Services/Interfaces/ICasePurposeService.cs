@@ -10,5 +10,7 @@ namespace GCMS.Services.Interfaces
         Task UpdateAsync(CasePurposeMaster model);
 
         Task<List<CasePurposeMaster>> GetCasePurposeAsync(int pageNo, int rowCnt);
+        Task<List<CasePurposeMaster>> GetCauseListPriority(int pageNo, int rowCnt);
+        
     }
 }

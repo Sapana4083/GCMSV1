@@ -1,4 +1,5 @@
-﻿using GCMS.Models.ViewModels;
+﻿using GCMS.Models;
+using GCMS.Models.ViewModels;
 using GCMS.Services;
 using GCMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -27,8 +28,8 @@ namespace GCMS.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index(long? id)
-        {
-            var casepurpose = await _CasePurposeService.GetCasePurposeAsync(1, 1000);
+        {           
+            var casepurpose = await _CasePurposeService.GetCauseListPriority(1, 1000);
             var casePurposeList = casepurpose.ToList();
             ViewBag.CasePurposeList = casePurposeList;
 

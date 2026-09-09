@@ -12,5 +12,7 @@ namespace GCMS.Repository.Interfaces
 
         Task UpdateAsync(CasePurposeMaster model);
         Task<List<CasePurposeMaster>> GetDropDownAsync(int pageNo, int rowCnt);
+        Task<List<CasePurposeMaster>> GetDropDownAsyncCauseListPriority(int pageNo, int rowCnt);
+        
     }
 }

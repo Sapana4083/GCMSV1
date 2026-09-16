@@ -1,0 +1,577 @@
+@model GCMS.Models.ViewModels.CaseFeedbackViewModel
+
+@{
+    ViewData["Title"] = "Case Feedback";
+    var caseTypes = ViewBag.CaseTypeList as List<GCMS.Models.CaseTypeMaster>;
+    var casePurposes = ViewBag.CasePurposeList as List<GCMS.Models.CasePurposeMaster>;
+}
+
+<style>
+    .case-feedback-shell {
+        background: #fff;
+        border: 1px solid #c9d8e8;
+        box-shadow: 0 10px 28px rgba(15, 36, 71, 0.08);
+        margin: 8px 0 0;
+        min-height: calc(100vh - 170px);
+    }
+
+    .case-feedback-title {
+        background: linear-gradient(90deg, #bce9f4 0%, #1aa1dc 100%);
+        border-bottom: 1px solid #7fc5e7;
+        color: #183553;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 1rem;
+        font-weight: 700;
+        padding: 8px 12px 8px 24px;
+    }
+
+    .case-feedback-title span::before,
+    .case-feedback-title span::after {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        background: #ffc55b;
+        margin: 0 5px 3px 0;
+    }
+
+    .case-feedback-title span::after {
+        margin: 0 0 3px 5px;
+    }
+
+    .case-feedback-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px 26px;
+        padding: 12px 22px 0;
+    }
+
+    .case-feedback-field label {
+        color: #000;
+        display: block;
+        font-size: 0.86rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .required-mark {
+        color: #ff2e63;
+    }
+
+    .case-feedback-field .form-select,
+    .case-feedback-field .form-control {
+        border: 1px solid #cfd5dc;
+        border-radius: 4px;
+        color: #172341;
+        font-size: 0.86rem;
+        min-height: 46px;
+        padding: 10px 20px;
+        width: 100%;
+    }
+
+    .case-feedback-field textarea {
+        min-height: 115px;
+        resize: vertical;
+    }
+
+    .case-feedback-field textarea[readonly] {
+        background: #f0f3f5;
+    }
+
+    .case-search-select {
+        position: relative;
+    }
+
+    .case-search-display {
+        align-items: center;
+        background: #fff;
+        border: 1px solid #cfd5dc;
+        border-radius: 4px;
+        color: #969ab4;
+        cursor: pointer;
+        display: flex;
+        font-size: 0.86rem;
+        justify-content: space-between;
+        min-height: 46px;
+        padding: 10px 20px;
+        width: 100%;
+    }
+
+    .case-search-display.has-value {
+        color: #172341;
+    }
+
+    .case-search-display i {
+        color: #7c839d;
+        font-size: 0.82rem;
+    }
+
+    .case-search-menu {
+        background: #fff;
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0 10px 26px rgba(15, 36, 71, 0.12);
+        display: none;
+        left: 0;
+        padding: 14px 16px 0;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        z-index: 25;
+    }
+
+    .case-search-select.open .case-search-menu {
+        display: block;
+    }
+
+    .case-search-input {
+        border: 1px solid #aeb7c8;
+        color: #172341;
+        font-size: 0.86rem;
+        min-height: 33px;
+        padding: 5px 12px;
+        width: 100%;
+    }
+
+    .case-search-input:focus {
+        border-color: #8795b3;
+        outline: none;
+    }
+
+    .case-search-options {
+        list-style: none;
+        margin: 14px -16px 0;
+        max-height: 214px;
+        overflow-y: auto;
+        padding: 0;
+    }
+
+    .case-search-option {
+        color: #65708b;
+        cursor: pointer;
+        font-size: 0.86rem;
+        padding: 11px 16px;
+    }
+
+    .case-search-option:hover,
+    .case-search-option.active {
+        background: #edfaff;
+        color: #006dff;
+    }
+
+    .case-search-empty {
+        color: #8d94aa;
+        font-size: 0.82rem;
+        padding: 11px 16px;
+    }
+
+    .date-input-wrap {
+        display: flex;
+    }
+
+    .date-input-wrap input {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    .date-addon {
+        align-items: center;
+        background: #f6f8fb;
+        border: 1px solid #aeb9c9;
+        border-left: 0;
+        color: #17345d;
+        display: flex;
+        justify-content: center;
+        min-width: 44px;
+    }
+
+    .span-2 {
+        grid-column: span 2;
+    }
+
+    .switch-line {
+        padding: 8px 22px 0;
+    }
+
+    .stay-switch {
+        position: relative;
+        display: inline-block;
+        width: 48px;
+        height: 24px;
+    }
+
+    .stay-switch input {
+        height: 0;
+        opacity: 0;
+        width: 0;
+    }
+
+    .stay-slider {
+        background: #fff;
+        border: 1px solid #bfc6cf;
+        border-radius: 24px;
+        cursor: pointer;
+        inset: 0;
+        position: absolute;
+        transition: 0.2s;
+    }
+
+    .stay-slider::before {
+        background: #b4b8bd;
+        border-radius: 50%;
+        bottom: 3px;
+        content: "";
+        height: 18px;
+        left: 3px;
+        position: absolute;
+        transition: 0.2s;
+        width: 18px;
+    }
+
+    .stay-switch input:checked + .stay-slider {
+        background: #0d6f9d;
+        border-color: #0d6f9d;
+    }
+
+    .stay-switch input:checked + .stay-slider::before {
+        background: #fff;
+        transform: translateX(24px);
+    }
+
+    .upload-zone {
+        align-items: center;
+        border: 1px solid #cfd5dc;
+        border-radius: 4px;
+        color: #006bff;
+        cursor: pointer;
+        display: flex;
+        font-size: 0.75rem;
+        min-height: 47px;
+        padding: 0 34px;
+    }
+
+    .upload-zone input {
+        display: none;
+    }
+
+    .case-feedback-actions {
+        border-top: 1px solid #dce6ef;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        margin-top: 10px;
+        padding: 16px 6px 16px 0;
+    }
+
+    .case-feedback-btn {
+        align-items: center;
+        background: #0d6f9d;
+        border: 0;
+        border-radius: 5px;
+        color: #fff;
+        display: inline-flex;
+        font-size: 0.72rem;
+        font-weight: 700;
+        gap: 8px;
+        min-height: 36px;
+        padding: 0 16px;
+        text-transform: uppercase;
+    }
+
+    .case-feedback-btn:hover {
+        background: #0a5d83;
+        color: #fff;
+    }
+
+    .validation-summary-errors,
+    .field-validation-error {
+        color: #dc3545;
+        font-size: 0.78rem;
+    }
+
+    @@media (max-width: 992px) {
+        .case-feedback-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .span-2 {
+            grid-column: span 1;
+        }
+    }
+</style>
+
+<div class="case-feedback-shell">
+    <div class="case-feedback-title">
+        <span>Case Feedback</span>
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+    </div>
+
+    <form asp-action="Index" method="post" enctype="multipart/form-data" id="caseFeedbackForm">
+        @Html.AntiForgeryToken()
+        <input asp-for="CaseRegId" type="hidden" />
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success mx-3 mt-3 mb-0">@TempData["SuccessMessage"]</div>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="mx-3 mt-2"></div>
+
+        <div class="case-feedback-grid">
+            <div class="case-feedback-field">
+                <label asp-for="CaseTypeId">Case Type <span class="required-mark">*</span></label>
+                <select asp-for="CaseTypeId" class="form-select">
+                    <option value="">Select an option</option>
+                    @if (caseTypes != null)
+                    {
+                        foreach (var item in caseTypes)
+                        {
+                            <option value="@item.CaseTypeMastId">@(!string.IsNullOrWhiteSpace(item.CaseType) ? item.CaseType : item.CaseTypeEng)</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="CaseTypeId"></span>
+            </div>
+
+            <div class="case-feedback-field">
+                <label asp-for="CaseNo">Case No <span class="required-mark">*</span></label>
+                <input asp-for="CaseNo" type="hidden" />
+                <div class="case-search-select" id="caseNoSearchSelect">
+                    <button class="case-search-display" id="caseNoDisplay" type="button">
+                        <span>Select an option</span>
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div class="case-search-menu">
+                        <input class="case-search-input" id="caseNoSearchInput" type="text" autocomplete="off" />
+                        <ul class="case-search-options" id="caseNoOptions"></ul>
+                    </div>
+                </div>
+                <span asp-validation-for="CaseNo"></span>
+            </div>
+
+            <div class="case-feedback-field">
+                <label asp-for="StayDate">Stay Date</label>
+                <div class="date-input-wrap">
+                    <input asp-for="StayDate" type="date" class="form-control" />
+                    <span class="date-addon"><i class="bi bi-calendar-date"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="switch-line">
+            <div class="case-feedback-field">
+                <label asp-for="StayCheck">Stay Check</label>
+                <label class="stay-switch" title="Stay Check">
+                    <input asp-for="StayCheck" type="checkbox" />
+                    <span class="stay-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="case-feedback-grid">
+            <div class="case-feedback-field">
+                <label asp-for="CaseDetails">Case Details</label>
+                <textarea asp-for="CaseDetails" class="form-control" readonly></textarea>
+            </div>
+
+            <div class="case-feedback-field span-2">
+                <label asp-for="Remark">Remark</label>
+                <textarea asp-for="Remark" class="form-control"></textarea>
+            </div>
+
+            <div class="case-feedback-field">
+                <label asp-for="ReviseCasePurposeId">Revise Case Purpose <span class="required-mark">*</span></label>
+                <select asp-for="ReviseCasePurposeId" class="form-select">
+                    <option value="">Select an option</option>
+                    @if (casePurposes != null)
+                    {
+                        foreach (var item in casePurposes)
+                        {
+                            <option value="@item.CasePurposeMastId">@(!string.IsNullOrWhiteSpace(item.CasePurposeEng) ? item.CasePurposeEng : item.CasePurposeName)</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="ReviseCasePurposeId"></span>
+            </div>
+
+            <div class="case-feedback-field">
+                <label asp-for="NextHearingDate">Next Hearing Date <span class="required-mark">*</span></label>
+                <div class="date-input-wrap">
+                    <input asp-for="NextHearingDate" type="date" class="form-control" />
+                    <span class="date-addon"><i class="bi bi-calendar-date"></i></span>
+                </div>
+                <span asp-validation-for="NextHearingDate"></span>
+            </div>
+        </div>
+
+        <div class="case-feedback-grid">
+            <div class="case-feedback-field">
+                <label asp-for="UploadFiles">Upload File</label>
+                <label class="upload-zone">
+                    <i class="bi bi-paperclip me-1"></i>
+                    <span id="uploadText">Drop files here or click to upload</span>
+                    <input asp-for="UploadFiles" type="file" multiple />
+                </label>
+            </div>
+        </div>
+
+        <div class="case-feedback-actions">
+            <button type="submit" class="case-feedback-btn">
+                <i class="bi bi-floppy"></i> Submit
+            </button>
+            <button type="reset" class="case-feedback-btn" id="btnNew">
+                <i class="bi bi-plus-circle"></i> New
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const fileInput = document.getElementById('UploadFiles');
+        const uploadText = document.getElementById('uploadText');
+        const caseTypeSelect = document.getElementById('CaseTypeId');
+        const caseNoHidden = document.getElementById('CaseNo');
+        const caseNoSearchSelect = document.getElementById('caseNoSearchSelect');
+        const caseNoDisplay = document.getElementById('caseNoDisplay');
+        const caseNoDisplayText = caseNoDisplay?.querySelector('span');
+        const caseNoSearchInput = document.getElementById('caseNoSearchInput');
+        const caseNoOptions = document.getElementById('caseNoOptions');
+        const caseRegIdInput = document.getElementById('CaseRegId');
+        let caseNoRows = [];
+        let caseNoSearchTimer = null;
+
+        function resetCaseNos() {
+            if (caseNoOptions) caseNoOptions.innerHTML = '';
+            caseNoRows = [];
+            if (caseRegIdInput) caseRegIdInput.value = '';
+            if (caseNoHidden) caseNoHidden.value = '';
+            if (caseNoDisplayText) caseNoDisplayText.textContent = 'Select an option';
+            caseNoDisplay?.classList.remove('has-value');
+        }
+
+        async function loadCaseNos() {
+            const caseTypeId = caseTypeSelect?.value;
+            const manualCaseNo = caseNoSearchInput?.value?.trim() || '';
+            if (caseNoOptions) {
+                caseNoOptions.innerHTML = '<li class="case-search-empty">Loading...</li>';
+            }
+            caseNoRows = [];
+
+            if (!caseTypeId) {
+                if (caseNoOptions) {
+                    caseNoOptions.innerHTML = '<li class="case-search-empty">Select Case Type first</li>';
+                }
+                return;
+            }
+
+            try {
+                const query = new URLSearchParams({
+                    caseTypeId,
+                    manualCaseNo
+                });
+                const response = await fetch(`/CaseFeedback/GetCaseNos?${query.toString()}`);
+                if (!response.ok) {
+                    throw new Error(`Case No request failed with status ${response.status}`);
+                }
+
+                caseNoRows = await response.json();
+                renderCaseNoOptions(caseNoRows);
+            } catch (error) {
+                console.error(error);
+                caseNoRows = [];
+                if (caseNoOptions) {
+                    caseNoOptions.innerHTML = '<li class="case-search-empty">Failed to load case no</li>';
+                }
+            }
+        }
+
+        function renderCaseNoOptions(rows) {
+            if (!caseNoOptions) return;
+
+            caseNoOptions.innerHTML = '';
+
+            if (!rows.length) {
+                caseNoOptions.innerHTML = '<li class="case-search-empty">No case found</li>';
+                return;
+            }
+
+            rows.forEach(row => {
+                const caseNo = row.text || row.value || '';
+                const option = document.createElement('li');
+                option.className = 'case-search-option';
+                option.textContent = caseNo;
+                option.dataset.caseNo = caseNo;
+                option.dataset.caseRegId = row.caseRegId || '';
+                caseNoOptions.appendChild(option);
+            });
+        }
+
+        function selectCaseNo(caseNo, caseRegId) {
+            if (caseNoHidden) caseNoHidden.value = caseNo || '';
+            if (caseRegIdInput) caseRegIdInput.value = caseRegId || '';
+            if (caseNoDisplayText) caseNoDisplayText.textContent = caseNo || 'Select an option';
+            caseNoDisplay?.classList.toggle('has-value', Boolean(caseNo));
+            caseNoSearchSelect?.classList.remove('open');
+        }
+
+        function openCaseNoSearch() {
+            caseNoSearchSelect?.classList.add('open');
+            window.setTimeout(() => caseNoSearchInput?.focus(), 0);
+
+            if (caseTypeSelect?.value && !caseNoRows.length) {
+                loadCaseNos();
+            }
+        }
+
+        function setSelectedCaseRegId() {
+            const typedCaseNo = caseNoSearchInput?.value?.trim() || '';
+            const selected = caseNoRows.find(row =>
+                String(row.text || row.value || '').toLowerCase() === typedCaseNo.toLowerCase());
+
+            if (caseRegIdInput) {
+                caseRegIdInput.value = selected?.caseRegId || '';
+            }
+        }
+
+        caseTypeSelect?.addEventListener('change', function () {
+            if (caseNoSearchInput) caseNoSearchInput.value = '';
+            resetCaseNos();
+        });
+
+        caseNoDisplay?.addEventListener('click', openCaseNoSearch);
+
+        caseNoSearchInput?.addEventListener('input', function () {
+            setSelectedCaseRegId();
+            window.clearTimeout(caseNoSearchTimer);
+            caseNoSearchTimer = window.setTimeout(loadCaseNos, 300);
+        });
+
+        caseNoOptions?.addEventListener('click', function (event) {
+            const option = event.target.closest('.case-search-option');
+            if (!option) return;
+
+            selectCaseNo(option.dataset.caseNo || '', option.dataset.caseRegId || '');
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!caseNoSearchSelect?.contains(event.target)) {
+                caseNoSearchSelect?.classList.remove('open');
+            }
+        });
+
+        fileInput?.addEventListener('change', function () {
+            const count = this.files?.length || 0;
+            uploadText.textContent = count ? `${count} file(s) selected` : 'Drop files here or click to upload';
+        });
+
+        document.getElementById('btnNew')?.addEventListener('click', function () {
+            window.setTimeout(() => {
+                uploadText.textContent = 'Drop files here or click to upload';
+                resetCaseNos();
+            }, 0);
+        });
+    </script>
+}

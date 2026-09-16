@@ -19,6 +19,7 @@ namespace GCMS.Repository
         // ───────────────────────────────────────────────
         // GENERATE — sp_tribunal_causelist_process call karta hai
         // (koi OUT cursor nahi, sirf INSERT/UPDATE process)
+        //for submit button
         // ───────────────────────────────────────────────
         public async Task GenerateCauseListAsync(CauseListGenerateViewModel model)
         {
@@ -61,6 +62,7 @@ namespace GCMS.Repository
 
         // ───────────────────────────────────────────────
         // GET GENERATED LIST — generate ke baad result dikhane ke liye
+        //For Edit
         // ───────────────────────────────────────────────
         public async Task<List<CauseListGeneratedRow>> GetGeneratedListAsync(DateTime hearingDate, string courtCode)
         {

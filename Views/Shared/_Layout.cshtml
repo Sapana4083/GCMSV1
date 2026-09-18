@@ -301,10 +301,23 @@
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="/Account/Logout" id="logoutLink">
+                       @*  <li>
+                            <a class="dropdown-item text-danger" href="/Home/Logout" id="logoutLink">
                                 <i class="fa-solid fa-right-from-bracket"></i> Logout
                             </a>
+                        </li> *@
+                        <li>
+                            <form asp-controller="Home"
+                                  asp-action="Logout"
+                                  method="post">
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit"
+                                        class="dropdown-item text-danger"
+                                        id="logoutLink">
+                                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </div>

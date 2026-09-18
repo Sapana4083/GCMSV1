@@ -156,12 +156,12 @@ and A.court_code= :court_code
                         const string updateChildSql = @"
                             UPDATE TRN_RCSAT_LINKEDCASES SET
                                 TRN_RCSAT_CASEUPDATEID = :caseUpdateId, COURTCODE = :courtCode,
-                                CASE_TYPEE = :caseTypee, CASE_NO = :caseNo, CALCASE = :calCase,
-                                MINCASE = :mainCase, INSDT = :insdt, HDT = :hdt,
-                                APPNAME = :appName, RESPNAME = :respName, CTYPE = :ctype,
-                                PURPOSE = :purpose, DNAME = :dname, APPADV = :appAdv,
+                                CASE_TYPEE = :caseType, CASE_NO = :ChildCase,
+                                MINCASE = :ParentCaseNo, 
+                                APPNAME = :AppellantName, RESPNAME = :RespondentName  , CTYPE = :CaseType,
+                                PURPOSE = :purpose, DNAME = :District, APPADV = :appAdv,
                                 RESPAD = :respAd, CONECT = :conect
-                            WHERE TRN_RCSAT_CASEID = :caseId";
+                            WHERE TRN_RCSAT_CASEUPDATEID = :caseId";
 
                         using var updateChildCmd = new OracleCommand(updateChildSql, connection);
                         updateChildCmd.Transaction = transaction;

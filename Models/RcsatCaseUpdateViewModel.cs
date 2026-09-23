@@ -12,6 +12,8 @@ namespace GCMS.Models
         //public string CourtName { get; set; }
         public string CourtCode { get; set; }
         public string CaseType { get; set; }
+
+        public string CaseTypeID { get; set; }
        // public string LinkCase { get; set; }
         public string ParentCaseNo { get; set; }
        // public string ParentChildChk { get; set; }
@@ -43,20 +45,12 @@ namespace GCMS.Models
     public class LinkedCaseFamilyViewModel
     {
         public long CaseRegId { get; set; }
-        //public string CaseNo { get; set; }
-        //public string ConnectedCaseNo { get; set; }
-        //public DateTime? HearingDate { get; set; }
-        //public string CasePurposeMastId { get; set; }
-        //public string CasePurposeName { get; set; }
-        //public string PrimaryAppellant { get; set; }
-        //public string PrimaryRespondent { get; set; }
-        //public string DistrictName { get; set; }
-
-
+     
         public long? CaseUpdateId { get; set; }   // TRN_RCSAT_CASEUPDATEID - PK
         public string TRN_RCSAT_CASEREGID { get; set; }
         public string CourtCode { get; set; }
         public string CaseType { get; set; }
+
          public string ChildCase { get; set; }
         public string ParentCaseNo { get; set; }
         // public string ParentChildChk { get; set; }

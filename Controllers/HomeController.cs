@@ -1,5 +1,6 @@
 using GCMS.Models;
 using GCMS.Repository.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -43,6 +44,23 @@ namespace GCMS.Controllers
             var dashboard = await _dashboardRepository.GetCourtDashboardDataAsync();
             return View(dashboard);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.Clear();
+
+            await HttpContext.SignOutAsync();
+
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
 
     }
 }

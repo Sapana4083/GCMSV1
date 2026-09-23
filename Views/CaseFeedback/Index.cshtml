@@ -7,77 +7,10 @@
 }
 
 <style>
-    .case-feedback-shell {
-        background: #fff;
-        border: 1px solid #c9d8e8;
-        box-shadow: 0 10px 28px rgba(15, 36, 71, 0.08);
-        margin: 8px 0 0;
-        min-height: calc(100vh - 170px);
-    }
-
-    .case-feedback-title {
-        background: linear-gradient(90deg, #bce9f4 0%, #1aa1dc 100%);
-        border-bottom: 1px solid #7fc5e7;
-        color: #183553;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 1rem;
-        font-weight: 700;
-        padding: 8px 12px 8px 24px;
-    }
-
-    .case-feedback-title span::before,
-    .case-feedback-title span::after {
-        content: "";
-        display: inline-block;
-        width: 5px;
-        height: 5px;
-        background: #ffc55b;
-        margin: 0 5px 3px 0;
-    }
-
-    .case-feedback-title span::after {
-        margin: 0 0 3px 5px;
-    }
-
-    .case-feedback-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 10px 26px;
-        padding: 12px 22px 0;
-    }
-
-    .case-feedback-field label {
-        color: #000;
-        display: block;
-        font-size: 0.86rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
+  
 
     .required-mark {
         color: #ff2e63;
-    }
-
-    .case-feedback-field .form-select,
-    .case-feedback-field .form-control {
-        border: 1px solid #cfd5dc;
-        border-radius: 4px;
-        color: #172341;
-        font-size: 0.86rem;
-        min-height: 46px;
-        padding: 10px 20px;
-        width: 100%;
-    }
-
-    .case-feedback-field textarea {
-        min-height: 115px;
-        resize: vertical;
-    }
-
-    .case-feedback-field textarea[readonly] {
-        background: #f0f3f5;
     }
 
     .case-search-select {
@@ -94,8 +27,8 @@
         display: flex;
         font-size: 0.86rem;
         justify-content: space-between;
-        min-height: 46px;
-        padding: 10px 20px;
+        min-height: 28px;
+        padding: 8px 15px;
         width: 100%;
     }
 
@@ -301,10 +234,26 @@
     }
 </style>
 
-<div class="case-feedback-shell">
-    <div class="case-feedback-title">
+<div class="case-feedback-shell container-fluid bg-light rounded-4 m-auto shadow py-4 px-3 mt-3">
+   @*  <div class="case-feedback-title">
         <span>Case Feedback</span>
         <i class="bi bi-grid-3x3-gap-fill"></i>
+    </div> *@
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h4>Case Feedback</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
     </div>
 
     <form asp-action="Index" method="post" enctype="multipart/form-data" id="caseFeedbackForm">
@@ -318,8 +267,9 @@
 
         <div asp-validation-summary="ModelOnly" class="mx-3 mt-2"></div>
 
-        <div class="case-feedback-grid">
-            <div class="case-feedback-field">
+      
+        <div class="row">
+            <div class="col-md-3 mb-3">
                 <label asp-for="CaseTypeId">Case Type <span class="required-mark">*</span></label>
                 <select asp-for="CaseTypeId" class="form-select">
                     <option value="">Select an option</option>
@@ -334,7 +284,7 @@
                 <span asp-validation-for="CaseTypeId"></span>
             </div>
 
-            <div class="case-feedback-field">
+            <div class="col-md-3 mb-3">
                 <label asp-for="CaseNo">Case No <span class="required-mark">*</span></label>
                 <input asp-for="CaseNo" type="hidden" />
                 <div class="case-search-select" id="caseNoSearchSelect">
@@ -350,37 +300,36 @@
                 <span asp-validation-for="CaseNo"></span>
             </div>
 
-            <div class="case-feedback-field">
+            <div class="col-md-3 mb-3">
                 <label asp-for="StayDate">Stay Date</label>
                 <div class="date-input-wrap">
                     <input asp-for="StayDate" type="date" class="form-control" />
-                    <span class="date-addon"><i class="bi bi-calendar-date"></i></span>
+                   
                 </div>
             </div>
-        </div>
 
-        <div class="switch-line">
-            <div class="case-feedback-field">
+            <div class="col-md-3 mb-3 d-flex flex-column">
                 <label asp-for="StayCheck">Stay Check</label>
-                <label class="stay-switch" title="Stay Check">
+                <label class="stay-switch mt-2" title="Stay Check">
                     <input asp-for="StayCheck" type="checkbox" />
                     <span class="stay-slider"></span>
                 </label>
             </div>
-        </div>
+            </div>
+       
 
-        <div class="case-feedback-grid">
-            <div class="case-feedback-field">
+        <div class="row">
+            <div class="col-md-3 mb-3">
                 <label asp-for="CaseDetails">Case Details</label>
                 <textarea asp-for="CaseDetails" class="form-control" readonly></textarea>
             </div>
 
-            <div class="case-feedback-field span-2">
+            <div class="col-md-3 mb-3 span-2">
                 <label asp-for="Remark">Remark</label>
                 <textarea asp-for="Remark" class="form-control"></textarea>
             </div>
 
-            <div class="case-feedback-field">
+            <div class="col-md-3 mb-3">
                 <label asp-for="ReviseCasePurposeId">Revise Case Purpose <span class="required-mark">*</span></label>
                 <select asp-for="ReviseCasePurposeId" class="form-select">
                     <option value="">Select an option</option>
@@ -395,32 +344,32 @@
                 <span asp-validation-for="ReviseCasePurposeId"></span>
             </div>
 
-            <div class="case-feedback-field">
+            <div class="col-md-3 mb-3">
                 <label asp-for="NextHearingDate">Next Hearing Date <span class="required-mark">*</span></label>
                 <div class="date-input-wrap">
                     <input asp-for="NextHearingDate" type="date" class="form-control" />
-                    <span class="date-addon"><i class="bi bi-calendar-date"></i></span>
+                   @*  <span class="date-addon"><i class="bi bi-calendar-date"></i></span> *@
                 </div>
                 <span asp-validation-for="NextHearingDate"></span>
             </div>
         </div>
 
-        <div class="case-feedback-grid">
-            <div class="case-feedback-field">
+        <div class="row">
+            <div class="col-md-3 mb-3">
                 <label asp-for="UploadFiles">Upload File</label>
                 <label class="upload-zone">
                     <i class="bi bi-paperclip me-1"></i>
                     <span id="uploadText">Drop files here or click to upload</span>
-                    <input asp-for="UploadFiles" type="file" multiple />
+                    <input asp-for="UploadFiles" type="file" multiple accept=".pdf,application/pdf" onchange="validatePdfFiles(this)"  />
                 </label>
             </div>
         </div>
 
         <div class="case-feedback-actions">
-            <button type="submit" class="case-feedback-btn">
+            <button type="submit" class="btn btn-primary">
                 <i class="bi bi-floppy"></i> Submit
             </button>
-            <button type="reset" class="case-feedback-btn" id="btnNew">
+            <button type="reset" class="btn btn-primary" id="btnNew">
                 <i class="bi bi-plus-circle"></i> New
             </button>
         </div>
@@ -573,5 +522,24 @@
                 resetCaseNos();
             }, 0);
         });
+    </script>
+
+    <script>
+        function validatePdfFiles(input) {
+            const files = Array.from(input.files);
+            const invalidFiles = files.filter(file =>
+                file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")
+            );
+
+            if (invalidFiles.length > 0) {
+                alert("Only PDF files are allowed.");
+                input.value = ""; // clear the selection
+                document.getElementById("uploadText").textContent = "Drop files here or click to upload";
+                return;
+            }
+
+            document.getElementById("uploadText").textContent =
+                files.length === 1 ? files[0].name : `${files.length} files selected`;
+        }
     </script>
 }

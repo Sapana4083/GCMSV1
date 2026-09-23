@@ -39,5 +39,10 @@ namespace GCMS.Models.ViewModels
 
         [Display(Name = "Upload File")]
         public List<IFormFile> UploadFiles { get; set; } = new();
+
+        // ── Controller-populated (file save ke baad) — form input nahi ──
+        public string? SavedFileName { get; set; }
+
+        public string? SavedFilePath { get; set; }
     }
 }

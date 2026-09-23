@@ -6,137 +6,175 @@
         Model.PrivateAdvocates.Select(x => new { value = x.Value, text = x.Text }));
 }
 
-<div class="container-fluid hearing-cause-list-page">
+<!-- ========== PAGE CONTAINER ========== -->
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3 mt-3">
+
     @Html.AntiForgeryToken()
 
-    <div class="panel-header">
-        <h5>Multiple Hearing Cause List</h5>
-        <div>
-            <button type="button" class="icon-btn" title="Search" id="btnSearchTop"><i class="bi bi-search"></i></button>
-            <button type="button" class="icon-btn" title="Print" onclick="window.print()"><i class="bi bi-printer"></i></button>
-            <button type="button" class="icon-btn" title="List"><i class="bi bi-list-ul"></i></button>
-            <button type="button" class="icon-btn" title="Grid"><i class="bi bi-grid-3x3-gap-fill"></i></button>
+    <!-- Header -->
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+
+        <h4>Multiple Hearing Cause List</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ========== FILTER SECTION ========== -->
+    <div class="row mb-3">
+        <div class="col-md-4 mb-3">
+            <label asp-for="HearingDate" class="form-label"></label>
+            <input asp-for="HearingDate" type="date" class="form-control" id="hearingDate" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="BenchNo" class="form-label"></label>
+            <select asp-for="BenchNo" asp-items="Model.BenchTypes" class="form-select" id="benchTypeId">
+                <option value="">Select Bench</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="CauseListType" class="form-label"></label>
+            <select asp-for="CauseListType" asp-items="Model.CauseListTypes" class="form-select" id="causeListType"></select>
         </div>
     </div>
 
-    <section class="cause-filter-panel" aria-label="Cause list filters">
-        <div class="row g-3">
-            <div class="col-md-4">
-                <label asp-for="HearingDate" class="form-label"></label>
-                <input asp-for="HearingDate" type="date" class="form-control" id="hearingDate" />
-            </div>
-            <div class="col-md-4">
-                <label asp-for="BenchNo" class="form-label"></label>
-                <select asp-for="BenchNo" asp-items="Model.BenchTypes" class="form-select" id="benchTypeId">
-                    <option value="">Select Bench</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label asp-for="CauseListType" class="form-label"></label>
-                <select asp-for="CauseListType" asp-items="Model.CauseListTypes" class="form-select" id="causeListType"></select>
-            </div>
-        </div>
-    </section>
+    <!-- ========== TABLE ========== -->
+    <div class="table-responsive">
+        <table id="tblHearingCauseList" class="table table-bordered table-striped">
 
-    <div class="sub-panel-header hearing-list-heading">
-        <i class="bi bi-chevron-up"></i>
-        <span>Hearing Cause List</span>
-    </div>
-
-    <div class="toolbar">
-        <button type="button" class="btn-tool" id="btnSelectAll" title="Select all"><i class="bi bi-plus-lg"></i></button>
-        <button type="button" class="btn-tool" title="Delete selected"><i class="bi bi-trash3"></i></button>
-        <button type="button" class="btn-tool" title="Copy selected"><i class="bi bi-files"></i></button>
-        <button type="button" class="btn-tool" title="Table view"><i class="bi bi-table"></i></button>
-        <button type="button" class="btn-tool" title="Columns"><i class="bi bi-grid-3x3-gap"></i></button>
-    </div>
-
-    <div class="hearing-grid-wrap">
-        <table class="table table-grid hearing-cause-grid" id="hearingCauseListTable">
             <thead>
                 <tr>
-                    <th><input type="checkbox" id="checkAllRows" /></th>
-                    <th>S.no</th>
+                    <td width="50">S. No.</td>
                     <th>Case Number</th>
                     <th>Parent Case No</th>
                     <th>Purpose</th>
-                    <th>Hearing date</th>
+                    <th>Hearing Date</th>
                     <th>Appellant Name</th>
                     <th>Advocate Name</th>
-                    <th>Stay Date</th>
-                    <th>Reply Date</th>
-                    <th>Purchase Date</th>
                     <th>Is Stay</th>
                     <th>Is Reply</th>
-                    <th>Last Updated Date</th>
-                    <th>Name</th>
-                    <th>Designation</th>
-                    <th>Private Advocate Name</th>
+
+                    <th width="100">Action</th>
                 </tr>
             </thead>
-            <tbody id="hearingCauseRows">
-                @foreach (var row in Model.Rows)
-                {
-                    <tr data-case-id="@row.CaseId" data-cause-list-id="@row.CauseListId" data-tcsat-mult-her-id="@row.TcsatMultHerId">
-                        <td><input type="checkbox" class="row-check" /></td>
-                        <td><input class="form-control serial-input" value="@row.SerialNo" readonly /></td>
-                        <td><input class="form-control readonly-field" value="@row.CaseNumber" readonly /></td>
-                        <td><input class="form-control readonly-field" value="@row.ParentCaseNumber" readonly /></td>
-                        <td><input class="form-control readonly-field" value="@row.Purpose" readonly /></td>
-                        <td><input type="date" class="form-control hearing-date-input" value="@FormatDate(row.HearingDate)" /></td>
-                        <td><input class="form-control readonly-field locked-name" value="@row.AppellantName" readonly /></td>
-                        <td><input class="form-control readonly-field locked-name" value="@row.AdvocateName" readonly /></td>
-                        <td><input type="date" class="form-control stay-date-input" value="@FormatDate(row.IsStay ? row.StayDate : null)" disabled="@(!row.IsStay)" /></td>
-                        <td><input type="date" class="form-control reply-date-input" value="@FormatDate(row.IsReply ? row.ReplyDate : null)" disabled="@(!row.IsReply)" /></td>
-                        <td><input type="date" class="form-control purchase-date-input" value="@FormatDate(row.PurchaseDate)" /></td>
-                        <td><div class="form-check form-switch"><input class="form-check-input is-stay-input" type="checkbox" @(row.IsStay ? "checked" : "") /></div></td>
-                        <td><div class="form-check form-switch"><input class="form-check-input is-reply-input" type="checkbox" @(row.IsReply ? "checked" : "") /></div></td>
-                        <td><input class="form-control readonly-field" value="@FormatDate(row.LastUpdatedDate)" readonly /></td>
-                        <td><input class="form-control readonly-field" value="@row.Name" readonly /></td>
-                        <td><input class="form-control readonly-field" value="@row.Designation" readonly /></td>
-                        <td>
-                            <select class="form-select private-advocate-input">
-                                <option value="">Select an option</option>
-                                @foreach (var advocate in Model.PrivateAdvocates)
-                                {
-                                    <option value="@advocate.Value" selected="@(advocate.Value == row.PrivateAdvocateId?.ToString() ? "selected" : null)">@advocate.Text</option>
-                                }
-                            </select>
-                        </td>
-                    </tr>
-                }
-            </tbody>
+
+            <tbody id="hearingCauseRows"></tbody>
+
         </table>
     </div>
 
-    <div class="footer-actions cause-list-actions">
-        <button type="button" class="btn btn-submit" id="btnSubmit"><i class="bi bi-floppy"></i> Submit</button>
-        <a class="btn btn-new" asp-controller="HearingCauseList" asp-action="Index"><i class="bi bi-plus-circle"></i> New</a>
+</div>
+
+
+<!-- ========== EDIT MODAL ========== -->
+<div class="modal fade" id="hearingEditModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Hearing Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="modalCaseId" />
+                <input type="hidden" id="modalCauseListId" />
+                <input type="hidden" id="modalTcsatMultHerId" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Case Number</label>
+                        <input type="text" class="form-control" id="modalCaseNumber" readonly />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Appellant Name</label>
+                        <input type="text" class="form-control" id="modalAppellantName" readonly />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Advocate Name</label>
+                        <input type="text" class="form-control" id="modalAdvocateName" readonly />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Hearing Date</label>
+                        <input type="date" class="form-control" id="modalHearingDate" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Purchase Date</label>
+                        <input type="date" class="form-control" id="modalPurchaseDate" />
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Is Stay</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="modalIsStay" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Stay Date</label>
+                        <input type="date" class="form-control" id="modalStayDate" disabled />
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Is Reply</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="modalIsReply" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Reply Date</label>
+                        <input type="date" class="form-control" id="modalReplyDate" disabled />
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Private Advocate Name</label>
+                        <select class="form-select" id="modalPrivateAdvocateId">
+                            <option value="">Select an option</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" id="btnSaveRow">Save</button>
+            </div>
+
+        </div>
     </div>
 </div>
 
-@functions {
-    private static string FormatDate(DateTime? value)
-    {
-        return value.HasValue ? value.Value.ToString("yyyy-MM-dd") : string.Empty;
-    }
-}
 
+<!-- ========== SCRIPTS ========== -->
 @section Scripts {
     <script>
         $(function () {
             var $rows = $("#hearingCauseRows");
             var privateAdvocateOptions = @Html.Raw(privateAdvocateOptionsJson);
+            var currentRows = [];
+            var hearingModal = new bootstrap.Modal(document.getElementById('hearingEditModal'));
+            var hearingDataTable = null;
 
             function formatDate(value) {
-                if (!value) {
-                    return "";
-                }
-
+                if (!value) return "";
                 return String(value).slice(0, 10);
             }
 
-            function escapeAttribute(value) {
+            function escapeHtml(value) {
                 return String(value || "")
                     .replace(/&/g, "&amp;")
                     .replace(/"/g, "&quot;")
@@ -145,54 +183,66 @@
                     .replace(/>/g, "&gt;");
             }
 
-            function buildPrivateAdvocateOptions(selectedValue) {
-                var selected = String(selectedValue || "");
-                var options = '<option value="">Select an option</option>';
-
-                privateAdvocateOptions.forEach(function (advocate) {
-                    var value = String(advocate.value || "");
-                    var selectedAttribute = value === selected ? ' selected' : '';
-                    options += '<option value="' + escapeAttribute(value) + '"' + selectedAttribute + '>'
-                        + escapeAttribute(advocate.text) + '</option>';
-                });
-
-                return options;
-            }
-
-            function buildRow(row) {
+            function buildRow(row, index) {
                 var isStay = row.isStay === true || String(row.isStay).toLowerCase() === "true";
                 var isReply = row.isReply === true || String(row.isReply).toLowerCase() === "true";
 
-                return '<tr data-case-id="' + row.caseId + '" data-cause-list-id="' + row.causeListId + '" data-tcsat-mult-her-id="' + row.tcsatMultHerId + '">'
-                    + '<td><input type="checkbox" class="row-check" /></td>'
-                    + '<td><input class="form-control serial-input" value="' + row.serialNo + '" readonly /></td>'
-                    + '<td><input class="form-control readonly-field" value="' + escapeAttribute(row.caseNumber) + '" readonly /></td>'
-                    + '<td><input class="form-control readonly-field" value="' + escapeAttribute(row.parentCaseNumber) + '" readonly /></td>'
-                    + '<td><input class="form-control readonly-field" value="' + escapeAttribute(row.purpose) + '" readonly /></td>'
-                    + '<td><input type="date" class="form-control hearing-date-input" value="' + formatDate(row.hearingDate) + '" /></td>'
-                    + '<td><input class="form-control readonly-field locked-name" value="' + escapeAttribute(row.appellantName) + '" readonly /></td>'
-                    + '<td><input class="form-control readonly-field locked-name" value="' + escapeAttribute(row.advocateName) + '" readonly /></td>'
-                    + '<td><input type="date" class="form-control stay-date-input" value="' + (isStay ? formatDate(row.stayDate) : '') + '"' + (isStay ? '' : ' disabled') + ' /></td>'
-                    + '<td><input type="date" class="form-control reply-date-input" value="' + (isReply ? formatDate(row.replyDate) : '') + '"' + (isReply ? '' : ' disabled') + ' /></td>'
-                    + '<td><input type="date" class="form-control purchase-date-input" value="' + formatDate(row.purchaseDate) + '" /></td>'
-                    + '<td><div class="form-check form-switch"><input class="form-check-input is-stay-input" type="checkbox"' + (isStay ? ' checked' : '') + ' /></div></td>'
-                    + '<td><div class="form-check form-switch"><input class="form-check-input is-reply-input" type="checkbox"' + (isReply ? ' checked' : '') + ' /></div></td>'
-                    + '<td><input class="form-control readonly-field" value="' + formatDate(row.lastUpdatedDate) + '" readonly /></td>'
-                    + '<td><input class="form-control readonly-field" value="' + escapeAttribute(row.name) + '" readonly /></td>'
-                    + '<td><input class="form-control readonly-field" value="' + escapeAttribute(row.designation) + '" readonly /></td>'
-                    + '<td><select class="form-select private-advocate-input">' + buildPrivateAdvocateOptions(row.privateAdvocateId) + '</select></td>'
+                return '<tr data-index="' + index + '">'
+                    + '<td>' + (index + 1) + '</td>'
+                    + '<td>' + escapeHtml(row.caseNumber) + '</td>'
+                    + '<td>' + escapeHtml(row.parentCaseNumber) + '</td>'
+                    + '<td>' + escapeHtml(row.purpose) + '</td>'
+                    + '<td>' + formatDate(row.hearingDate) + '</td>'
+                    + '<td>' + escapeHtml(row.appellantName) + '</td>'
+                    + '<td>' + escapeHtml(row.advocateName) + '</td>'
+                    + '<td>' + (isStay ? '<span class="badge bg-success">Yes</span>' : '<span class="badge bg-secondary">No</span>') + '</td>'
+                    + '<td>' + (isReply ? '<span class="badge bg-success">Yes</span>' : '<span class="badge bg-secondary">No</span>') + '</td>'
+                    + '<td>'
+                    + '<button type="button" class="btn btn-default waves-effect waves-light edit-row" data-index="' + index + '" title="Click to edit record.">'
+                    + '<i class="bi bi-pencil-square"></i>'
+                    + '</button>'
+                    + '</td>'
                     + '</tr>';
             }
 
-            function syncDateInput($row, toggleSelector, dateSelector) {
-                var isEnabled = $row.find(toggleSelector).is(":checked");
-                var $dateInput = $row.find(dateSelector);
-
-                $dateInput.prop("disabled", !isEnabled);
-
-                if (!isEnabled) {
-                    $dateInput.val("");
+            function initDataTable() {
+                if (hearingDataTable) {
+                    hearingDataTable.destroy();
+                    hearingDataTable = null;
                 }
+
+                hearingDataTable = $('#tblHearingCauseList').DataTable({
+                    dom: 'lBfrtip',
+                    responsive: true,
+                    autoWidth: false,
+                    pageLength: 10,
+                    lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    buttons: [
+                        { extend: 'print', title: 'Multiple Hearing Cause List' },
+                        { extend: 'excelHtml5', title: 'Multiple Hearing Cause List' }
+                    ]
+                });
+
+                $('.dt-buttons').hide();
+            }
+
+            function renderTable() {
+                if (hearingDataTable) {
+                    hearingDataTable.destroy();
+                    hearingDataTable = null;
+                }
+
+                if (currentRows.length === 0) {
+                    $rows.html('<tr><td colspan="10" class="text-center text-muted py-4">No hearing cause list found.</td></tr>');
+                    return;
+                }
+
+                $rows.html(currentRows.map(buildRow).join(""));
+                initDataTable();
             }
 
             function loadCauseList() {
@@ -200,7 +250,12 @@
                 var benchTypeId = $("#benchTypeId").val();
 
                 if (!hearingDate || !benchTypeId) {
-                    $rows.html('<tr><td colspan="17" class="text-center text-muted py-4">Select hearing date, bench no and cause list type.</td></tr>');
+                    currentRows = [];
+                    if (hearingDataTable) {
+                        hearingDataTable.destroy();
+                        hearingDataTable = null;
+                    }
+                    $rows.html('<tr><td colspan="10" class="text-center text-muted py-4">Select hearing date, bench no and cause list type.</td></tr>');
                     return;
                 }
 
@@ -209,94 +264,109 @@
                     benchTypeId: benchTypeId,
                     causeListType: $("#causeListType").val()
                 }).done(function (data) {
-                    if (!data || data.length === 0) {
-                        $rows.html('<tr><td colspan="17" class="text-center text-muted py-4">No hearing cause list found.</td></tr>');
-                        return;
-                    }
-
-                    $rows.html(data.map(buildRow).join(""));
+                    currentRows = data || [];
+                    renderTable();
                 }).fail(function () {
                     alert("Unable to load hearing cause list.");
                 });
             }
 
             $("#hearingDate, #benchTypeId, #causeListType").on("change", loadCauseList);
-            $("#btnSearchTop").on("click", loadCauseList);
 
-            $("#checkAllRows").on("change", function () {
-                $(".row-check").prop("checked", this.checked);
+            $("#btnPrint").on("click", function () {
+                window.print();
             });
 
-            $("#btnSelectAll").on("click", function () {
-                $("#checkAllRows").prop("checked", true).trigger("change");
+            // ── Open Edit Modal ───────────────────────────────
+            $(document).on("click", ".edit-row", function () {
+                var index = $(this).data("index");
+                var row = currentRows[index];
+                if (!row) return;
+
+                var isStay = row.isStay === true || String(row.isStay).toLowerCase() === "true";
+                var isReply = row.isReply === true || String(row.isReply).toLowerCase() === "true";
+
+                $("#modalCaseId").val(row.caseId);
+                $("#modalCauseListId").val(row.causeListId);
+                $("#modalTcsatMultHerId").val(row.tcsatMultHerId);
+
+                $("#modalCaseNumber").val(row.caseNumber);
+                $("#modalAppellantName").val(row.appellantName);
+                $("#modalAdvocateName").val(row.advocateName);
+                $("#modalHearingDate").val(formatDate(row.hearingDate));
+                $("#modalPurchaseDate").val(formatDate(row.purchaseDate));
+
+                $("#modalIsStay").prop("checked", isStay);
+                $("#modalStayDate").prop("disabled", !isStay).val(isStay ? formatDate(row.stayDate) : "");
+
+                $("#modalIsReply").prop("checked", isReply);
+                $("#modalReplyDate").prop("disabled", !isReply).val(isReply ? formatDate(row.replyDate) : "");
+
+                       var options = '<option value="">Select an option</option>';
+        privateAdvocateOptions.forEach(function (adv) {
+            var selected = String(adv.value) === String(row.privateAdvocateName || "") ? " selected" : "";
+            options += '<option value="' + escapeHtml(adv.value) + '"' + selected + '>' + escapeHtml(adv.text) + '</option>';
+        });
+        $("#modalPrivateAdvocateId").html(options);
+
+                $("#hearingEditModal").data("row-index", index);
+                hearingModal.show();
             });
 
-            $rows.on("change", ".is-stay-input", function () {
-                var $row = $(this).closest("tr");
-                syncDateInput($row, ".is-stay-input", ".stay-date-input");
-                $row.find(".row-check").prop("checked", true);
+            $("#modalIsStay").on("change", function () {
+                var checked = $(this).is(":checked");
+                $("#modalStayDate").prop("disabled", !checked);
+                if (!checked) $("#modalStayDate").val("");
             });
 
-            $rows.on("change", ".is-reply-input", function () {
-                var $row = $(this).closest("tr");
-                syncDateInput($row, ".is-reply-input", ".reply-date-input");
-                $row.find(".row-check").prop("checked", true);
+            $("#modalIsReply").on("change", function () {
+                var checked = $(this).is(":checked");
+                $("#modalReplyDate").prop("disabled", !checked);
+                if (!checked) $("#modalReplyDate").val("");
             });
 
-            $rows.on("change", ".hearing-date-input, .purchase-date-input, .stay-date-input, .reply-date-input, .private-advocate-input", function () {
-                $(this).closest("tr").find(".row-check").prop("checked", true);
+                   $("#btnSaveRow").on("click", function () {
+
+            var rowData = {
+                causeListId: Number($("#modalCauseListId").val()) || 0,
+                tcsatMultHerId: Number($("#modalTcsatMultHerId").val()) || 0,
+                caseId: Number($("#modalCaseId").val()),
+                hearingDate: $("#modalHearingDate").val() || null,
+                stayDate: $("#modalStayDate").val() || null,
+                replyDate: $("#modalReplyDate").val() || null,
+                purchaseDate: $("#modalPurchaseDate").val() || null,
+                isStay: $("#modalIsStay").is(":checked"),
+                isReply: $("#modalIsReply").is(":checked"),
+                privateAdvocateName: $("#modalPrivateAdvocateId").val() || null   // ✅ Number() hataya, naam string bhej rahe hain
+            };
+
+            $.ajax({
+                url: "/HearingCauseList/SaveRows",
+                method: "POST",
+                contentType: "application/json",
+                headers: {
+                    RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                data: JSON.stringify({
+                    hearingDate: $("#hearingDate").val() || null,
+                    benchNo: $("#benchTypeId").val() || null,
+                    causeListType: $("#causeListType").val() || null,
+                    rows: [rowData]
+                })
+            }).done(function (response) {
+                if (response.success) {
+                    hearingModal.hide();
+                    loadCauseList();
+                } else {
+                    alert(response.message || "Save failed.");
+                }
+            }).fail(function () {
+                alert("Unable to save hearing cause list.");
             });
-
-            $("#btnSubmit").on("click", function () {
-                var rows = [];
-
-                $rows.find("tr").has(".row-check:checked").each(function () {
-                    var $row = $(this);
-                    rows.push({
-                        causeListId: Number($row.data("cause-list-id")) || 0,
-                        tcsatMultHerId: Number($row.data("tcsat-mult-her-id")) || 0,
-                        caseId: Number($row.data("case-id")),
-                        hearingDate: $row.find(".hearing-date-input").val() || null,
-                        stayDate: $row.find(".stay-date-input").val() || null,
-                        replyDate: $row.find(".reply-date-input").val() || null,
-                        purchaseDate: $row.find(".purchase-date-input").val() || null,
-                        isStay: $row.find(".is-stay-input").is(":checked"),
-                        isReply: $row.find(".is-reply-input").is(":checked"),
-                        privateAdvocateId: Number($row.find(".private-advocate-input").val()) || null
-                    });
-                });
-
-                $.ajax({
-                    url: "/HearingCauseList/SaveRows",
-                    method: "POST",
-                    contentType: "application/json",
-                    headers: {
-                        RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                    },
-                    data: JSON.stringify({
-                        hearingDate: $("#hearingDate").val() || null,
-                        benchNo: $("#benchTypeId").val() || null,
-                        causeListType: $("#causeListType").val() || null,
-                        rows: rows
-                    })
-                }).done(function (response) {
-                    alert(response.message || "Saved successfully.");
-                    if (response.success) {
-                        loadCauseList();
-                    }
-                }).fail(function () {
-                    alert("Unable to save hearing cause list.");
-                });
-            });
+        });
 
             if ($("#hearingDate").val() && $("#benchTypeId").val()) {
                 loadCauseList();
-            } else {
-                $rows.find("tr").each(function () {
-                    var $row = $(this);
-                    syncDateInput($row, ".is-stay-input", ".stay-date-input");
-                    syncDateInput($row, ".is-reply-input", ".reply-date-input");
-                });
             }
         });
     </script>

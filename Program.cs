@@ -141,6 +141,12 @@ builder.Services.AddScoped<ICauseListConfigurationService,CauseListConfiguration
 builder.Services.AddScoped<ICauseListProcessRepository, CauseListProcessRepository>();
 builder.Services.AddScoped<ICauseListProcessService, CauseListProcessService>();
 
+builder.Services.AddScoped<IHearingCauseListRepository, HearingCauseListRepository>();
+builder.Services.AddScoped<IHearingCauseListService, HearingCauseListService>();
+
+builder.Services.AddScoped<ICaseFeedbackRepository, CaseFeedbackRepository>();
+builder.Services.AddScoped<ICaseFeedbackService, CaseFeedbackService>();
+
 
 // ============================================================
 // AUTHENTICATION

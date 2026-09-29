@@ -147,6 +147,9 @@ builder.Services.AddScoped<IHearingCauseListService, HearingCauseListService>();
 builder.Services.AddScoped<ICaseFeedbackRepository, CaseFeedbackRepository>();
 builder.Services.AddScoped<ICaseFeedbackService, CaseFeedbackService>();
 
+builder.Services.AddScoped<ISupplementaryCauseRepository, SupplementaryCauseRepository>();
+builder.Services.AddScoped<ISupplementaryCauseService, SupplementaryCauseService>();
+
 
 // ============================================================
 // AUTHENTICATION

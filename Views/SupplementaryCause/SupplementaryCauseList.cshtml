@@ -1,0 +1,351 @@
+﻿@model List<GCMS.Models.SupplementaryCause>
+
+@{
+    ViewData["Title"] = "Supplementary Cause List";
+    var srNo = 1;
+    var caseTypes = ViewBag.CaseTypeList as List<GCMS.Models.CaseTypeMaster>;
+    var purposes = ViewBag.CasePurposeList as List<GCMS.Models.CasePurposeMaster>;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> 
+<style>
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+        display: flex;
+        align-items: center;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 1.5 !important;
+        padding-left: 12px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+
+    .caseno-loader {
+        display: none;
+        font-size: 13px;
+        color: #6c757d;
+        margin-top: 4px;
+    }
+
+    .caseno-loader .spinner-border {
+        width: 0.9rem;
+        height: 0.9rem;
+        margin-right: 6px;
+    }
+</style>
+
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3 mt-3">
+    <div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3">
+
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+        <h4>Supplementary Cause List</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnAdd" title="Click to add new record.">
+                Add Supplementary Case
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="tblSupplementary" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Hearing Date</th>
+                    <th>Case Type</th>
+                    <th>Case No</th>
+                    <th>Purpose</th>
+                    <th>Bench Type</th>
+                    <th width="100">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.HearingDate?.ToString("dd/MM/yyyy")</td>
+                        <td>@item.CaseTypeName</td>
+                        <td>@item.CaseNo</td>
+                        <td>@item.PurposeName</td>
+                        <td>@item.BenchType</td>
+                        <td>
+                            <button type="button" class="btn btn-default waves-effect waves-light edit"
+                                    data-id="@item.SupplyCauseListId" title="Click to edit record.">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ========== MODAL ========== -->
+<div class="modal fade" id="supModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Supplementary Cause List</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-body">
+                    <input type="hidden" id="SupplyCauseListId" />
+                    <input type="hidden" id="TblSupltyCauseId" />
+                    <input type="hidden" id="CaseId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Hearing Date<span class="text-danger">*</span></label>
+                        <input type="date" id="HearingDate" class="form-control" />
+                        <span class="text-danger" id="errHearingDate"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Case Type<span class="text-danger">*</span></label>
+                        <select id="CaseTypeId" class="form-select">
+                            <option value="">Select an option</option>
+                            @if (caseTypes != null)
+                            {
+                                foreach (var c in caseTypes)
+                                {
+                                    <option value="@c.CaseTypeMastId">@(!string.IsNullOrWhiteSpace(c.CaseType) ? c.CaseType : c.CaseTypeEng)</option>
+                                }
+                            }
+                        </select>
+                        <span class="text-danger" id="errCaseTypeId"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Case No<span class="text-danger">*</span></label>
+                        <select id="CaseNo" class="form-select">
+                            <option value="">Select an option</option>
+                        </select>
+                        <div class="caseno-loader" id="caseNoLoader">
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                            Loading case numbers...
+                        </div>
+                        <span class="text-danger" id="errCaseNo"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Purpose<span class="text-danger">*</span></label>
+                        <select id="PurposeId" class="form-select">
+                            <option value="">Select an option</option>
+                            @if (purposes != null)
+                            {
+                                foreach (var p in purposes)
+                                {
+                                    <option value="@p.CasePurposeMastId">@(!string.IsNullOrWhiteSpace(p.CasePurposeEng) ? p.CasePurposeEng : p.CasePurposeName)</option>
+                                }
+                            }
+                        </select>
+                        <span class="text-danger" id="errPurposeId"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Bench Type</label>
+                        <input type="text" id="BenchType" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="btnSave">Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> 
+
+    <script>
+        $(document).ready(function () {
+            $('#tblSupplementary').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                autoWidth: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                buttons: [
+                    { extend: 'print', title: 'Supplementary Cause List' },
+                    { extend: 'excelHtml5', title: 'Supplementary Cause List' }
+                ]
+            });
+            $('.dt-buttons').hide();
+        });
+
+        $("#btnPrint").click(function () { window.print(); });
+
+        $("#btnExcel").click(function () {
+            let html = document.getElementById("tblSupplementary").outerHTML;
+            let a = document.createElement('a');
+            a.href = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+            a.download = 'SupplementaryCauseList.xls';
+            a.click();
+        });
+
+        var supModal = new bootstrap.Modal(document.getElementById('supModal'));
+
+        // ── Select2 init (modal ke andar, dropdownParent zaroori hai) ──
+        function initSelect2() {
+            $("#CaseTypeId, #CaseNo, #PurposeId").select2({
+                dropdownParent: $("#supModal"),
+                width: '100%',
+                placeholder: 'Select an option'
+            });
+        }
+
+        $("#supModal").on("shown.bs.modal", function () {
+            initSelect2();
+        });
+
+        function clearErrors() {
+            $("#errHearingDate, #errCaseTypeId, #errCaseNo, #errPurposeId").text('');
+        }
+
+        function setCaseNoOptions(html) {
+            $("#CaseNo").html(html);
+            // Select2 ko refresh karna zaroori hai jab options JS se badle
+            if ($("#CaseNo").hasClass("select2-hidden-accessible")) {
+                $("#CaseNo").trigger('change.select2');
+            }
+        }
+
+        function loadCaseNos(caseTypeId, selectedCaseNo, done) {
+            setCaseNoOptions('<option value="">Select an option</option>');
+            $("#CaseId").val('');
+
+            if (!caseTypeId) {
+                if (done) done();
+                return;
+            }
+
+            $("#caseNoLoader").show();
+            $("#CaseNo").prop("disabled", true);
+            if ($("#CaseNo").hasClass("select2-hidden-accessible")) {
+                $("#CaseNo").prop("disabled", true).trigger('change.select2');
+            }
+
+            $.get('/SupplementaryCause/GetCaseNos', { caseTypeId: caseTypeId })
+                .done(function (rows) {
+                    var html = '<option value="">Select an option</option>';
+                    $.each(rows, function (i, r) {
+                        var sel = selectedCaseNo && r.value === selectedCaseNo ? ' selected' : '';
+                        html += '<option value="' + r.value + '" data-regid="' + (r.caseRegId || '') + '"' + sel + '>' + r.text + '</option>';
+                    });
+                    setCaseNoOptions(html);
+                    if (selectedCaseNo) $("#CaseId").val($("#CaseNo option:selected").data("regid") || '');
+                })
+                .always(function () {
+                    $("#caseNoLoader").hide();
+                    $("#CaseNo").prop("disabled", false);
+                    if ($("#CaseNo").hasClass("select2-hidden-accessible")) {
+                        $("#CaseNo").prop("disabled", false).trigger('change.select2');
+                    }
+                    if (done) done();
+                });
+        }
+
+        $("#CaseTypeId").on("change", function () { loadCaseNos($(this).val()); });
+
+        $("#CaseNo").on("change", function () {
+            $("#CaseId").val($(this).find("option:selected").data("regid") || '');
+        });
+
+        $("#btnAdd").click(function () {
+            $("#SupplyCauseListId, #TblSupltyCauseId, #CaseId, #HearingDate, #BenchType").val('');
+            $("#CaseTypeId").val('').trigger('change.select2');
+            $("#PurposeId").val('').trigger('change.select2');
+            setCaseNoOptions('<option value="">Select an option</option>');
+            clearErrors();
+            supModal.show();
+        });
+
+        $(document).on("click", ".edit", function () {
+            var id = $(this).data("id");
+
+            $.get('/SupplementaryCause/GetSupplementary', { id: id }, function (d) {
+                if (!d) { alert("No data returned from server"); return; }
+
+                $("#SupplyCauseListId").val(d.supplyCauseListId);
+                $("#TblSupltyCauseId").val(d.tblSupltyCauseId);
+                $("#HearingDate").val(d.hearingDate);
+                $("#BenchType").val(d.benchType);
+                clearErrors();
+
+                supModal.show();
+
+                // Modal open hone ke baad hi Select2 init hoga (shown.bs.modal se),
+                // isliye values set karne ke liye chhoti si delay ya event chain use karte hain
+                $("#supModal").one("shown.bs.modal", function () {
+                    $("#CaseTypeId").val(d.caseTypeId).trigger('change.select2');
+                    $("#PurposeId").val(d.purposeId).trigger('change.select2');
+
+                    loadCaseNos(d.caseTypeId, d.caseNo, function () {
+                        $("#CaseId").val(d.caseId || $("#CaseNo option:selected").data("regid") || '');
+                    });
+                });
+            });
+        });
+
+        $("#btnSave").click(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            let isValid = true;
+            clearErrors();
+
+            if (!$("#HearingDate").val()) { $("#errHearingDate").text("Hearing Date is required"); isValid = false; }
+            if (!$("#CaseTypeId").val()) { $("#errCaseTypeId").text("Case Type is required"); isValid = false; }
+            if (!$("#CaseNo").val()) { $("#errCaseNo").text("Case No is required"); isValid = false; }
+            if (!$("#PurposeId").val()) { $("#errPurposeId").text("Purpose is required"); isValid = false; }
+            if (!isValid) return;
+
+            $.ajax({
+                url: '/SupplementaryCause/SaveSupplementary',
+                type: 'POST',
+                headers: { RequestVerificationToken: token },
+                data: {
+                    SupplyCauseListId: $("#SupplyCauseListId").val() || 0,
+                    TblSupltyCauseId: $("#TblSupltyCauseId").val() || 0,
+                    HearingDate: $("#HearingDate").val(),
+                    CaseTypeId: $("#CaseTypeId").val(),
+                    CaseTypeName: $("#CaseTypeId option:selected").text(),
+                    CaseNo: $("#CaseNo").val(),
+                    CaseId: $("#CaseId").val(),
+                    PurposeId: $("#PurposeId").val(),
+                    PurposeName: $("#PurposeId option:selected").text(),
+                    BenchType: $("#BenchType").val()
+                },
+                success: function (r) {
+                    if (r.success) { supModal.hide(); location.reload(); }
+                    else { alert(r.message); }
+                },
+                error: function () { alert("Save Failed"); }
+            });
+        });
+    </script>
+}

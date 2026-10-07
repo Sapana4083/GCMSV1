@@ -232,7 +232,7 @@
 </style>
 
 <body>
-
+	@Html.AntiForgeryToken()
 	<!-- caseTypeOptions must be declared before addRow()/buildCaseTypeOptionsHtml() are ever called -->
 	<script>
 		const caseTypeOptions = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
@@ -434,7 +434,7 @@
 					el('purposeName').value = data.purposeName || '';
 					el('courtCode').value = data.courtCode || courtCode || '';
 					currentCaseUpdateId = data.caseUpdateId || null;
-					el('caseUpdateID').value = data.caseUpdateId || caseUpdateId || '';
+					//el('caseUpdateID').value = data.caseUpdateId || caseUpdateId || '';
 				} else {
 					['appellantName','respondentName','institutionDate','hearingDate','district','purposeName','connectedCaseNo']
 						.forEach(id => el(id).value = '');
@@ -690,69 +690,267 @@
 		});
 
 		// ---------- SUBMIT ----------
-		el('btnSubmit').addEventListener('click', async () => {
+				// ---------- SUBMIT ----------
+		el('btnSubmit').addEventListener('click', async function (e) {
+
+			e.preventDefault();
+
 			const mainCaseNo = el('linkedCaseNo').value.trim();
+			const courtCode = el('courtCode').value;
+			const caseType = el('CaseTypeId').value;
+
 			if (!mainCaseNo) {
 				alert('Please enter the Linked Case (Main Case) number first.');
 				return;
 			}
-			if (!el('CaseTypeId').value) {
+
+			if (!caseType) {
 				alert('Please select a Case Type.');
 				return;
 			}
 
-			const linkedCases = [...document.querySelectorAll('#linkedCasesBody tr')].map(tr => ({
-				caseId: tr.dataset.caseId ? parseInt(tr.dataset.caseId) : null,
-				caseTypee: tr.querySelector('.row-caseType').value,
-				caseNo: tr.querySelector('.row-childCase').value,
-				mainCase: mainCaseNo,
-				hearingDate: tr.querySelector('.row-hearingDate').value || null,
-				appellantName: tr.querySelector('.row-appellantName').value,
-				respondentName: tr.querySelector('.row-respondentName').value,
-				districtName: tr.querySelector('.row-district').value,
-				purpose: tr.querySelector('.row-purpose').value
-			})).filter(r => r.caseNo);
+			const linkedCases = [];
 
-			const model = {
-				caseUpdateId: currentCaseUpdateId,
-				courtName: el('courtCode').value,
-				courtCode: el('courtCode').value,
-				caseType: el('CaseTypeId').value,
-				linkCase: mainCaseNo,
-				appellantName: el('appellantName').value,
-				respondentName: el('respondentName').value,
-				institutionDate: el('institutionDate').value || null,
-				hearingDate: el('hearingDate').value || null,
-				connectedCaseNo: el('connectedCaseNo').value,
-				district: el('district').value,
-				purposeName: el('purposeName').value,
-				linkedCases: linkedCases
-			};
+			document.querySelectorAll('#linkedCasesBody tr').forEach(tr => {
 
-			el('btnSubmit').disabled = true;
-			showLoading();
-			try {
-				const res = await fetch('/RcsatCaseUpdate/Save', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(model)
+				const childCase = tr.querySelector('.row-childCase')?.value?.trim();
+
+				if (!childCase)
+					return;
+
+				linkedCases.push({
+					caseId: tr.dataset.caseId
+						? parseInt(tr.dataset.caseId)
+						: null,
+
+					caseUpdateId: currentCaseUpdateId,
+
+					courtCode: courtCode,
+
+					caseTypee:
+						tr.querySelector('.row-caseType')?.value || '',
+
+					caseNo: childCase,
+
+					mainCase: mainCaseNo,
+
+					institutionDate:
+						tr.querySelector('.row-institutionDate')?.value || null,
+
+					hearingDate:
+						tr.querySelector('.row-hearingDate')?.value || null,
+
+					appellantName:
+						tr.querySelector('.row-appellantName')?.value || '',
+
+					respondentName:
+						tr.querySelector('.row-respondentName')?.value || '',
+
+					districtName:
+						tr.querySelector('.row-district')?.value || '',
+
+					purpose:
+						tr.querySelector('.row-purpose')?.value || ''
 				});
-				const result = await res.json();
+			});
+
+					const caseTypeValue = document.getElementById('CaseTypeId').value;
+
+		const model = {
+			caseUpdateId: currentCaseUpdateId || null,
+
+			courtCode: document.getElementById('courtCode').value,
+
+			caseTypeId: caseTypeValue
+				? parseInt(caseTypeValue)
+				: null,
+
+			caseType: caseTypeValue,
+
+			parentCaseNo:
+				document.getElementById('linkedCaseNo').value.trim(),
+
+			appellantName:
+				document.getElementById('appellantName').value || null,
+
+			respondentName:
+				document.getElementById('respondentName').value || null,
+
+			institutionDate:
+				document.getElementById('institutionDate').value || null,
+
+			hearingDate:
+				document.getElementById('hearingDate').value || null,
+
+			linkCaseNo:
+				document.getElementById('linkedCaseNo').value.trim(),
+
+			district:
+				document.getElementById('district').value || null,
+
+			purposeName:
+				document.getElementById('purposeName').value || null,
+
+			purposeId:
+				document.getElementById('purposeId')?.value || null,
+
+			linkedCases: linkedCases
+		};
+
+		console.log(
+			"FINAL SAVE JSON:",
+			JSON.stringify(model, null, 2)
+		);
+			console.log("SAVE MODEL:", model);
+			console.log("SAVE JSON:", JSON.stringify(model));
+
+			const btn = el('btnSubmit');
+
+			btn.disabled = true;
+			showLoading();
+
+			try {
+
+						const token = document.querySelector(
+			'input[name="__RequestVerificationToken"]'
+		)?.value;
+				const response = await fetch(
+					'@Url.Action("Save", "ConnectedCaseUpdate")',
+					{
+						method: 'POST',
+
+						headers: {
+							'Content-Type': 'application/json',
+							'Accept': 'application/json',
+							'RequestVerificationToken': token
+						},
+
+						body: JSON.stringify(model)
+					}
+				);
+
+				console.log("HTTP STATUS:", response.status);
+
+				const responseText = await response.text();
+
+				console.log("SERVER RESPONSE:", responseText);
+
+				if (!response.ok) {
+					throw new Error(
+						`HTTP ${response.status}: ${responseText}`
+					);
+				}
+
+				let result;
+
+				try {
+					result = JSON.parse(responseText);
+				}
+				catch {
+					throw new Error(
+						"Server did not return valid JSON: " + responseText
+					);
+				}
 
 				if (result.success) {
+
 					currentCaseUpdateId = result.caseUpdateId;
+
+					if (el('caseUpdateID')) {
+						el('caseUpdateID').value =
+							result.caseUpdateId || '';
+					}
+
 					alert('Saved successfully.');
-				} else {
-					alert('Save failed: ' + (result.message || 'Unknown error'));
+
 				}
-			} catch (err) {
-				console.error(err);
-				alert('Save failed due to a network/server error.');
-			} finally {
-				el('btnSubmit').disabled = false;
+				else {
+
+					alert(
+						'Save failed: ' +
+						(result.message || 'Unknown error')
+					);
+				}
+
+			}
+			catch (err) {
+
+				console.error("SAVE ERROR:", err);
+
+				alert(
+					'Save failed: ' + err.message
+				);
+
+			}
+			finally {
+
+				btn.disabled = false;
 				hideLoading();
 			}
 		});
+		// el('btnSubmit').addEventListener('click', async () => {
+		// 	const mainCaseNo = el('linkedCaseNo').value.trim();
+		// 	if (!mainCaseNo) {
+		// 		alert('Please enter the Linked Case (Main Case) number first.');
+		// 		return;
+		// 	}
+		// 	if (!el('CaseTypeId').value) {
+		// 		alert('Please select a Case Type.');
+		// 		return;
+		// 	}
+
+		// 	const linkedCases = [...document.querySelectorAll('#linkedCasesBody tr')].map(tr => ({
+		// 		caseId: tr.dataset.caseId ? parseInt(tr.dataset.caseId) : null,
+		// 		caseTypee: tr.querySelector('.row-caseType').value,
+		// 		caseNo: tr.querySelector('.row-childCase').value,
+		// 		mainCase: mainCaseNo,
+		// 		hearingDate: tr.querySelector('.row-hearingDate').value || null,
+		// 		appellantName: tr.querySelector('.row-appellantName').value,
+		// 		respondentName: tr.querySelector('.row-respondentName').value,
+		// 		districtName: tr.querySelector('.row-district').value,
+		// 		purpose: tr.querySelector('.row-purpose').value
+		// 	})).filter(r => r.caseNo);
+
+		// 	const model = {
+		// 		caseUpdateId: currentCaseUpdateId,
+		// 		courtName: el('courtCode').value,
+		// 		courtCode: el('courtCode').value,
+		// 		caseType: el('CaseTypeId').value,
+		// 		linkCase: mainCaseNo,
+		// 		appellantName: el('appellantName').value,
+		// 		respondentName: el('respondentName').value,
+		// 		institutionDate: el('institutionDate').value || null,
+		// 		hearingDate: el('hearingDate').value || null,
+		// 		connectedCaseNo: el('connectedCaseNo').value,
+		// 		district: el('district').value,
+		// 		purposeName: el('purposeName').value,
+		// 		linkedCases: linkedCases
+		// 	};
+
+		// 	el('btnSubmit').disabled = true;
+		// 	showLoading();
+		// 	try {
+		// 		const res = await fetch('/ConnectedCaseUpdate/Save', {
+		// 			method: 'POST',
+		// 			headers: { 'Content-Type': 'application/json' },
+		// 			body: JSON.stringify(model)
+		// 		});
+		// 		const result = await res.json();
+
+		// 		if (result.success) {
+		// 			currentCaseUpdateId = result.caseUpdateId;
+		// 			alert('Saved successfully.');
+		// 		} else {
+		// 			alert('Save failed: ' + (result.message || 'Unknown error'));
+		// 		}
+		// 	} catch (err) {
+		// 		console.error(err);
+		// 		alert('Save failed due to a network/server error.');
+		// 	} finally {
+		// 		el('btnSubmit').disabled = false;
+		// 		hideLoading();
+		// 	}
+		// });
 
 		// ---------- NEW ----------
 		el('btnNew').addEventListener('click', () => {
@@ -765,4 +963,3 @@
 	</script>
 
 </body>
-</html>

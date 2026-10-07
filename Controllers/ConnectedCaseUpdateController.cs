@@ -88,23 +88,76 @@ namespace GCMS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Save([FromBody] RcsatCaseUpdateViewModel model)
         {
-            //if (string.IsNullOrWhiteSpace(model.LinkCase))
-            //    return BadRequest("Linked Case (Main Case) is required.");
-
             try
             {
-                var caseUpdateId = await _repo.SaveCaseWithLinkedRowsAsync(model);
-                return Json(new { success = true, caseUpdateId });
+                if (model == null)
+                {
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Request model is null."
+                    });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState
+                        .Where(x => x.Value != null && x.Value.Errors.Count > 0)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.Value!.Errors
+                                .Select(e => !string.IsNullOrWhiteSpace(e.ErrorMessage)
+                        ? e.ErrorMessage : e.Exception?.Message ?? "Invalid value")
+                .ToArray()
+                        );
+
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Model validation failed.",
+                        errors
+                    });
+                }
+
+                var caseUpdateId =
+                    await _repo.SaveCaseWithLinkedRowsAsync(model);
+
+                return Ok(new
+                {
+                    success = true,
+                    caseUpdateId = caseUpdateId
+                });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = ex.Message,
+                    innerMessage = ex.InnerException?.Message
+                });
             }
         }
+        //public async Task<IActionResult> Save([FromBody] RcsatCaseUpdateViewModel model)
+        //{
+        //    //if (string.IsNullOrWhiteSpace(model.LinkCase))
+        //    //    return BadRequest("Linked Case (Main Case) is required.");
 
-     
+        //    try
+        //    {
+        //        var caseUpdateId = await _repo.SaveCaseWithLinkedRowsAsync(model);
+        //        return Json(new { success = true, caseUpdateId });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message });
+        //    }
+        //}
+
+
         private async Task BindDropdowns()
         {
             var casetype = await _CaseTypeservice.GetCaseTypeAsync(1, 1000);

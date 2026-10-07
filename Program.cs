@@ -150,6 +150,15 @@ builder.Services.AddScoped<ICaseFeedbackService, CaseFeedbackService>();
 builder.Services.AddScoped<ISupplementaryCauseRepository, SupplementaryCauseRepository>();
 builder.Services.AddScoped<ISupplementaryCauseService, SupplementaryCauseService>();
 
+builder.Services.AddScoped<IVcLinkRepository, VcLinkRepository>();
+builder.Services.AddScoped<IVcLinkService, VcLinkService>();
+
+builder.Services.AddScoped<IRcsatClpParamsRepository, RcsatClpParamsRepository>();
+builder.Services.AddScoped<IRcsatClpParamsService, RcsatClpParamsService>();
+
+builder.Services.AddScoped<IRevertCasePendancyRepository, RevertCasePendancyRepository>();
+builder.Services.AddScoped<IRevertCasePendancyService, RevertCasePendancyService>();
+
 
 // ============================================================
 // AUTHENTICATION

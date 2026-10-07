@@ -1,0 +1,214 @@
+﻿@model List<GCMS.Models.VcLink>
+
+@{
+    ViewData["Title"] = "VC Link";
+    var srNo = 1;
+}
+
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3 mt-3">
+
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+        <h4>VC Link</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" id="btnAdd" title="Click to add new record.">
+                Add VC Link
+            </button>
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="tblVcLink" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Hearing Date</th>
+                    <th>Cause List Type</th>
+                    <th>Bench Number</th>
+                    <th>VC Link</th>
+                    <th>Created By</th>
+                    <th width="100">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@srNo</td>
+                        <td>@item.HearingDate?.ToString("dd/MM/yyyy")</td>
+                        <td>@item.Type</td>
+                        <td>@item.Bench</td>
+                        <td>@item.VcLinkUrl</td>
+                        <td>@item.CreatedBy</td>
+                        <td>
+                            <button type="button" class="btn btn-default waves-effect waves-light edit"
+                                    data-id="@item.TrnRcsatVclinkId" title="Click to edit record.">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    srNo++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ========== MODAL ========== -->
+<div class="modal fade" id="vcLinkModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Add VC Link</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-body">
+                    <input type="hidden" id="TrnRcsatVclinkId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Hearing Date<span class="text-danger">*</span></label>
+                        <input type="date" id="HearingDate" class="form-control" />
+                        <span class="text-danger" id="errHearingDate"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Cause List Type<span class="text-danger">*</span></label>
+                        <select id="Type" class="form-select">
+                            <option value="">Select an option</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Supplementary">Supplementary</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                        <span class="text-danger" id="errType"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Bench Number<span class="text-danger">*</span></label>
+                        <select id="Bench" class="form-select">
+                            <option value="">-- Select --</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="R">R</option>
+                        </select>
+                        <span class="text-danger" id="errBench"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">VC Link<span class="text-danger">*</span></label>
+                        <input type="text" id="VcLinkUrl" class="form-control" />
+                        <span class="text-danger" id="errVcLinkUrl"></span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="btnSave">Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tblVcLink').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                autoWidth: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                buttons: [
+                    { extend: 'print', title: 'VC Link' },
+                    { extend: 'excelHtml5', title: 'VC Link' }
+                ]
+            });
+            $('.dt-buttons').hide();
+        });
+
+        $("#btnPrint").click(function () { window.print(); });
+
+        $("#btnExcel").click(function () {
+            let html = document.getElementById("tblVcLink").outerHTML;
+            let a = document.createElement('a');
+            a.href = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+            a.download = 'VcLink.xls';
+            a.click();
+        });
+
+        var vcLinkModal = new bootstrap.Modal(document.getElementById('vcLinkModal'));
+
+        function clearErrors() {
+            $("#errHearingDate, #errType, #errBench, #errVcLinkUrl").text('');
+        }
+
+        $("#btnAdd").click(function () {
+            $("#TrnRcsatVclinkId, #HearingDate, #Type, #Bench, #VcLinkUrl").val('');
+            clearErrors();
+            vcLinkModal.show();
+        });
+
+        $(document).on("click", ".edit", function () {
+            var id = $(this).data("id");
+
+            $.get('/VcLink/GetVcLink', { id: id }, function (d) {
+                if (!d) { alert("No data returned from server"); return; }
+
+                $("#TrnRcsatVclinkId").val(d.trnRcsatVclinkId);
+                $("#HearingDate").val(d.hearingDate);
+                $("#Type").val(d.type);
+                $("#Bench").val(d.bench);
+                $("#VcLinkUrl").val(d.vcLinkUrl);
+                clearErrors();
+
+                vcLinkModal.show();
+            });
+        });
+
+        $("#btnSave").click(function () {
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            let isValid = true;
+            clearErrors();
+
+            if (!$("#HearingDate").val()) { $("#errHearingDate").text("Hearing Date is required"); isValid = false; }
+            if (!$("#Type").val()) { $("#errType").text("Cause List Type is required"); isValid = false; }
+            if (!$("#Bench").val()) { $("#errBench").text("Bench Number is required"); isValid = false; }
+            if (!$("#VcLinkUrl").val()) { $("#errVcLinkUrl").text("VC Link is required"); isValid = false; }
+            if (!isValid) return;
+
+            $.ajax({
+                url: '/VcLink/SaveVcLink',
+                type: 'POST',
+                headers: { RequestVerificationToken: token },
+                data: {
+                    TrnRcsatVclinkId: $("#TrnRcsatVclinkId").val() || 0,
+                    HearingDate: $("#HearingDate").val(),
+                    Type: $("#Type").val(),
+                    Bench: $("#Bench").val(),
+                    VcLinkUrl: $("#VcLinkUrl").val()
+                },
+                success: function (r) {
+                    if (r.success) { vcLinkModal.hide(); location.reload(); }
+                    else { alert(r.message); }
+                },
+                error: function () { alert("Save Failed"); }
+            });
+        });
+    </script>
+}

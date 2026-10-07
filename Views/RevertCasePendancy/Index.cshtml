@@ -1,0 +1,201 @@
+﻿@{
+    ViewData["Title"] = "Cases Revert to Pendency";
+}
+
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3 mt-3">
+
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+        <h4>Cases Revert to Pendency</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Member Name</label>
+            <input type="text" id="MemberName" class="form-control" placeholder="Member Name / ID" />
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Hearing Date<span class="text-danger">*</span></label>
+            <input type="date" id="HearingDate" class="form-control" />
+            <span class="text-danger" id="errHearingDate"></span>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-3 pb-3">
+        <h5 class="mb-0">Case Details</h5>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-default waves-effect waves-light" id="btnAddRow" title="Add row">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+            <button type="button" class="btn btn-default waves-effect waves-light" id="btnDeleteRow" title="Delete selected row(s)">
+                <i class="bi bi-trash3"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped" id="tblRevertCases">
+            <thead>
+                <tr>
+                    <td width="40"><input type="checkbox" id="checkAllRows" /></td>
+                    <td width="55">S.no</td>
+                    <th>Case No</th>
+                    <th>Member Name</th>
+                    <th>Decision Date</th>
+                    <th>Appellant Name</th>
+                </tr>
+            </thead>
+            <tbody id="caseRows">
+                <tr>
+                    <td><input type="checkbox" class="row-check" /></td>
+                    <td class="row-sno">1</td>
+                    <td><input type="text" class="form-control case-no-input" /></td>
+                    <td><input type="text" class="form-control officer-name-input" /></td>
+                    <td><input type="date" class="form-control decision-date-input" /></td>
+                    <td><input type="text" class="form-control appellant-name-input" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+        <button type="button" class="btn btn-primary" id="btnSubmit">
+            <i class="bi bi-save"></i> Submit
+        </button>
+        <button type="button" class="btn btn-success" id="btnNew">
+            <i class="bi bi-plus-circle"></i> New
+        </button>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        function renumberRows() {
+            $("#caseRows tr").each(function (idx) {
+                $(this).find(".row-sno").text(idx + 1);
+            });
+        }
+
+        function blankRow() {
+            var row = $("#caseRows tr:first").clone();
+            row.find("input[type=text], input[type=date]").val('');
+            row.find(".row-check").prop("checked", false);
+            return row;
+        }
+
+        $("#btnAddRow").click(function () {
+            $("#caseRows").append(blankRow());
+            renumberRows();
+        });
+
+        $("#btnDeleteRow").click(function () {
+            $("#caseRows tr").each(function () {
+                if ($(this).find(".row-check").is(":checked")) $(this).remove();
+            });
+            if ($("#caseRows tr").length === 0) {
+                $("#caseRows").html(blankRow());
+            }
+            renumberRows();
+        });
+
+        $("#checkAllRows").on("change", function () {
+            $(".row-check").prop("checked", this.checked);
+        });
+
+        $("#btnNew").click(function () {
+            $("#MemberName, #HearingDate").val('');
+            $("#errHearingDate").text('');
+            $("#caseRows").html(blankRow());
+            renumberRows();
+        });
+
+        // Hearing date badalte hi existing data load karo
+        $("#HearingDate").on("change", function () {
+            var hearingDate = $(this).val();
+            if (!hearingDate) return;
+
+            $.get('/RevertCasePendancy/GetByHearingDate', { hearingDate: hearingDate }, function (r) {
+                if (!r.success || !r.data) return;
+
+                $("#MemberName").val(r.data.memberName || '');
+
+                var html = '';
+                $.each(r.data.cases, function (i, c) {
+                    html += '<tr>'
+                        + '<td><input type="checkbox" class="row-check" /></td>'
+                        + '<td class="row-sno">' + (i + 1) + '</td>'
+                        + '<td><input type="text" class="form-control case-no-input" value="' + (c.caseNo || '') + '" /></td>'
+                        + '<td><input type="text" class="form-control officer-name-input" value="' + (c.officerName || '') + '" /></td>'
+                        + '<td><input type="date" class="form-control decision-date-input" value="' + (c.decisionDate ? c.decisionDate.slice(0, 10) : '') + '" /></td>'
+                        + '<td><input type="text" class="form-control appellant-name-input" value="' + (c.appellantNamee || '') + '" /></td>'
+                        + '</tr>';
+                });
+
+                if (html) $("#caseRows").html(html);
+            });
+        });
+
+        $("#btnSubmit").click(function () {
+            var hearingDate = $("#HearingDate").val();
+            $("#errHearingDate").text('');
+
+            if (!hearingDate) {
+                $("#errHearingDate").text("Hearing Date is required");
+                return;
+            }
+
+            var cases = [];
+            $("#caseRows tr").each(function (idx) {
+                var $row = $(this);
+                var caseNo = $row.find(".case-no-input").val();
+                if (!caseNo) return;
+
+                cases.push({
+                    serialNo: idx + 1,
+                    caseNo: caseNo,
+                    officerName: $row.find(".officer-name-input").val(),
+                    decisionDate: $row.find(".decision-date-input").val() || null,
+                    appellantNamee: $row.find(".appellant-name-input").val()
+                });
+            });
+
+            if (cases.length === 0) {
+                alert("Please add at least one case row.");
+                return;
+            }
+
+            $.ajax({
+                url: '/RevertCasePendancy/Save',
+                type: 'POST',
+                contentType: 'application/json',
+                headers: { RequestVerificationToken: token },
+                data: JSON.stringify({
+                    memberName: $("#MemberName").val() || null,
+                    hearingDate: hearingDate,
+                    cases: cases
+                })
+            }).done(function (r) {
+                if (r.success) {
+                    alert(r.message);
+                } else {
+                    alert(r.message);
+                }
+            }).fail(function () {
+                alert("Save Failed");
+            });
+        });
+    </script>
+}

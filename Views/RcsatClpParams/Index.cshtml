@@ -1,0 +1,161 @@
+﻿@model List<GCMS.Models.RcsatClpParams>
+
+@{
+    ViewData["Title"] = "RCSAT Cases In Cause List";
+}
+
+<div class="container-fluid bg-light rounded-4 m-auto shadow py-4 px-3 mt-3">
+
+    <div class="d-flex justify-content-between mb-3 border-bottom border-3 pb-3">
+        <h4>RCSAT Cases In Cause List</h4>
+
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" id="btnPrint" title="Click to print.">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+            <button type="button" class="btn btn-success" id="btnExcel" title="Click to download excel.">
+                <i class="bi bi-file-earmark-excel"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== SEARCH FORM ========== -->
+    <div class="row mb-3">
+        <div class="col-md-5 mb-3">
+            <label class="form-label">From Date<span class="text-danger">*</span></label>
+            <input type="date" id="FromDate" class="form-control" />
+            <span class="text-danger" id="errFromDate"></span>
+        </div>
+
+        <div class="col-md-5 mb-3">
+            <label class="form-label">To Date<span class="text-danger">*</span></label>
+            <input type="date" id="ToDate" class="form-control" />
+            <span class="text-danger" id="errToDate"></span>
+        </div>
+
+        <div class="col-md-2 mb-3 d-flex align-items-end gap-2">
+            <button type="button" class="btn btn-primary" id="btnSearch">Search</button>
+            <button type="button" class="btn btn-secondary" id="btnClear">Clear</button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="tblClpParams" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td width="50">S. No.</td>
+                    <th>Doc No</th>
+                    <th>Doc Date</th>
+                    <th>Cause List Type</th>
+                    <th>Case Count Limit</th>
+                    <th>Court Code</th>
+                    <th>Remarks</th>
+                    <th>Active</th>
+                </tr>
+            </thead>
+            <tbody id="clpRows">
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-4">Select From Date and To Date, then click Search.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var clpTable = null;
+
+        function escapeHtml(value) {
+            return String(value || "")
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        function buildRow(item, index) {
+            var isActive = item.isActive === 'T' || item.isActive === 'Y';
+            return '<tr>'
+                + '<td>' + (index + 1) + '</td>'
+                + '<td>' + escapeHtml(item.docNo) + '</td>'
+                + '<td>' + (item.docDt ? item.docDt.slice(0, 10) : '') + '</td>'
+                + '<td>' + escapeHtml(item.causeListType) + '</td>'
+                + '<td>' + (item.ccLimit != null ? item.ccLimit : '') + '</td>'
+                + '<td>' + escapeHtml(item.courtCode) + '</td>'
+                + '<td>' + escapeHtml(item.remarks) + '</td>'
+                + '<td>' + (isActive ? '<span class="badge bg-secondary">Inactive</span>' : '<span class="badge bg-success">Active</span>') + '</td>'
+                + '</tr>';
+        }
+
+        function initDataTable() {
+            if (clpTable) { clpTable.destroy(); clpTable = null; }
+
+            clpTable = $('#tblClpParams').DataTable({
+                dom: 'lBfrtip',
+                responsive: true,
+                autoWidth: false,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                buttons: [
+                    { extend: 'print', title: 'RCSAT Cases In Cause List' },
+                    { extend: 'excelHtml5', title: 'RCSAT Cases In Cause List' }
+                ]
+            });
+            $('.dt-buttons').hide();
+        }
+
+        $("#btnSearch").click(function () {
+            var fromDate = $("#FromDate").val();
+            var toDate = $("#ToDate").val();
+            let isValid = true;
+
+            $("#errFromDate, #errToDate").text('');
+
+            if (!fromDate) { $("#errFromDate").text("From Date is required"); isValid = false; }
+            if (!toDate) { $("#errToDate").text("To Date is required"); isValid = false; }
+            if (!isValid) return;
+
+            $.get('/RcsatClpParams/Search', { fromDate: fromDate, toDate: toDate }, function (r) {
+                if (clpTable) { clpTable.destroy(); clpTable = null; }
+
+                if (!r.success) {
+                    $("#clpRows").html('<tr><td colspan="8" class="text-center text-danger py-4">' + escapeHtml(r.message) + '</td></tr>');
+                    return;
+                }
+
+                if (!r.data || r.data.length === 0) {
+                    $("#clpRows").html('<tr><td colspan="8" class="text-center text-muted py-4">No records found.</td></tr>');
+                    return;
+                }
+
+                $("#clpRows").html(r.data.map(buildRow).join(""));
+                initDataTable();
+            }).fail(function () {
+                alert("Unable to fetch data.");
+            });
+        });
+
+        $("#btnClear").click(function () {
+            $("#FromDate, #ToDate").val('');
+            $("#errFromDate, #errToDate").text('');
+            if (clpTable) { clpTable.destroy(); clpTable = null; }
+            $("#clpRows").html('<tr><td colspan="8" class="text-center text-muted py-4">Select From Date and To Date, then click Search.</td></tr>');
+        });
+
+        $("#btnPrint").click(function () { window.print(); });
+
+        $("#btnExcel").click(function () {
+            let html = document.getElementById("tblClpParams").outerHTML;
+            let a = document.createElement('a');
+            a.href = 'data:application/vnd.ms-excel,' + encodeURIComponent(html);
+            a.download = 'RcsatClpParams.xls';
+            a.click();
+        });
+    </script>
+}

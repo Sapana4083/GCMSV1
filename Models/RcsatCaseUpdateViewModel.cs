@@ -13,7 +13,7 @@ namespace GCMS.Models
         public string CourtCode { get; set; }
         public string CaseType { get; set; }
 
-        public string CaseTypeID { get; set; }
+        //public string CaseTypeID { get; set; }
        // public string LinkCase { get; set; }
         public string ParentCaseNo { get; set; }
        // public string ParentChildChk { get; set; }
@@ -32,7 +32,7 @@ namespace GCMS.Models
         public string TRN_RCSAT_CASEREGID { get; set; }
 
         [Display(Name = "Case Type")]
-        [Required]
+        //[Required]
         public long? CaseTypeId { get; set; }
         //public string SubCaseType { get; set; }
 
@@ -41,17 +41,17 @@ namespace GCMS.Models
 
     }
 
-   
+
     public class LinkedCaseFamilyViewModel
     {
         public long CaseRegId { get; set; }
-     
+
         public long? CaseUpdateId { get; set; }   // TRN_RCSAT_CASEUPDATEID - PK
         public string TRN_RCSAT_CASEREGID { get; set; }
         public string CourtCode { get; set; }
         public string CaseType { get; set; }
 
-         public string ChildCase { get; set; }
+        public string ChildCase { get; set; }
         public string ParentCaseNo { get; set; }
         // public string ParentChildChk { get; set; }
         // public string ConnectedCaseNo { get; set; }
@@ -65,7 +65,7 @@ namespace GCMS.Models
         public string PurposeId { get; set; }
 
         [Display(Name = "Case Type")]
-        [Required]
+       // [Required]
         public long? CaseTypeId { get; set; }
         //public string SubCaseType { get; set; }
 

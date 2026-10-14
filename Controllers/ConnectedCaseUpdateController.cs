@@ -183,7 +183,12 @@ namespace GCMS.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = ex.Message,
+                    innerMessage = ex.InnerException?.Message
+                });
             }
         }
     }

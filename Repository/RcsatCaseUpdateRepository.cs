@@ -107,34 +107,93 @@ and A.court_code= :court_code
                     caseUpdateId = model.CaseUpdateId.Value;
 
                     const string updateSql = @"
-                        UPDATE TRN_RCSAT_CASEUPDATE SET
-                            COURT_NAME = :courtName, COURT_CODE = :courtCode, CASETYPE = :caseType,
-                            LINK_CASE = :linkCase, PARENT_CASENO = :parentCaseNo,
-                            PARENTCHILDCHK = :parentChildChk, CALCON = :calcon,
-                            APP_NAME = :appName, RESP_NAME = :respName,
-                            INST_DATE = :instDate, HDATE = :hdate, LINKCASENO = :linkCaseNo,
-                            DISTRICT = :district, PURPOSE_NAME = :purposeName,
-                            PURPOSEID = :purposeId, CASE_TYPE = :subCaseType
-                        WHERE TRN_RCSAT_CASEUPDATEID = :caseUpdateId";
+    UPDATE TRN_RCSAT_CASEUPDATE
+    SET
+        COURT_CODE    = :courtCode,
+        CASETYPE      = :caseType,
+        PARENT_CASENO = :parentCaseNo,
+        APP_NAME      = :appName,
+        RESP_NAME     = :respName,
+        INST_DATE     = :instDate,
+        HDATE         = :hdate,
+        LINKCASENO    = :linkCaseNo,
+        DISTRICT      = :district,
+        PURPOSE_NAME  = :purposeName,
+        PURPOSEID     = :purposeId
+    WHERE TRN_RCSAT_CASEID  = :caseUpdateId";
+                    //const string updateSql = @"
+                    //    UPDATE TRN_RCSAT_CASEUPDATE SET
+                    //        COURT_NAME = :courtName, COURT_CODE = :courtCode, CASETYPE = :caseType,
+                    //        LINK_CASE = :linkCase, PARENT_CASENO = :parentCaseNo,
+                    //        PARENTCHILDCHK = :parentChildChk, CALCON = :calcon,
+                    //        APP_NAME = :appName, RESP_NAME = :respName,
+                    //        INST_DATE = :instDate, HDATE = :hdate, LINKCASENO = :linkCaseNo,
+                    //        DISTRICT = :district, PURPOSE_NAME = :purposeName,
+                    //        PURPOSEID = :purposeId, CASE_TYPE = :subCaseType
+                    //    WHERE TRN_RCSAT_CASEUPDATEID = :caseUpdateId";
 
-                    using var updateCmd = new OracleCommand(updateSql, connection);
+                    using var updateCmd =
+    new OracleCommand(updateSql, connection);
+
                     updateCmd.Transaction = transaction;
+                    updateCmd.BindByName = true;
+
                     AddParentParams(updateCmd, model);
-                    updateCmd.Parameters.Add(new OracleParameter("caseUpdateId", caseUpdateId));
+
+                    updateCmd.Parameters.Add(
+                        "caseUpdateId",
+                        OracleDbType.Int64
+                    ).Value = caseUpdateId;
+
                     await updateCmd.ExecuteNonQueryAsync();
+                    //using var updateCmd = new OracleCommand(updateSql, connection);
+                    //updateCmd.Transaction = transaction;
+                    //AddParentParams(updateCmd, model);
+                    //updateCmd.Parameters.Add(new OracleParameter("caseUpdateId", caseUpdateId));
+                    //await updateCmd.ExecuteNonQueryAsync();
                 }
                 else
                 {
                     const string insertSql = @"
-                        INSERT INTO TRN_RCSAT_CASEUPDATE
-                            (COURT_NAME, COURT_CODE, CASETYPE, LINK_CASE, PARENT_CASENO,
-                             PARENTCHILDCHK, CALCON, APP_NAME, RESP_NAME, INST_DATE, HDATE,
-                             LINKCASENO, DISTRICT, PURPOSE_NAME, PURPOSEID, CASE_TYPE)
-                        VALUES
-                            (:courtName, :courtCode, :caseType, :linkCase, :parentCaseNo,
-                             :parentChildChk, :calcon, :appName, :respName, :instDate, :hdate,
-                             :linkCaseNo, :district, :purposeName, :purposeId, :subCaseType)
-                        RETURNING TRN_RCSAT_CASEUPDATEID INTO :newId";
+    INSERT INTO TRN_RCSAT_CASEUPDATE
+    (
+        COURT_CODE,
+        CASETYPE,
+        PARENT_CASENO,
+        APP_NAME,
+        RESP_NAME,
+        INST_DATE,
+        HDATE,
+        LINKCASENO,
+        DISTRICT,
+        PURPOSE_NAME,
+        PURPOSEID
+    )
+    VALUES
+    (
+        :courtCode,
+        :caseType,
+        :parentCaseNo,
+        :appName,
+        :respName,
+        :instDate,
+        :hdate,
+        :linkCaseNo,
+        :district,
+        :purposeName,
+        :purposeId
+    )
+    RETURNING TRN_RCSAT_CASEUPDATEID INTO :newId";
+                    //const string insertSql = @"
+                    //    INSERT INTO TRN_RCSAT_CASEUPDATE
+                    //        (COURT_NAME, COURT_CODE, CASETYPE, LINK_CASE, PARENT_CASENO,
+                    //         PARENTCHILDCHK, CALCON, APP_NAME, RESP_NAME, INST_DATE, HDATE,
+                    //         LINKCASENO, DISTRICT, PURPOSE_NAME, PURPOSEID, CASE_TYPE)
+                    //    VALUES
+                    //        (:courtName, :courtCode, :caseType, :linkCase, :parentCaseNo,
+                    //         :parentChildChk, :calcon, :appName, :respName, :instDate, :hdate,
+                    //         :linkCaseNo, :district, :purposeName, :purposeId, :subCaseType)
+                    //    RETURNING TRN_RCSAT_CASEUPDATEID INTO :newId";
 
                     using var insertCmd = new OracleCommand(insertSql, connection);
                     insertCmd.Transaction = transaction;
@@ -154,20 +213,55 @@ and A.court_code= :court_code
                     if (row.CaseId.HasValue)
                     {
                         const string updateChildSql = @"
-                            UPDATE TRN_RCSAT_LINKEDCASES SET
-                                TRN_RCSAT_CASEUPDATEID = :caseUpdateId, COURTCODE = :courtCode,
-                                CASE_TYPEE = :caseType, CASE_NO = :ChildCase,
-                                MINCASE = :ParentCaseNo, 
-                                APPNAME = :AppellantName, RESPNAME = :RespondentName  , CTYPE = :CaseType,
-                                PURPOSE = :purpose, DNAME = :District, APPADV = :appAdv,
-                                RESPAD = :respAd, CONECT = :conect
-                            WHERE TRN_RCSAT_CASEUPDATEID = :caseId";
+    UPDATE TRN_RCSAT_LINKEDCASES
+    SET
+        TRN_RCSAT_CASEUPDATEID = :caseUpdateId,
+        COURTCODE  = :courtCode,
+        CASE_TYPEE = :caseTypee,
+        CASE_NO    = :caseNo,
+        CALCASE    = :calCase,
+        MINCASE    = :mainCase,
+        INSDT      = :insdt,
+        HDT        = :hdt,
+        APPNAME    = :appName,
+        RESPNAME   = :respName,
+        CTYPE      = :ctype,
+        PURPOSE    = :purpose,
+        DNAME      = :dname,
+        APPADV     = :appAdv,
+        RESPAD     = :respAd,
+        CONECT     = :conect
+    WHERE TRN_RCSAT_CASEID = :caseId";
 
-                        using var updateChildCmd = new OracleCommand(updateChildSql, connection);
+                        using var updateChildCmd =
+                            new OracleCommand(updateChildSql, connection);
+
                         updateChildCmd.Transaction = transaction;
+                        updateChildCmd.BindByName = true;
+
                         AddChildParams(updateChildCmd, row);
-                        updateChildCmd.Parameters.Add(new OracleParameter("caseId", row.CaseId.Value));
+
+                        updateChildCmd.Parameters.Add(
+                            "caseId",
+                            OracleDbType.Int64
+                        ).Value = row.CaseId.Value;
+
                         await updateChildCmd.ExecuteNonQueryAsync();
+                        //const string updateChildSql = @"
+                        //    UPDATE TRN_RCSAT_LINKEDCASES SET
+                        //        TRN_RCSAT_CASEUPDATEID = :caseUpdateId, COURTCODE = :courtCode,
+                        //        CASE_TYPEE = :caseType, CASE_NO = :ChildCase,
+                        //        MINCASE = :ParentCaseNo, 
+                        //        APPNAME = :AppellantName, RESPNAME = :RespondentName  , CTYPE = :CaseType,
+                        //        PURPOSE = :purpose, DNAME = :District, APPADV = :appAdv,
+                        //        RESPAD = :respAd, CONECT = :conect
+                        //    WHERE TRN_RCSAT_CASEUPDATEID = :caseId";
+
+                        //using var updateChildCmd = new OracleCommand(updateChildSql, connection);
+                        //updateChildCmd.Transaction = transaction;
+                        //AddChildParams(updateChildCmd, row);
+                        //updateChildCmd.Parameters.Add(new OracleParameter("caseId", row.CaseId.Value));
+                        //await updateChildCmd.ExecuteNonQueryAsync();
                     }
                     else
                     {
@@ -180,11 +274,20 @@ and A.court_code= :court_code
                                 (:caseUpdateId, :courtCode, :caseTypee, :caseNo, :calCase,
                                  :mainCase, :insdt, :hdt, :appName, :respName, :ctype, :purpose,
                                  :dname, :appAdv, :respAd, :conect)";
+                        using var insertChildCmd =
+    new OracleCommand(insertChildSql, connection);
 
-                        using var insertChildCmd = new OracleCommand(insertChildSql, connection);
                         insertChildCmd.Transaction = transaction;
+
+                        insertChildCmd.BindByName = true; // IMPORTANT
+
                         AddChildParams(insertChildCmd, row);
+
                         await insertChildCmd.ExecuteNonQueryAsync();
+                        //using var insertChildCmd = new OracleCommand(insertChildSql, connection);
+                        //insertChildCmd.Transaction = transaction;
+                        //AddChildParams(insertChildCmd, row);
+                        //await insertChildCmd.ExecuteNonQueryAsync();
                     }
                 }
 
@@ -198,26 +301,87 @@ and A.court_code= :court_code
             }
         }
 
-
-        private static void AddParentParams(OracleCommand cmd, RcsatCaseUpdateViewModel model)
+        private static void AddParentParams(
+    OracleCommand cmd,
+    RcsatCaseUpdateViewModel model)
         {
-            //cmd.Parameters.Add(new OracleParameter("courtName", OracleDbType.Varchar2) { Value = model.CourtName ?? (object)DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("courtCode", OracleDbType.Varchar2) { Value = model.CourtCode ?? (object)DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("caseType", OracleDbType.Varchar2) { Value = model.CaseType ?? (object)DBNull.Value });
-           // cmd.Parameters.Add(new OracleParameter("linkCase", OracleDbType.Varchar2) { Value = model.LinkCase ?? (object)DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("parentCaseNo", OracleDbType.Varchar2) { Value = model.ParentCaseNo ?? (object)DBNull.Value });
-            ///cmd.Parameters.Add(new OracleParameter("parentChildChk", OracleDbType.Varchar2) { Value = model.ParentChildChk ?? (object)DBNull.Value });
-            //cmd.Parameters.Add(new OracleParameter("calcon", OracleDbType.Varchar2) { Value = model.ConnectedCaseNo ?? (object)DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("appName", OracleDbType.Varchar2) { Value = model.AppellantName ?? (object)DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("respName", OracleDbType.Varchar2) { Value = model.RespondentName ?? (object)DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("instDate", OracleDbType.Date) { Value = (object)model.InstitutionDate ?? DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("hdate", OracleDbType.Date) { Value = (object)model.HearingDate ?? DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("linkCaseNo", OracleDbType.Varchar2) { Value = model.LinkCaseNo ?? (object)DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("district", OracleDbType.Varchar2) { Value = model.District ?? (object)DBNull.Value });
-            cmd.Parameters.Add(new OracleParameter("purposeName", OracleDbType.Varchar2) { Value = model.PurposeName ?? (object)DBNull.Value });
-            //cmd.Parameters.Add(new OracleParameter("purposeId", OracleDbType.Varchar2) { Value = model.PurposeId ?? (object)DBNull.Value });
-           // cmd.Parameters.Add(new OracleParameter("subCaseType", OracleDbType.Varchar2) { Value = model.SubCaseType ?? (object)DBNull.Value });
+            cmd.BindByName = true;
+
+            cmd.Parameters.Add(
+                "courtCode",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.CourtCode ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "caseType",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.CaseType ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "parentCaseNo",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.ParentCaseNo ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "appName",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.AppellantName ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "respName",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.RespondentName ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "instDate",
+                OracleDbType.Date
+            ).Value = (object?)model.InstitutionDate ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "hdate",
+                OracleDbType.Date
+            ).Value = (object?)model.HearingDate ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "linkCaseNo",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.LinkCaseNo ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "district",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.District ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "purposeName",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.PurposeName ?? DBNull.Value;
+
+            cmd.Parameters.Add(
+                "purposeId",
+                OracleDbType.Varchar2
+            ).Value = (object?)model.PurposeId ?? DBNull.Value;
         }
+
+        //private static void AddParentParams(OracleCommand cmd, RcsatCaseUpdateViewModel model)
+        //{
+        //    //cmd.Parameters.Add(new OracleParameter("courtName", OracleDbType.Varchar2) { Value = model.CourtName ?? (object)DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("courtCode", OracleDbType.Varchar2) { Value = model.CourtCode ?? (object)DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("caseType", OracleDbType.Varchar2) { Value = model.CaseType ?? (object)DBNull.Value });
+        //   // cmd.Parameters.Add(new OracleParameter("linkCase", OracleDbType.Varchar2) { Value = model.LinkCase ?? (object)DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("parentCaseNo", OracleDbType.Varchar2) { Value = model.ParentCaseNo ?? (object)DBNull.Value });
+        //    ///cmd.Parameters.Add(new OracleParameter("parentChildChk", OracleDbType.Varchar2) { Value = model.ParentChildChk ?? (object)DBNull.Value });
+        //    //cmd.Parameters.Add(new OracleParameter("calcon", OracleDbType.Varchar2) { Value = model.ConnectedCaseNo ?? (object)DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("appName", OracleDbType.Varchar2) { Value = model.AppellantName ?? (object)DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("respName", OracleDbType.Varchar2) { Value = model.RespondentName ?? (object)DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("instDate", OracleDbType.Date) { Value = (object)model.InstitutionDate ?? DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("hdate", OracleDbType.Date) { Value = (object)model.HearingDate ?? DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("linkCaseNo", OracleDbType.Varchar2) { Value = model.LinkCaseNo ?? (object)DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("district", OracleDbType.Varchar2) { Value = model.District ?? (object)DBNull.Value });
+        //    cmd.Parameters.Add(new OracleParameter("purposeName", OracleDbType.Varchar2) { Value = model.PurposeName ?? (object)DBNull.Value });
+        //    //cmd.Parameters.Add(new OracleParameter("purposeId", OracleDbType.Varchar2) { Value = model.PurposeId ?? (object)DBNull.Value });
+        //   // cmd.Parameters.Add(new OracleParameter("subCaseType", OracleDbType.Varchar2) { Value = model.SubCaseType ?? (object)DBNull.Value });
+        //}
         //private static void AddParentParams(OracleCommand cmd, RcsatCaseUpdateViewModel model)
         //{
         //    cmd.Parameters.Add(new OracleParameter("courtName", model.CourtName ?? (object)DBNull.Value));

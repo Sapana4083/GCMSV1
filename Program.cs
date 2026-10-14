@@ -159,6 +159,9 @@ builder.Services.AddScoped<IRcsatClpParamsService, RcsatClpParamsService>();
 builder.Services.AddScoped<IRevertCasePendancyRepository, RevertCasePendancyRepository>();
 builder.Services.AddScoped<IRevertCasePendancyService, RevertCasePendancyService>();
 
+builder.Services.AddScoped<IConnectedCaseRepository, ConnectedCaseRepository>();
+builder.Services.AddScoped<IConnectedCaseService, ConnectedCaseService>();
+
 
 // ============================================================
 // AUTHENTICATION

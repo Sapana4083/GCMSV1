@@ -1,7 +1,4 @@
-﻿using GCMS.Models;
-using GCMS.Models.ViewModels;
-using GCMS.Repository.Interfaces;
-using GCMS.Services;
+﻿using GCMS.Models.ViewModels;
 using GCMS.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,107 +6,185 @@ namespace GCMS.Controllers
 {
     public class ConnectedCaseUpdateController : Controller
     {
-        private readonly IRcsatCaseUpdateRepository _repo;
-        private readonly ILinkedCaseFamilyRepository _familyRepo;
-        private readonly ILinkedCaseRepository _linkedRepo;
-        private readonly ICaseTypeService _CaseTypeservice;
+        private readonly IConnectedCaseService _service;
+        private readonly ICaseTypeService _caseTypeService;
 
-        public ConnectedCaseUpdateController(
-            IRcsatCaseUpdateRepository repo,
-            ILinkedCaseFamilyRepository familyRepo,
-            ILinkedCaseRepository linkedRepo,
-            ICaseTypeService caseTypeService)
+        public ConnectedCaseUpdateController(IConnectedCaseService service, ICaseTypeService caseTypeService)
         {
-            _repo = repo;
-            _familyRepo = familyRepo;
-            _linkedRepo = linkedRepo;
-            _CaseTypeservice = caseTypeService;
+            _service = service;
+            _caseTypeService = caseTypeService;
         }
-
-        //public IActionResult Index() => View(new RcsatCaseUpdateViewModel());
-        public async Task<IActionResult> Index()
-        {
-            await BindDropdowns();
-            return View(new RcsatCaseUpdateViewModel());
-        }
-
 
         [HttpGet]
-        public async Task<IActionResult> GetCaseDetails(string linkCase , string casetype, string courtcode)
+        public async Task<IActionResult> Index()
         {
-            var result = await _repo.GetByLinkCaseAsync(linkCase, casetype , courtcode);
-            if (result == null) return Json(new { found = false });
+            ViewBag.CaseTypeList = await _caseTypeService.GetCaseTypeAsync(1, 1000);
+            return View(new ConnectedCaseUpdateViewModel
+            {
+                CourtCode = HttpContext.Session.GetString("CourtCode")
+            });
+        }
+
+        //[HttpGet]
+        //public async Task<JsonResult> GetByMainCase(string caseNo)
+        //{
+        //    if (string.IsNullOrWhiteSpace(caseNo)) return Json(new { found = false });
+
+        //    var m = await _service.GetByMainCaseAsync(caseNo.Trim());
+        //    if (m == null) return Json(new { found = false });
+
+        //    return Json(new
+        //    {
+        //        found = true,
+        //        m.CaseUpdateId,
+        //        m.AppellantName,
+        //        m.RespondentName,
+        //        InstitutionDate = m.InstitutionDate?.ToString("yyyy-MM-dd"),
+        //        HearingDate = m.HearingDate?.ToString("yyyy-MM-dd"),
+        //        m.District,
+        //        m.PurposeName,
+        //        m.CourtCode,
+        //        Rows = m.Rows.Select(r => new
+        //        {
+        //            r.LinkedCaseId,
+        //            r.CaseTypeId,
+        //            r.CaseNo,
+        //            r.MainCase,
+        //            HearingDate = r.HearingDate?.ToString("yyyy-MM-dd"),
+        //            r.AppellantName,
+        //            r.RespondentName,
+        //            r.District,
+        //            r.Purpose
+        //        })
+        //    });
+        //}
+
+        [HttpGet]
+        public async Task<JsonResult> GetChildCase(string caseNo)
+        {
+            if (string.IsNullOrWhiteSpace(caseNo)) return Json(new { found = false });
+
+            var r = await _service.GetRowByCaseNoAsync(caseNo.Trim());
+            if (r == null) return Json(new { found = false });
 
             return Json(new
             {
                 found = true,
-                caseUpdateId = result.CaseUpdateId,
-                courtCode = result.CourtCode,
-                caseType = result.CaseType,
-                appellantName = result.AppellantName,
-                respondentName = result.RespondentName,
-                institutionDate = result.InstitutionDate?.ToString("yyyy/MM/dd"),
-                hearingDate = result.HearingDate?.ToString("yyyy/MM/dd"),
-                district = result.District,
-                purposeName = result.PurposeName
+                r.LinkedCaseId,
+                HearingDate = r.HearingDate?.ToString("yyyy-MM-dd"),
+                r.AppellantName,
+                r.RespondentName,
+                r.District,
+                r.Purpose
             });
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetLinkedCaseFamily(string linkCase, string parentCaseNo, string courtCode)
+        public async Task<JsonResult> GetByMainCase(string caseNo, long? caseTypeId)
         {
-            if (string.IsNullOrWhiteSpace(parentCaseNo) || string.IsNullOrWhiteSpace(courtCode))
-                return BadRequest("Parent case and court code are required.");
+            if (string.IsNullOrWhiteSpace(caseNo)) return Json(new { found = false });
+            caseNo = caseNo.Trim();
 
-            var rows = await _familyRepo.GetCaseFamilyAsync(linkCase, parentCaseNo, courtCode);
-            return Json(rows);
+            var m = await _service.GetByMainCaseAsync(caseNo);
+            var reg = await _service.GetCaseRegDetailsAsync(caseNo, caseTypeId);
+
+            if (m == null && reg == null) return Json(new { found = false });
+
+            m ??= new ConnectedCaseUpdateViewModel();
+
+            // Header: SP ki value, warna Case Registration se
+            var appellant = !string.IsNullOrWhiteSpace(m.AppellantName) ? m.AppellantName : reg?.AppellantName;
+            var respondent = !string.IsNullOrWhiteSpace(m.RespondentName) ? m.RespondentName : reg?.RespondentName;
+            var purpose = !string.IsNullOrWhiteSpace(m.PurposeName) ? m.PurposeName : reg?.Purpose;
+            var hearing = m.HearingDate ?? reg?.HearingDate;
+            var instDate = m.InstitutionDate?.ToString("yyyy-MM-dd") ?? reg?.CaseTypeName;
+            var headerCaseType = m.CaseTypeId ?? reg?.CaseTypeId ?? caseTypeId;
+
+            var rows = new List<object>();
+            foreach (var r in m.Rows)
+            {
+                var childReg = await _service.GetCaseRegDetailsAsync(r.CaseNo ?? "", null);
+
+                rows.Add(new
+                {
+                    r.LinkedCaseId,
+                    CaseTypeId = r.CaseTypeId ?? childReg?.CaseTypeId ?? headerCaseType,
+                    r.CaseNo,
+                    MainCase = caseNo,
+                    HearingDate = (r.HearingDate ?? childReg?.HearingDate ?? hearing)?.ToString("yyyy-MM-dd"),
+                    AppellantName = !string.IsNullOrWhiteSpace(r.AppellantName) ? r.AppellantName : (childReg?.AppellantName ?? appellant),
+                    RespondentName = !string.IsNullOrWhiteSpace(r.RespondentName) ? r.RespondentName : (childReg?.RespondentName ?? respondent),
+                    District = !string.IsNullOrWhiteSpace(r.District) ? r.District : m.District,
+                    Purpose = !string.IsNullOrWhiteSpace(r.Purpose) ? r.Purpose : (childReg?.Purpose ?? purpose)
+                });
+            }
+
+            return Json(new
+            {
+                found = true,
+                m.CaseUpdateId,
+                CaseTypeId = headerCaseType,
+                AppellantName = appellant,
+                RespondentName = respondent,
+                InstitutionDate = instDate,
+                HearingDate = hearing?.ToString("yyyy-MM-dd"),
+                m.District,
+                PurposeName = purpose,
+                CourtCode = m.CourtCode ?? HttpContext.Session.GetString("CourtCode"),
+                Rows = rows
+            });
         }
 
         [HttpGet]
-        public async Task<IActionResult> CheckCaseExists(string caseNo)
+        public async Task<JsonResult> GetChildCase(string caseNo, long? caseTypeId)
         {
-            var exists = await _linkedRepo.CaseExistsAsync(caseNo);
-            return Json(new { exists });
-        }
+            if (string.IsNullOrWhiteSpace(caseNo)) return Json(new { found = false });
+            caseNo = caseNo.Trim();
 
-        [HttpGet]
-        public async Task<IActionResult> GetCaseByNo(string caseNo)
-        {
-            var row = await _linkedRepo.GetByCaseNoAsync(caseNo);
-            return row == null ? Json(new { found = false }) : Json(new { found = true, data = row });
-        }
+            var r = await _service.GetRowByCaseNoAsync(caseNo);
+            var reg = await _service.GetCaseRegDetailsAsync(caseNo, caseTypeId);
 
+            if (r == null && reg == null) return Json(new { found = false });
+
+            return Json(new
+            {
+                found = true,
+                r?.LinkedCaseId,
+                CaseTypeId = r?.CaseTypeId ?? reg?.CaseTypeId,
+                HearingDate = (r?.HearingDate ?? reg?.HearingDate)?.ToString("yyyy-MM-dd"),
+                AppellantName = !string.IsNullOrWhiteSpace(r?.AppellantName) ? r!.AppellantName : reg?.AppellantName,
+                RespondentName = !string.IsNullOrWhiteSpace(r?.RespondentName) ? r!.RespondentName : reg?.RespondentName,
+                District = r?.District,
+                Purpose = !string.IsNullOrWhiteSpace(r?.Purpose) ? r!.Purpose : reg?.Purpose
+            });
+        }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteLinkedCase(long caseId)
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> Save([FromBody] ConnectedCaseUpdateViewModel model)
         {
-            var success = await _linkedRepo.DeleteAsync(caseId);
-            return Json(new { success });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Save([FromBody] RcsatCaseUpdateViewModel model)
-        {
-            //if (string.IsNullOrWhiteSpace(model.LinkCase))
-            //    return BadRequest("Linked Case (Main Case) is required.");
-
             try
             {
-                var caseUpdateId = await _repo.SaveCaseWithLinkedRowsAsync(model);
-                return Json(new { success = true, caseUpdateId });
+                if (string.IsNullOrWhiteSpace(model.LinkCase))
+                    return Json(new { success = false, message = "Linked Case (Main Case) is required." });
+
+                if (model.CaseTypeId == null)
+                    return Json(new { success = false, message = "Case Type is required." });
+
+                model.Rows = model.Rows.Where(r => !string.IsNullOrWhiteSpace(r.CaseNo)).ToList();
+                if (model.Rows.Count == 0)
+                    return Json(new { success = false, message = "At least one linked case row is required." });
+
+                model.CourtCode = HttpContext.Session.GetString("CourtCode") ?? model.CourtCode;
+                var user = HttpContext.Session.GetString("Username") ?? "SYSTEM";
+
+                var id = await _service.SaveAsync(model, user);
+                return Json(new { success = true, caseUpdateId = id, message = "Saved successfully." });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
             }
-        }
-
-     
-        private async Task BindDropdowns()
-        {
-            var casetype = await _CaseTypeservice.GetCaseTypeAsync(1, 1000);
-            ViewBag.CaseTypeList = casetype;
-            
         }
     }
 }

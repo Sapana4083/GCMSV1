@@ -161,7 +161,7 @@ namespace GCMS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> Save([FromBody] ConnectedCaseUpdateViewModel model)
+        public async Task<IActionResult> Save([FromBody] ConnectedCaseUpdateViewModel model)
         {
             try
             {

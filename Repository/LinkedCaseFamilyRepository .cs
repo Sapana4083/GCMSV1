@@ -113,7 +113,7 @@ namespace GCMS.Repository
                         TRN_RCSAT_CASEREGID = reader["TRN_RCSAT_CASEREGID"]?.ToString(),
                         CourtCode = reader["COURT_CODE"]?.ToString(),
                         CaseType = reader["CASETYPE"]?.ToString(),
-                         ChildCase = reader["CASE_NO"]?.ToString(),
+                        ChildCase = reader["CASE_NO"]?.ToString(),
                         ParentCaseNo = reader["PARENTCASENO"]?.ToString(),
                         //ParentChildChk = reader["PARENTCHILDCHK"]?.ToString(),
                         //ConnectedCaseNo = reader["CALCON"]?.ToString(),

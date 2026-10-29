@@ -1,0 +1,460 @@
+﻿@model WrongCaseDecisionViewModel
+
+@{
+    ViewData["Title"] = "Wrong Case Decision Make Undecided";
+}
+
+<style>
+    .case-page {
+        background: linear-gradient(120deg, #d9f5ff, #b9eaff);
+        min-height: 100vh;
+        padding: 18px 4%;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    }
+
+    .case-panel {
+        background: #fff;
+        width: 100%;
+        min-height: 500px;
+    }
+
+    .case-header {
+        min-height: 44px;
+        background: linear-gradient(90deg, #c5effc 0%, #0099e6 100%);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 7px 12px 7px 22px;
+        border-bottom: 2px solid #9dd0f7;
+    }
+
+    .case-header-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #33445f;
+        margin: 0;
+    }
+
+    .case-header-title::before,
+    .case-header-title::after {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: #ffd588;
+        vertical-align: middle;
+    }
+
+    .case-header-tools {
+        display: flex;
+        gap: 6px;
+    }
+
+    .header-tool {
+        border: none;
+        color: white;
+        background: linear-gradient(#39799c, #00587e);
+        border-radius: 5px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+    }
+
+    .case-body {
+        padding: 16px 23px 12px;
+        border-bottom: 1px solid #dce4ec;
+    }
+
+    .case-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px 26px;
+    }
+
+    .field-half {
+        grid-column: span 3;
+    }
+
+    .field-third {
+        grid-column: span 2;
+    }
+
+    .form-field label {
+        display: block;
+        color: #111;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    .case-control {
+        width: 100%;
+        height: 46px;
+        border: 1px solid #d2d2d2;
+        border-radius: 4px;
+        padding: 10px 18px;
+        font-size: 14px;
+        background: white;
+        color: #293950;
+        outline: none;
+    }
+
+    select.case-control {
+        color: #8692ad;
+        cursor: pointer;
+    }
+
+    .case-control:focus {
+        border-color: #47a8ec;
+        box-shadow: 0 0 0 2px rgba(0,153,230,.12);
+    }
+
+    .case-control[readonly] {
+        background-color: #edf0f3;
+        color: #344054;
+    }
+
+    .case-footer {
+        padding: 16px 6px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 9px;
+    }
+
+    .case-btn {
+        background: linear-gradient(90deg, #006d82, #3c6da9);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 9px 16px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .case-btn:hover {
+        background: #005b8a;
+    }
+
+    .validation-message {
+        color: #c82333;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    @@media(max-width: 768px) {
+        .case-page {
+            padding: 12px;
+        }
+
+        .case-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .field-half,
+        .field-third {
+            grid-column: span 1;
+        }
+
+        .case-header-title {
+            font-size: 15px;
+        }
+    }
+
+    @@media print {
+        .case-page {
+            background: white;
+            padding: 0;
+        }
+
+        .case-header-tools,
+        .case-footer {
+            display: none;
+        }
+    }
+</style>
+
+<div class="case-page">
+    <div class="case-panel">
+
+        <!-- Header -->
+        <div class="case-header">
+            <h2 class="case-header-title">
+                Wrong Case Decision Make Undecided
+            </h2>
+
+            <div class="case-header-tools">
+                <button type="button" class="header-tool"
+                        title="Search" id="btnSearch">
+                    &#128269;
+                </button>
+
+                <button type="button" class="header-tool"
+                        title="Print" onclick="window.print()">
+                    &#128424;
+                </button>
+
+                <button type="button" class="header-tool"
+                        title="Details" id="btnDetails">
+                    &#9776;
+                </button>
+
+                <button type="button" class="header-tool"
+                        title="Grid" id="btnGrid">
+                    &#9638;
+                </button>
+            </div>
+        </div>
+
+        <form asp-controller="WrongCaseDecision"
+              asp-action="Save"
+              method="post"
+              id="caseDecisionForm">
+
+            @Html.AntiForgeryToken()
+
+            <div class="case-body">
+                <div class="case-grid">
+
+                    <!-- Case Type -->
+                    <div class="form-field field-half">
+                        <label asp-for="CaseType">
+                            Case Type
+                        </label>
+
+                        <select asp-for="CaseType"
+                                asp-items="Model.CaseTypes"
+                                class="case-control"
+                                id="CaseType">
+                            <option value="">Select an option</option>
+                        </select>
+                        <span asp-validation-for="CaseType"
+                              class="validation-message"></span>
+                    </div>
+
+                    <!-- Case Number -->
+                    <div class="form-field field-half">
+                        <label asp-for="CaseNo">
+                            Case No
+                        </label>
+
+                        <select asp-for="CaseNo"
+                                class="case-control"
+                                id="CaseNo">
+                            <option value="">Select an option</option>
+                        </select>
+                        <span asp-validation-for="CaseNo"
+                              class="validation-message"></span>
+                    </div>
+
+                    <!-- Appellant Name -->
+                    <div class="form-field field-third">
+                        <label asp-for="AppellantName">
+                            Appellant Name
+                        </label>
+
+                        <input asp-for="AppellantName"
+                               id="AppellantName"
+                               class="case-control"
+                               readonly />
+                    </div>
+
+                    <!-- Respondent Department -->
+                    <div class="form-field field-third">
+                        <label asp-for="RespondentDepartment">
+                            Respondend Department
+                        </label>
+
+                        <input asp-for="RespondentDepartment"
+                               id="RespondentDepartment"
+                               class="case-control"
+                               readonly />
+                    </div>
+
+                    <!-- Advocate Name -->
+                    <div class="form-field field-third">
+                        <label asp-for="AdvocateName">
+                            Advocate Name
+                        </label>
+
+                        <input asp-for="AdvocateName"
+                               id="AdvocateName"
+                               class="case-control"
+                               readonly />
+                    </div>
+
+                    <!-- Decision Date -->
+                    <div class="form-field field-third">
+                        <label asp-for="DecisionDate">
+                            Decision Date
+                        </label>
+
+                        <input asp-for="DecisionDate"
+                               id="DecisionDate"
+                               class="case-control"
+                               readonly />
+                    </div>
+
+                    <!-- Decision Type -->
+                    <div class="form-field field-third">
+                        <label asp-for="DecisionType">
+                            Decision Type
+                        </label>
+
+                        <input asp-for="DecisionType"
+                               id="DecisionType"
+                               class="case-control"
+                               readonly />
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="case-footer">
+                <button type="submit" class="case-btn">
+                    &#128190; &nbsp; SUBMIT
+                </button>
+
+                <button type="button"
+                        class="case-btn"
+                        id="btnNew">
+                    &#8853; &nbsp; NEW
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            const caseNumbersUrl =
+                '@Url.Action("GetCaseNumbers", "WrongCaseDecision")';
+
+            const caseDetailsUrl =
+                '@Url.Action("GetCaseDetails", "WrongCaseDecision")';
+
+            function clearDetails() {
+                $('#AppellantName').val('');
+                $('#RespondentDepartment').val('');
+                $('#AdvocateName').val('');
+                $('#DecisionDate').val('');
+                $('#DecisionType').val('');
+            }
+
+            function resetCaseNo() {
+                $('#CaseNo').empty().append(
+                    $('<option>', {
+                        value: '',
+                        text: 'Select an option'
+                    })
+                );
+            }
+
+            // Case Type change -> Load Case Numbers
+            $('#CaseType').on('change', function () {
+
+                const caseType = $(this).val();
+
+                resetCaseNo();
+                clearDetails();
+
+                if (!caseType) return;
+
+                $.ajax({
+                    url: caseNumbersUrl,
+                    type: 'GET',
+                    data: { caseType: caseType },
+                    success: function (data) {
+
+                        data.forEach(function (item) {
+                            $('#CaseNo').append(
+                                $('<option>', {
+                                    value: item.value,
+                                    text: item.text
+                                })
+                            );
+                        });
+                    },
+                    error: function () {
+                        alert('Unable to load case numbers.');
+                    }
+                });
+            });
+
+            // Case Number change -> Load Details
+            $('#CaseNo').on('change', function () {
+
+                const caseNo = $(this).val();
+
+                clearDetails();
+
+                if (!caseNo) return;
+
+                $.ajax({
+                    url: caseDetailsUrl,
+                    type: 'GET',
+                    data: {
+                        caseType: $('#CaseType').val(),
+                        caseNo: caseNo
+                    },
+                    success: function (data) {
+
+                        if (!data) return;
+
+                        $('#AppellantName').val(
+                            data.appellantName ?? ''
+                        );
+
+                        $('#RespondentDepartment').val(
+                            data.respondentDepartment ?? ''
+                        );
+
+                        $('#AdvocateName').val(
+                            data.advocateName ?? ''
+                        );
+
+                        $('#DecisionDate').val(
+                            data.decisionDate ?? ''
+                        );
+
+                        $('#DecisionType').val(
+                            data.decisionType ?? ''
+                        );
+                    },
+                    error: function () {
+                        alert('Unable to load case details.');
+                    }
+                });
+            });
+
+            // New button - Clear Form
+            $('#btnNew').on('click', function () {
+                $('#caseDecisionForm')[0].reset();
+                resetCaseNo();
+                clearDetails();
+            });
+
+            $('#btnSearch').on('click', function () {
+                $('#CaseType').focus();
+            });
+
+            // Prevent accidental duplicate submission
+            $('#caseDecisionForm').on('submit', function () {
+                if (!$('#CaseType').val() || !$('#CaseNo').val()) {
+                    alert('Please select Case Type and Case No.');
+                    return false;
+                }
+
+                return confirm(
+                    'Are you sure you want to make this case undecided?'
+                );
+            });
+        });
+    </script>
+}
